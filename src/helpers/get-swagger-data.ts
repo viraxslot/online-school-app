@@ -2,7 +2,9 @@ import swaggerJsdoc, { OAS3Options } from 'swagger-jsdoc';
 import path from 'path';
 import { SchemasV1 } from '../api/v1/schemas';
 
-export function getSwaggerData(version: 'v1') {
+export function getSwaggerData(versions: string[]) {
+    const apiFilesList = versions.map((version) => path.resolve(__dirname, '..', 'api', `${version}`, '**', '*controller.ts'))
+
     const options: OAS3Options = {
         definition: {
             openapi: '3.0.0',
@@ -16,7 +18,7 @@ export function getSwaggerData(version: 'v1') {
                 },
             },
         },
-        apis: [path.resolve(__dirname, `../api/${version}/**/*controller.ts`)],
+        apis: apiFilesList,
     };
 
     const swaggerData = swaggerJsdoc(options);

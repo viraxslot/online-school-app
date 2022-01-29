@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 const env = process.env.NODE_ENV ?? 'dev';
-const envPath = path.resolve(__dirname, `../env/.env.${env}`);
+const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
 console.log('Path to env variables: ', envPath);
 
 const isDocker = process.env.DOCKER_RUN ?? false;
