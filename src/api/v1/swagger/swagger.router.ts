@@ -5,7 +5,7 @@ const swaggerRouter = express.Router();
 
 swaggerRouter.use('/', swaggerUi.serve);
 
-const swaggerData = getSwaggerData(['v1']);
+const swaggerData = getSwaggerData('1.0.0', ['v1']);
 swaggerRouter.get('/', swaggerUi.setup(swaggerData));
 
 export default swaggerRouter;

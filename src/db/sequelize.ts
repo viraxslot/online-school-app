@@ -10,7 +10,7 @@ export class DbInstance {
         const password = options?.password ?? (process.env.POSTGRES_PASSWORD as string);
         const dialect = (options?.dialect ?? 'postgres') as Dialect;
 
-        this.sequelize = new Sequelize(database, username, password, { host, dialect, logging: true });
+        this.sequelize = new Sequelize(database, username, password, { host, dialect });
     }
 }
 
