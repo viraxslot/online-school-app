@@ -5,31 +5,41 @@ import noAuthRouter from './api/v1/no-auth/no-auth.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
 import sequelize from './db/sequelize';
 // without this import sequelize.sync() won't work
-import './db/models/index';
+import * as models from './db/models/index';
+import loginRouter from './api/v1/login/login.router';
+import { LoginRoles } from './api/v1/login/login.interfaces';
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 
 const supportedVersions = ['v1'];
-
 supportedVersions.forEach((version) => {
     const versionPrefix = `/api/${version}/`;
     app.use(versionPrefix + v1Endpoints.swagger, swaggerRouter);
-    app.use(versionPrefix + v1Endpoints.auth.noAuth, noAuthRouter);
+    app.use(versionPrefix + v1Endpoints.auth, noAuthRouter);
+    app.use(versionPrefix + v1Endpoints.login, loginRouter);
 });
-
-// middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // should be the last middleware
 app.use(function (err: any, req: any, res: any) {
-    res.status(500);
     res.json({ error: JSON.stringify(err) });
 });
 
 const port = process.env.PORT ?? 4000;
 sequelize
     .sync()
+    .then(async () => {
+        for (const role of Object.values(LoginRoles)) {
+            await models.Role.findOrCreate({
+                where: {
+                    role,
+                },
+                defaults: {
+                    role,
+                },
+            });
+        }
+    })
     .then(() => {
         console.log('Database is synchronized');
         app.listen(port, () => {

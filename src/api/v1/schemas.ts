@@ -8,4 +8,55 @@ export const SchemasV1 = {
         required: ['result'],
         type: 'object',
     },
+
+    SignUpRequest: {
+        properties: {
+            nickname: {
+                type: 'string'
+            },
+            email: {
+                type: 'string'
+            },
+            password: {
+                type: 'string'
+            },
+            role: {
+                type: 'string'
+            },
+            firstName: {
+                type: 'string'
+            },
+            lastName: {
+                type: 'string'
+            }
+        },
+        required: ['nickname', 'email', 'password', 'role'],
+        type: 'object',
+    },
+
+    SignUpResponse: {
+        properties: {
+            id: {
+                type: 'number'
+            },
+            nickname: {
+                type: 'string'
+            },
+            email: {
+                type: 'string'
+            },
+            roleId: {
+                type: 'number'
+            },
+            firstName: {
+                type: 'string'
+            },
+            lastName: {
+                type: 'string'
+            }
+
+        },
+        required: ['id', 'nickname', 'email', 'roleId', 'firstName', 'lastName'],
+        type: 'object',
+    },
 };

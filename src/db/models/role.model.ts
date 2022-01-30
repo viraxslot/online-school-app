@@ -4,7 +4,7 @@ import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
 interface RoleAttributes extends DbCommonAttributes {
-    title: string;
+    role: string;
 }
 
 interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
@@ -15,7 +15,7 @@ export const Role: ModelDefined<RoleAttributes, RoleCreationAttributes> = sequel
         autoIncrement: true,
         primaryKey: true,
     },
-    title: {
+    role: {
         type: DataTypes.STRING,
         allowNull: false,
     },

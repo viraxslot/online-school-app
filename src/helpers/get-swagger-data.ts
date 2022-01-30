@@ -23,6 +23,8 @@ export function getSwaggerData(currentVersion: string, versionFolders: string[])
             components: {
                 schemas: {
                     DefaultResponse: SchemasV1.DefaultResponse,
+                    SignUpRequest: SchemasV1.SignUpRequest,
+                    SignUpResponse: SchemasV1.SignUpResponse
                 },
             },
         },
