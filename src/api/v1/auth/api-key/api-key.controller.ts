@@ -1,4 +1,5 @@
 import { DefaultResponse } from "../../../shared/interfaces";
+import { ApiMessages } from "../../../shared/messages";
 
 /**
  * @swagger
@@ -17,5 +18,5 @@ import { DefaultResponse } from "../../../shared/interfaces";
  *         description: Returns result message if authentication is passed and error message otherwise
  */
 export function handleApiKeyAuth(req: any, res: DefaultResponse) {
-    res.json({ result: 'Api key authentication passed' });
+    res.json({ result: ApiMessages.authPassed });
 }

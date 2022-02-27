@@ -1,4 +1,5 @@
 import { DefaultResponse } from "../../../shared/interfaces";
+import { ApiMessages } from "../../../shared/messages";
 
 /**
  * @swagger
@@ -17,5 +18,5 @@ import { DefaultResponse } from "../../../shared/interfaces";
  *         description: Returns "No authentication needed" message
  */
 export function handleNoAuth(req: any, res: DefaultResponse) {
-    res.json({ result: 'No authentication needed' });
+    res.json({ result: ApiMessages.noAuthNeeded });
 }

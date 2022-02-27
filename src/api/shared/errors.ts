@@ -1,5 +1,6 @@
 export const ApiErrors = {
     common: {
+        unauthorized: 'Unauthorized',
         noSuchRole: 'No such role in the database'
     },
     login: {

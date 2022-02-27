@@ -17,3 +17,6 @@ Undo: `npm run db:undo:dev`
 Dev environment only:
 Apply: `npm run db:seed:all`
 Undo: `npm run db:seed:undo`
+
+### Known problems
+From time to time `jest` tests return `socket hang up` error on the localhost (possible axios bug).

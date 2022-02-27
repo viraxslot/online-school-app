@@ -1,0 +1,22 @@
+import { v1Endpoints, v1Methods } from '../../../../src/api/v1/endpoints';
+import { ApiRoute } from '../../api-route';
+import { DefaultResponse } from './auth.interfaces';
+
+export class AuthRoute extends ApiRoute {
+    static async getNoAuth(): Promise<DefaultResponse> {
+        return this.getMethod({
+            path: v1Endpoints.auth + '/' + v1Methods.auth.noAuth,
+        });
+    }
+
+    static async getApiKeyAuth(apiKey?: string): Promise<DefaultResponse> {
+        return this.getMethod({
+            path: '/' + v1Endpoints.auth + '/' + v1Methods.auth.apiKey,
+            options: {
+                headers: {
+                    'X-Api-Key': apiKey ?? '',
+                },
+            },
+        });
+    }
+}
