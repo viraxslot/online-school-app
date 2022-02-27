@@ -1,4 +1,4 @@
-import { DefaultResponse } from "../../shared/interfaces";
+import { DefaultResponse } from "../../../shared/interfaces";
 
 /**
  * @swagger

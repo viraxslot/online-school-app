@@ -1,7 +1,7 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import { v1Endpoints } from './api/v1/endpoints';
-import noAuthRouter from './api/v1/no-auth/no-auth.router';
+import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
 import sequelize from './db/sequelize';
 // without this import sequelize.sync() won't work
@@ -18,11 +18,6 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix + v1Endpoints.swagger, swaggerRouter);
     app.use(versionPrefix + v1Endpoints.auth, noAuthRouter);
     app.use(versionPrefix + v1Endpoints.login, loginRouter);
-});
-
-// should be the last middleware
-app.use(function (err: any, req: any, res: any) {
-    res.json({ error: JSON.stringify(err) });
 });
 
 const port = process.env.PORT ?? 4000;
