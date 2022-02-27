@@ -19,4 +19,16 @@ export class AuthRoute extends ApiRoute {
             },
         });
     }
+
+    static async getBasicAuth(username: string, password: string): Promise<DefaultResponse> {
+        return this.getMethod({
+            path: '/' + v1Endpoints.auth + '/' + v1Methods.auth.basic,
+            options: {
+                auth: {
+                    username,
+                    password
+                }
+            },
+        });
+    }
 }

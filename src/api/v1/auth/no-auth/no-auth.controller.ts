@@ -7,8 +7,8 @@ import { ApiMessages } from "../../../shared/messages";
  *   get:
  *     tags:
  *       - Auth
- *     summary: Test endpoint with no authorization.
- *     description: Test endpoint with no authorization.
+ *     summary: Test endpoint with no authentication.
+ *     description: Test endpoint with no authentication.
  *     responses:
  *       200:
  *         content:

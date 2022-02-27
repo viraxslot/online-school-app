@@ -29,4 +29,5 @@ module.exports = {
     apiUrl: process.env.API_URL ?? '',
     apiKeys: process.env.API_KEYS ?? [],
     apiKey: process.env.API_KEY ?? '',
+    basicAuth: process.env.BASIC_AUTH ?? [],
 };

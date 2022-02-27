@@ -2,7 +2,12 @@ const config = require('../../../config/config');
 
 module.exports = {
     async up(queryInterface, Sequelize) {
-        const apiKeys = JSON.parse(config?.apiKeys) ?? [];
+        let apiKeys;
+        try {
+            apiKeys = JSON.parse(config?.apiKeys) ?? [];
+        } catch (err) {
+            console.log('Unable to parse "apiKeys" variable from config: ', err);
+        }
 
         const data = apiKeys.map((key) => {
             return {

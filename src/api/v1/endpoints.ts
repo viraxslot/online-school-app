@@ -8,5 +8,6 @@ export const v1Methods = {
     auth: {
         noAuth: 'no-auth',
         apiKey: 'api-key',
+        basic: 'basic'
     },
 };

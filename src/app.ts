@@ -9,6 +9,7 @@ import * as models from './db/models/index';
 import loginRouter from './api/v1/login/login.router';
 import { LoginRoles } from './api/v1/login/login.interfaces';
 import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
+import basicRouter from './api/v1/auth/basic/basic-auth.router';
 
 const app = express();
 app.use(bodyParser.json());
@@ -20,6 +21,7 @@ supportedVersions.forEach((version) => {
     // auth
     app.use(versionPrefix + v1Endpoints.auth, noAuthRouter);
     app.use(versionPrefix + v1Endpoints.auth, apiKeyRouter);
+    app.use(versionPrefix + v1Endpoints.auth, basicRouter);
     // logic
     app.use(versionPrefix + v1Endpoints.login, loginRouter);
 });
