@@ -7,11 +7,11 @@ export * from './like.model';
 export * from './course.model';
 export * from './category.model';
 
+export * from './jwt-auth.model';
 export * from './banned-user.model';
 export * from './user.model';
 export * from './permission.model';
 export * from './role.model';
 
-// auth
 export * from './api-key.model';
 export * from './basic-auth.model';

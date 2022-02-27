@@ -1,5 +1,5 @@
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
-import { Course, Like } from '.';
+import { Course, JwtAuth, Like } from '.';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 import { BannedUser } from './banned-user.model';
@@ -51,3 +51,6 @@ Like.belongsTo(User);
 
 User.belongsToMany(Course, { through: 'UserCourses' });
 Course.belongsToMany(User, { through: 'UserCourses' });
+
+User.hasMany(JwtAuth, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
+JwtAuth.belongsTo(User);
