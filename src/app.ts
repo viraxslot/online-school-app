@@ -8,6 +8,7 @@ import sequelize from './db/sequelize';
 import * as models from './db/models/index';
 import loginRouter from './api/v1/login/login.router';
 import { LoginRoles } from './api/v1/login/login.interfaces';
+import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,7 +17,10 @@ const supportedVersions = ['v1'];
 supportedVersions.forEach((version) => {
     const versionPrefix = `/api/${version}/`;
     app.use(versionPrefix + v1Endpoints.swagger, swaggerRouter);
+    // auth
     app.use(versionPrefix + v1Endpoints.auth, noAuthRouter);
+    app.use(versionPrefix + v1Endpoints.auth, apiKeyRouter);
+    // logic
     app.use(versionPrefix + v1Endpoints.login, loginRouter);
 });
 

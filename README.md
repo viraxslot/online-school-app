@@ -9,8 +9,11 @@ Dev environment: `npm run dc:dev` \
 Production environment: `npm run dc:prod`
 
 ### How to apply and undo migrations
-Dev environment:
+Dev environment only:
 Apply: `npm run db:migrate:dev`
 Undo: `npm run db:undo:dev`
 
-### How to seed the database with fake data
+### How to apply/undo seeds to the database
+Dev environment only:
+Apply: `npm run db:seed:all`
+Undo: `npm run db:seed:undo`

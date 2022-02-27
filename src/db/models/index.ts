@@ -11,3 +11,4 @@ export * from './banned-user.model';
 export * from './user.model';
 export * from './permission.model';
 export * from './role.model';
+export * from './api-key.model';
