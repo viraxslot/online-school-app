@@ -30,23 +30,9 @@ export async function handleSignUp(req: SignUpRequest, res: SignUpResponse) {
     if (!validateRequest(req, res)) return;
     const body = req.body;
 
-    const role = await Role.findOne({
-        where: {
-            role: body.role,
-        },
-    });
-
-    if (isNil(role)) {
-        res.status(404).json({ errors: ApiErrors.common.noSuchRole });
-        return;
-    }
-
     const oldUser = await User.findOne({
         where: {
-            [Op.and]: {
-                [Op.or]: [{ nickname: body?.nickname }, { email: body?.email }],
-                roleId: role.toJSON().id,
-            },
+            [Op.or]: [{ nickname: body?.nickname }, { email: body?.email }],
         },
     });
 
@@ -55,17 +41,21 @@ export async function handleSignUp(req: SignUpRequest, res: SignUpResponse) {
         return;
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(body.password, salt);
+    let newUser;
+    try {
+        newUser = await User.create({
+            nickname: body.nickname,
+            email: body.email,
+            firstName: body?.firstName ?? null,
+            lastName: body?.lastName ?? null,
+            password: body.password,
+            role: body.role,
+        });
+    } catch (err) {
+        res.status(500).json({ errors: 'Unable to create user: ' + err });
+    }
 
-    const newUser = await User.create({
-        nickname: body.nickname,
-        email: body.email,
-        firstName: body?.firstName ?? null,
-        lastName: body?.lastName ?? null,
-        passwordHash,
-        roleId: role.toJSON().id!,
-    });
-
-    res.json(omit(newUser.toJSON(), 'passwordHash') as any);
+    if (newUser) {
+        res.json(omit(newUser.toJSON(), 'password') as any);
+    }
 }

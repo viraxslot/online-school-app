@@ -18,5 +18,17 @@ Dev environment only:
 Apply: `npm run db:seed:all`
 Undo: `npm run db:seed:undo`
 
+### How to init database from scratch
+Use case: if you need to recreate table with a lot of relations.
+1. Search for the volume: `docker volume ls`
+2. Remove volume "online-school-app_pg-data": `docker volume rm online-school-app_pg-data`
+3. Run app: `npm run dc:dev` - database will be created from scratch
+
+### How to run tests
+Dev mode: `npm test`
+CI mode: `npm run test:nowatch`
+
+If you have some tests failed try to run `npm run db:seed:all`
+
 ### Known problems
 From time to time `jest` tests return `socket hang up` error on the localhost (possible axios bug).

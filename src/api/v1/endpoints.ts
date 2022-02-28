@@ -10,4 +10,7 @@ export const v1Methods = {
         apiKey: 'api-key',
         basic: 'basic'
     },
+    login: {
+        signup: 'signup'
+    }
 };

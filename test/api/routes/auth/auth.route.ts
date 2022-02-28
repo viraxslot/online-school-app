@@ -11,7 +11,7 @@ export class AuthRoute extends ApiRoute {
 
     static async getApiKeyAuth(apiKey?: string): Promise<DefaultResponse> {
         return this.getMethod({
-            path: '/' + v1Endpoints.auth + '/' + v1Methods.auth.apiKey,
+            path: v1Endpoints.auth + '/' + v1Methods.auth.apiKey,
             options: {
                 headers: {
                     'X-Api-Key': apiKey ?? '',
@@ -22,7 +22,7 @@ export class AuthRoute extends ApiRoute {
 
     static async getBasicAuth(username: string, password: string): Promise<DefaultResponse> {
         return this.getMethod({
-            path: '/' + v1Endpoints.auth + '/' + v1Methods.auth.basic,
+            path: v1Endpoints.auth + '/' + v1Methods.auth.basic,
             options: {
                 auth: {
                     username,

@@ -5,7 +5,7 @@ export enum LoginRoles {
     Teacher = 'teacher'
 }
 
-export type SignUpRequest = RequestBody<{ 
+export type SignUpRequest = RequestBody<{
     nickname: string;
     email: string;
     password: string;

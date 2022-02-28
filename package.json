@@ -5,7 +5,8 @@
   "main": "build/app.js",
   "scripts": {
     "build": "rimraf build && tsc -p .",
-    "test": "jest",
+    "test": "jest --watch",
+    "test:nowatch": "jest",
     "dev": "NODE_ENV=dev nodemon src/app.ts --ignore 'test/*'",
     "prod": "NODE_ENV=production node build/app.js",
     "dc:dev": "docker-compose --env-file ./env/.env.dev up --build",
@@ -20,10 +21,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.7",
     "@types/axios": "0.14.0",
     "@types/bcryptjs": "2.4.2",
     "@types/express": "4.17.13",
     "@types/express-validator": "3.0.0",
+    "@types/faker": "6.6.9",
     "@types/jest": "27.4.1",
     "@types/lodash": "4.14.178",
     "@types/passport": "1.0.7",

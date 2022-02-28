@@ -1,16 +1,18 @@
+import * as bcrypt from 'bcryptjs';
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
-import { Course, JwtAuth, Like } from '.';
+import { Course, JwtAuth, Like, Role } from '.';
+import { LoginRoles } from '../../api/v1/login/login.interfaces';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 import { BannedUser } from './banned-user.model';
 
-interface UserAttributes extends DbCommonAttributes {
+export interface UserAttributes extends DbCommonAttributes {
     nickname: string;
     email: string;
-    firstName: string | null;
-    lastName: string | null;
-    passwordHash: string;
-    roleId: number;
+    password: string;
+    role: LoginRoles | number;
+    firstName?: string | null;
+    lastName?: string | null;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
@@ -37,13 +39,37 @@ export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequel
         type: DataTypes.STRING,
         allowNull: true,
     },
-    passwordHash: {
+    password: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+});
+
+User.beforeCreate(async (user: any) => {
+    // change password
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(user.password, salt);
+    user.password = passwordHash;
+
+    // find and set role id
+    const role: any = await Role.findOne({
+        raw: true,
+        where: {
+            role: user.role,
+        },
+    });
+
+    if (role) {
+        user.role = role.id;
+    } else {
+        user.role = -1;
     }
 });
 
-User.hasMany(BannedUser, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
+User.hasMany(BannedUser, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+});
 BannedUser.belongsTo(User);
 
 User.hasMany(Like, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
