@@ -12,23 +12,23 @@ export const SchemasV1 = {
     SignUpRequest: {
         properties: {
             nickname: {
-                type: 'string'
+                type: 'string',
             },
             email: {
-                type: 'string'
+                type: 'string',
             },
             password: {
-                type: 'string'
+                type: 'string',
             },
             role: {
-                type: 'string'
+                type: 'string',
             },
             firstName: {
-                type: 'string'
+                type: 'string',
             },
             lastName: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
         required: ['nickname', 'email', 'password', 'role'],
         type: 'object',
@@ -37,27 +37,51 @@ export const SchemasV1 = {
     SignUpResponse: {
         properties: {
             id: {
-                type: 'number'
+                type: 'number',
             },
             nickname: {
-                type: 'string'
+                type: 'string',
             },
             email: {
-                type: 'string'
+                type: 'string',
             },
             roleId: {
-                type: 'number'
+                type: 'number',
             },
             firstName: {
-                type: 'string'
+                type: 'string',
             },
             lastName: {
-                type: 'string'
-            }
-
+                type: 'string',
+            },
         },
         required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',
+    },
+
+    TeacherResponse: {
+        type: 'object',
+        required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
+        properties: {
+            id: {
+                type: 'number',
+            },
+            nickname: {
+                type: 'string',
+            },
+            email: {
+                type: 'string',
+            },
+            role: {
+                type: 'number',
+            },
+            firstName: {
+                type: 'string',
+            },
+            lastName: {
+                type: 'string',
+            },
+        },
     },
 
     TeacherListResponse: {
@@ -67,24 +91,24 @@ export const SchemasV1 = {
             required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
             properties: {
                 id: {
-                    type: 'number'
+                    type: 'number',
                 },
                 nickname: {
-                    type: 'string'
+                    type: 'string',
                 },
                 email: {
-                    type: 'string'
+                    type: 'string',
                 },
                 role: {
-                    type: 'number'
+                    type: 'number',
                 },
                 firstName: {
-                    type: 'string'
+                    type: 'string',
                 },
                 lastName: {
-                    type: 'string'
-                }
-            }
-        }
+                    type: 'string',
+                },
+            },
+        },
     },
 };

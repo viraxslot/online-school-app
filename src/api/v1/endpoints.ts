@@ -15,6 +15,7 @@ export const v1Methods = {
         signup: 'signup'
     },
     user: {
+        teacher: 'teacher',
         teachersList: 'teachers'
     }
 };

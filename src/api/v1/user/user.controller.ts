@@ -1,7 +1,8 @@
 import { isNil, omit } from 'lodash';
 import { Role, User } from '../../../db/models';
+import { DefaultResponse } from '../../shared/interfaces';
 import { LoginRoles } from '../login/login.interfaces';
-import { TeacherListResponse } from './user.interfaces';
+import { TeacherListResponse, TeacherResponse } from './user.interfaces';
 
 /**
  * @swagger
@@ -47,4 +48,44 @@ export async function handleGetTeachers(req: any, res: TeacherListResponse) {
     });
 
     res.json(teachers);
+}
+
+/**
+ * @swagger
+ * /api/v1/user/teacher:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Allow to change teacher data by id
+ *     description: Allow to change teacher data by id
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/TeacherResponse'
+ *         description: Return changed information about the teacher 
+ */
+export async function handlePutTeacher(req: any, res: TeacherResponse) {
+    res.status(501).json({});
+}
+
+/**
+ * @swagger
+ * /api/v1/user/teacher:
+ *   delete:
+ *     tags:
+ *       - User
+ *     summary: Allow to remove teacher data by id
+ *     description: Allow to remove teacher data by id
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/DefaultResponse'
+ *         description: Return information about removing result or an error
+ */
+export async function handleDeleteTeacher(req: any, res: DefaultResponse) {
+    res.status(501).json({});
 }
