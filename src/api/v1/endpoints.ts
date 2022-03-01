@@ -2,6 +2,7 @@ export const v1Endpoints = {
     swagger: 'api-docs',
     auth: 'auth',
     login: 'login',
+    user: 'user'
 };
 
 export const v1Methods = {
@@ -12,5 +13,8 @@ export const v1Methods = {
     },
     login: {
         signup: 'signup'
+    },
+    user: {
+        teachersList: 'teachers'
     }
 };

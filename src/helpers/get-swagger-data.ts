@@ -6,13 +6,13 @@ import { SchemasV1 } from '../api/v1/schemas';
  * Analyzes contoller files in api folder and returns swagger information
  * @param currentVersion version that shown in swagger header
  * @param versionFolders get jsdoc information from the passed folders, search them in api folder
- * @returns 
+ * @returns
  */
 export function getSwaggerData(currentVersion: string, versionFolders: string[]) {
     const apiFilesList = versionFolders.map((version) =>
         path.resolve(__dirname, '..', 'api', `${version}`, '**', '*controller.ts')
     );
-    
+
     const options: OAS3Options = {
         definition: {
             openapi: '3.0.0',
@@ -21,11 +21,7 @@ export function getSwaggerData(currentVersion: string, versionFolders: string[])
                 version: currentVersion,
             },
             components: {
-                schemas: {
-                    DefaultResponse: SchemasV1.DefaultResponse,
-                    SignUpRequest: SchemasV1.SignUpRequest,
-                    SignUpResponse: SchemasV1.SignUpResponse
-                },
+                schemas: SchemasV1,
             },
         },
         apis: apiFilesList,

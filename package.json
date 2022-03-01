@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf build && tsc -p .",
     "test": "jest --watch",
-    "test:nowatch": "jest",
+    "test:nowatch": "jest --silent --forceExit",
     "dev": "NODE_ENV=dev nodemon src/app.ts --ignore 'test/*'",
     "prod": "NODE_ENV=production node build/app.js",
     "dc:dev": "docker-compose --env-file ./env/.env.dev up --build",

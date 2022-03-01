@@ -5,6 +5,7 @@ const basicRouter = express.Router();
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import { BasicAuth } from '../../../../db/models';
+import { v1Methods } from '../../endpoints';
 
 passport.use(
     new BasicStrategy(async function (username, password, cb) {
@@ -28,6 +29,6 @@ passport.use(
     })
 );
 
-basicRouter.use('/', passport.authenticate('basic', { session: false }), handleBasicAuth);
+basicRouter.use('/' + v1Methods.auth.basic, passport.authenticate('basic', { session: false }), handleBasicAuth);
 
 export default basicRouter;

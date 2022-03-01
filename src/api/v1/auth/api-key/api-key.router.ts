@@ -4,6 +4,7 @@ const apiKeyRouter = express.Router();
 import passport from 'passport';
 import { HeaderAPIKeyStrategy } from 'passport-headerapikey';
 import { ApiKey } from '../../../../db/models';
+import { v1Methods } from '../../endpoints';
 import { handleApiKeyAuth } from './api-key.controller';
 
 passport.use(
@@ -22,6 +23,6 @@ passport.use(
     })
 );
 
-apiKeyRouter.use('/api-key', passport.authenticate('headerapikey', { session: false }), handleApiKeyAuth);
+apiKeyRouter.use('/' + v1Methods.auth.apiKey, passport.authenticate('headerapikey', { session: false }), handleApiKeyAuth);
 
 export default apiKeyRouter;

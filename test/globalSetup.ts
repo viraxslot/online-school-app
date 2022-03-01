@@ -1,4 +1,4 @@
-const config = require('../config/config');
+require('../config/config');
 import sequelize from '../src/db/sequelize';
 
 module.exports = async () => {
