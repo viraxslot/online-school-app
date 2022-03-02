@@ -2,16 +2,16 @@ import express from 'express';
 import { body } from 'express-validator';
 import { ApiErrors } from '../../shared/errors';
 import { SchemasV1 } from '../schemas';
+import { UserRoles } from '../user/user.interfaces';
 import { handleSignUp } from './login.controller';
-import { LoginRoles } from './login.interfaces';
 const loginRouter = express.Router();
 
 loginRouter.post(
     '/signup',
-    body(SchemasV1.SignUpRequest.required).exists(),
+    body(SchemasV1.UserRequest.required).exists(),
     body('email').isEmail(),
-    body('role', ApiErrors.login.wrongRole(Object.values(LoginRoles))).custom((value) => {
-        return Object.values(LoginRoles).includes(value)
+    body('role', ApiErrors.login.wrongRole(Object.values(UserRoles))).custom((value) => {
+        return Object.values(UserRoles).includes(value)
     }),
     handleSignUp
 );

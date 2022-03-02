@@ -1,10 +1,9 @@
-import * as bcrypt from 'bcryptjs';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
-import { Role, User } from '../../../db/models';
+import { User } from '../../../db/models';
 import { validateRequest } from '../../../helpers/validate-request';
 import { ApiErrors } from '../../shared/errors';
-import { SignUpRequest, SignUpResponse } from './login.interfaces';
+import { UserRequest, UserResponse } from '../user/user.interfaces';
 
 /**
  * @swagger
@@ -26,7 +25,7 @@ import { SignUpRequest, SignUpResponse } from './login.interfaces';
  *             schema:
  *               $ref: '#/components/schemas/SignUpResponse'
  */
-export async function handleSignUp(req: SignUpRequest, res: SignUpResponse) {
+export async function handleSignUp(req: UserRequest, res: UserResponse) {
     if (!validateRequest(req, res)) return;
     const body = req.body;
 
@@ -52,7 +51,7 @@ export async function handleSignUp(req: SignUpRequest, res: SignUpResponse) {
             role: body.role,
         });
     } catch (err) {
-        res.status(500).json({ errors: 'Unable to create user: ' + err });
+        res.status(500).json({ errors: ApiErrors.login.unableToCreateUser + err });
     }
 
     if (newUser) {

@@ -16,6 +16,6 @@ export const v1Methods = {
     },
     user: {
         teacher: 'teacher',
-        teachersList: 'teachers'
+        teachers: 'teachers'
     }
 };

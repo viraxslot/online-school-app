@@ -1,6 +1,6 @@
 import { ApiResponse } from '../../request-interfaces';
 
-export interface DefaultResponse extends ApiResponse {
+export interface ApiDefaultResponse extends ApiResponse {
     body: {
         result: string;
     }

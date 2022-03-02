@@ -1,5 +1,4 @@
-import { omit } from 'lodash';
-import { LoginRoles } from '../../src/api/v1/login/login.interfaces';
+import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
 import { LoginRoute } from '../api/routes/login/login.route';
 import { TestData } from '../helpers/test-data';
@@ -48,8 +47,8 @@ describe('API: login route suite', function () {
     });
 
     const createTestCases = [
-        { title: 'with student role', role: LoginRoles.Student, expectedRoleId: 1 },
-        { title: 'with teacher role', role: LoginRoles.Teacher, expectedRoleId: 2 },
+        { title: 'with student role', role: UserRoles.Student, expectedRoleId: 1 },
+        { title: 'with teacher role', role: UserRoles.Teacher, expectedRoleId: 2 },
     ];
 
     createTestCases.forEach((test) => {

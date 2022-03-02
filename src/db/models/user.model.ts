@@ -1,16 +1,16 @@
 import * as bcrypt from 'bcryptjs';
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
-import { Course, JwtAuth, Like, Role } from '.';
-import { LoginRoles } from '../../api/v1/login/login.interfaces';
+import { UserRoles } from '../../api/v1/user/user.interfaces';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 import { BannedUser } from './banned-user.model';
+import { Course, JwtAuth, Like, Role } from './index';
 
 export interface UserAttributes extends DbCommonAttributes {
     nickname: string;
     email: string;
     password: string;
-    role: LoginRoles | number;
+    role: UserRoles | number;
     firstName?: string | null;
     lastName?: string | null;
 }

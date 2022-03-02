@@ -1,4 +1,4 @@
-import { LoginRoles } from '../../src/api/v1/login/login.interfaces';
+import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
 import { UserRoute } from '../api/routes/user/user.route';
 import { TestData } from '../helpers/test-data';
@@ -39,8 +39,8 @@ describe('API: user route suite', function () {
     });
 
     const prepareData = async (): Promise<{ studentId: number; teacherId: number }> => {
-        const student = TestData.getUserData({ role: LoginRoles.Student });
-        const teacher = TestData.getUserData({ role: LoginRoles.Teacher });
+        const student = TestData.getUserData({ role: UserRoles.Student });
+        const teacher = TestData.getUserData({ role: UserRoles.Teacher });
 
         const createdStudent: any = await User.create(student.body);
         const createdTeacher: any = await User.create(teacher.body);

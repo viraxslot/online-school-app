@@ -1,6 +1,11 @@
-import { ResponseBody } from "../../shared/interfaces";
+import { RequestBody, ResponseBody } from '../../shared/interfaces';
 
-interface TeacherData { 
+export enum UserRoles {
+    Student = 'student',
+    Teacher = 'teacher',
+}
+
+interface UserData {
     id: number;
     nickname: string;
     email: string;
@@ -9,5 +14,6 @@ interface TeacherData {
     lastName: string;
 }
 
-export type TeacherResponse = ResponseBody<TeacherData>;
-export type TeacherListResponse = ResponseBody<TeacherData[]>;
+export type UserRequest = RequestBody<Omit<UserData, 'id'> & { password: string }>;
+export type ChangeUserRequest = RequestBody<Omit<UserData, 'role'>>;
+export type UserResponse = ResponseBody<UserData>;

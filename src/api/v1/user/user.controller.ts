@@ -1,8 +1,11 @@
-import { isNil, omit } from 'lodash';
+import { isNil, omit, pick } from 'lodash';
+import { Op } from 'sequelize';
 import { Role, User } from '../../../db/models';
+import { validateRequest } from '../../../helpers/validate-request';
+import { ApiErrors } from '../../shared/errors';
 import { DefaultResponse } from '../../shared/interfaces';
-import { LoginRoles } from '../login/login.interfaces';
-import { TeacherListResponse, TeacherResponse } from './user.interfaces';
+import { Helper } from '../helper';
+import { ChangeUserRequest, UserResponse, UserRoles } from './user.interfaces';
 
 /**
  * @swagger
@@ -17,11 +20,11 @@ import { TeacherListResponse, TeacherResponse } from './user.interfaces';
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/TeacherListResponse'
+ *               $ref: '#/components/schemas/UserListResponse'
  *         description: Return list of teachers
  */
-export async function handleGetTeachers(req: any, res: TeacherListResponse) {
-    const role = LoginRoles.Teacher;
+export async function handleGetTeachers(req: any, res: UserResponse) {
+    const role = UserRoles.Teacher;
     const roleInstance: any = await Role.findOne({
         raw: true,
         where: {
@@ -30,7 +33,7 @@ export async function handleGetTeachers(req: any, res: TeacherListResponse) {
     });
 
     if (isNil(roleInstance)) {
-        return res.status(404).json({ errors: 'Unable to find teacher role' });
+        return res.status(404).json({ errors: ApiErrors.user.noTeacherRole });
     }
 
     const roleId = roleInstance?.id;
@@ -42,9 +45,7 @@ export async function handleGetTeachers(req: any, res: TeacherListResponse) {
     });
 
     teachers.forEach((el: any) => {
-        delete el['password'];
-        delete el['createdAt'];
-        delete el['updatedAt'];
+        Helper.removeRedundantFields(el, ['password', 'createdAt', 'updatedAt']);
     });
 
     res.json(teachers);
@@ -52,7 +53,7 @@ export async function handleGetTeachers(req: any, res: TeacherListResponse) {
 
 /**
  * @swagger
- * /api/v1/user/teacher:
+ * /api/v1/user/teacher/{id}:
  *   put:
  *     tags:
  *       - User
@@ -63,16 +64,45 @@ export async function handleGetTeachers(req: any, res: TeacherListResponse) {
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/TeacherResponse'
- *         description: Return changed information about the teacher 
+ *               $ref: '#/components/schemas/UserResponse'
+ *         description: Return changed information about the teacher
  */
-export async function handlePutTeacher(req: any, res: TeacherResponse) {
-    res.status(501).json({});
+export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse) {
+    if (!validateRequest(req, res)) return;
+    const body = req.body;
+    const teacherId = body.id;
+
+    const teacherRole: any = await Role.findOne({
+        where: {
+            role: UserRoles.Teacher,
+        },
+    });
+
+    if (isNil(teacherRole)) {
+        return res.status(404).json({ errors: ApiErrors.user.noTeacherRole });
+    }
+
+    const teacher = await User.findOne({
+        where: {
+            [Op.and]: [{ id: teacherId }, { role: teacherRole.id }],
+        },
+    });
+
+    if (isNil(teacher)) {
+        return res.status(404).json({ errors: ApiErrors.user.noTeacher });
+    }
+
+    const valuesToChange = omit(body, ['id', 'password', 'role']);
+    await teacher.update(valuesToChange);
+
+    const result: any = teacher.toJSON();
+    Helper.removeRedundantFields(result, ['password', 'createdAt', 'updatedAt']);
+    res.status(200).json(result);
 }
 
 /**
  * @swagger
- * /api/v1/user/teacher:
+ * /api/v1/user/teacher/{id}:
  *   delete:
  *     tags:
  *       - User

@@ -1,4 +1,3 @@
-import { RequestBody } from '../api/shared/interfaces';
 import { validationResult } from 'express-validator';
 
 export function validateRequest(request: any, res: any): boolean {

@@ -4,9 +4,9 @@ import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
 import basicRouter from './api/v1/auth/basic/basic-auth.router';
 import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
 import { v1Endpoints } from './api/v1/endpoints';
-import { LoginRoles } from './api/v1/login/login.interfaces';
 import loginRouter from './api/v1/login/login.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
+import { UserRoles } from './api/v1/user/user.interfaces';
 import userRouter from './api/v1/user/user.router';
 // without this import sequelize.sync() won't work
 import * as models from './db/models/index';
@@ -36,7 +36,7 @@ const port = process.env.PORT ?? 4000;
     await sequelize
         .sync()
         .then(async () => {
-            for (const role of Object.values(LoginRoles)) {
+            for (const role of Object.values(UserRoles)) {
                 await models.Role.findOrCreate({
                     where: {
                         role,

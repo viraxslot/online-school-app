@@ -9,7 +9,7 @@ export const SchemasV1 = {
         type: 'object',
     },
 
-    SignUpRequest: {
+    UserRequest: {
         properties: {
             nickname: {
                 type: 'string',
@@ -34,7 +34,7 @@ export const SchemasV1 = {
         type: 'object',
     },
 
-    SignUpResponse: {
+    UserResponse: {
         properties: {
             id: {
                 type: 'number',
@@ -59,32 +59,7 @@ export const SchemasV1 = {
         type: 'object',
     },
 
-    TeacherResponse: {
-        type: 'object',
-        required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
-        properties: {
-            id: {
-                type: 'number',
-            },
-            nickname: {
-                type: 'string',
-            },
-            email: {
-                type: 'string',
-            },
-            role: {
-                type: 'number',
-            },
-            firstName: {
-                type: 'string',
-            },
-            lastName: {
-                type: 'string',
-            },
-        },
-    },
-
-    TeacherListResponse: {
+    UserListResponse: {
         type: 'array',
         items: {
             type: 'object',
