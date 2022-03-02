@@ -53,12 +53,18 @@ export async function handleGetTeachers(req: any, res: UserResponse) {
 
 /**
  * @swagger
- * /api/v1/user/teacher/{id}:
+ * /api/v1/user/teacher:
  *   put:
  *     tags:
  *       - User
  *     summary: Allow to change teacher data by id
  *     description: Allow to change teacher data by id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangeUserRequest'
  *     responses:
  *       200:
  *         content:

@@ -17,13 +17,13 @@ import { UserRequest, UserResponse } from '../user/user.interfaces';
  *       content:
  *         json:
  *           schema:
- *             $ref: '#/components/schemas/SignUpRequest'
+ *             $ref: '#/components/schemas/UserRequest'
  *     responses:
  *       200:
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/SignUpResponse'
+ *               $ref: '#/components/schemas/UserResponse'
  */
 export async function handleSignUp(req: UserRequest, res: UserResponse) {
     if (!validateRequest(req, res)) return;

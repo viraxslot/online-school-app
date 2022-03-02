@@ -1,4 +1,6 @@
-export const SchemasV1 = {
+import { assign } from 'lodash';
+
+const BasicSchemas = {
     DefaultResponse: {
         properties: {
             result: {
@@ -34,6 +36,31 @@ export const SchemasV1 = {
         type: 'object',
     },
 
+    ChangeUserRequest: {
+        properties: {
+            id: {
+                type: 'number',
+            },
+            nickname: {
+                type: 'string'
+            },
+            email: {
+                type: 'string',
+            },
+            role: {
+                type: 'number',
+            },
+            firstName: {
+                type: 'string',
+            },
+            lastName: {
+                type: 'string',
+            },
+        },
+        required: ['id'],
+        type: 'object',
+    },
+
     UserResponse: {
         properties: {
             id: {
@@ -45,7 +72,7 @@ export const SchemasV1 = {
             email: {
                 type: 'string',
             },
-            roleId: {
+            role: {
                 type: 'number',
             },
             firstName: {
@@ -58,32 +85,13 @@ export const SchemasV1 = {
         required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',
     },
+};
 
+const ExtendedSchemas = {
     UserListResponse: {
         type: 'array',
-        items: {
-            type: 'object',
-            required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
-            properties: {
-                id: {
-                    type: 'number',
-                },
-                nickname: {
-                    type: 'string',
-                },
-                email: {
-                    type: 'string',
-                },
-                role: {
-                    type: 'number',
-                },
-                firstName: {
-                    type: 'string',
-                },
-                lastName: {
-                    type: 'string',
-                },
-            },
-        },
+        items: BasicSchemas.UserResponse,
     },
 };
+
+export const SchemasV1 = assign({}, BasicSchemas, ExtendedSchemas);
