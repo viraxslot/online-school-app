@@ -23,8 +23,12 @@ export interface UserResponseData extends ResponseData {
     lastName: string;
 }
 
-export interface ChangeUserRequestData extends Omit<UserResponseData, 'role'> {
-    //
+export interface ChangeUserRequestData {
+    id: number;
+    nickname?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
 }
 
 export type UserRequest = RequestBody<UserRequestData>;

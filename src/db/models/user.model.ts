@@ -25,10 +25,12 @@ export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequel
     },
     nickname: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
     },
     firstName: {

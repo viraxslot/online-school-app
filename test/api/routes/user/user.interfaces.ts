@@ -1,5 +1,6 @@
 import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
 import {
+    ChangeUserRequestData,
     UserListResponse,
     UserRequestData,
     UserResponseData
@@ -16,4 +17,8 @@ export interface ApiUserResponse extends ApiResponse {
 
 export interface ApiUserListResponse extends ApiResponse {
     body: UserResponseData[] & ErrorResponseData;
+}
+
+export interface ApiChangeUserRequest extends ApiRequest {
+    body: ChangeUserRequestData;
 }
