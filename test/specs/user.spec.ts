@@ -1,6 +1,8 @@
+import { SchemasV1 } from '../../src/api/v1/schemas';
 import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
 import { UserRoute } from '../api/routes/user/user.route';
+import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 
 describe('API: user route suite', function () {
@@ -20,6 +22,7 @@ describe('API: user route suite', function () {
         const foundTeacher = result.body.find((el) => el.id === teacherId);
         expect(foundTeacher).not.toBeNull;
 
+        SchemaValidator.check(result.body, SchemasV1.UserListResponse);
         result.body.forEach((el: any) => {
             expect(el.role).toBe(2);
             expect(el.password).toBeUndefined();

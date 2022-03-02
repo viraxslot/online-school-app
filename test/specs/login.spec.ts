@@ -1,6 +1,8 @@
+import { SchemasV1 } from '../../src/api/v1/schemas';
 import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
 import { LoginRoute } from '../api/routes/login/login.route';
+import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 
 describe('API: login route suite', function () {
@@ -62,6 +64,8 @@ describe('API: login route suite', function () {
             createdUsers.push(id);
 
             expect(result.status).toBe(200);
+            SchemaValidator.check(result.body, SchemasV1.UserResponse);
+
             expect(result.body.nickname).toBe(user.body.nickname);
             expect(result.body.email).toBe(user.body.email);
             expect(result.body.password).not.toBe(user.body.password);

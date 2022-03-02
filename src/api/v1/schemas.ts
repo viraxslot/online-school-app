@@ -9,7 +9,7 @@ const SharedFields = {
             type: 'string',
         },
         role: {
-            type: 'string',
+            type: 'number',
         },
         firstName: {
             type: 'string',

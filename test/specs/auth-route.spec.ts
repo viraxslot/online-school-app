@@ -1,6 +1,8 @@
 import { ApiErrors } from '../../src/api/shared/errors';
 import { ApiMessages } from '../../src/api/shared/messages';
+import { SchemasV1 } from '../../src/api/v1/schemas';
 import { AuthRoute } from '../api/routes/auth/auth.route';
+import { SchemaValidator } from '../helpers/schema-validator';
 const config = require('../../config/config');
 
 describe('API: auth route suite', function () {
@@ -9,6 +11,7 @@ describe('API: auth route suite', function () {
             const result = await AuthRoute.getNoAuth();
             expect(result.status).toBe(200);
             expect(result.body.result).toBe(ApiMessages.noAuthNeeded);
+            SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
 
@@ -24,6 +27,7 @@ describe('API: auth route suite', function () {
             const result = await AuthRoute.getApiKeyAuth(apiKey);
             expect(result.status).toBe(200);
             expect(result.body.result).toBe(ApiMessages.authPassed);
+            SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
 
@@ -39,6 +43,7 @@ describe('API: auth route suite', function () {
             const result = await AuthRoute.getBasicAuth(basicCredentials[0].username, basicCredentials[0].password);
             expect(result.status).toBe(200);
             expect(result.body.result).toBe(ApiMessages.authPassed);
+            SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
 });
