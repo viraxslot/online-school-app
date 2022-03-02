@@ -1,5 +1,25 @@
 import { assign } from 'lodash';
 
+const SharedFields = {
+    User: {
+        nickname: {
+            type: 'string',
+        },
+        email: {
+            type: 'string',
+        },
+        role: {
+            type: 'string',
+        },
+        firstName: {
+            type: 'string',
+        },
+        lastName: {
+            type: 'string',
+        },
+    },
+};
+
 const BasicSchemas = {
     DefaultResponse: {
         properties: {
@@ -13,22 +33,8 @@ const BasicSchemas = {
 
     UserRequest: {
         properties: {
-            nickname: {
-                type: 'string',
-            },
-            email: {
-                type: 'string',
-            },
+            ...SharedFields.User,
             password: {
-                type: 'string',
-            },
-            role: {
-                type: 'string',
-            },
-            firstName: {
-                type: 'string',
-            },
-            lastName: {
                 type: 'string',
             },
         },
@@ -41,21 +47,7 @@ const BasicSchemas = {
             id: {
                 type: 'number',
             },
-            nickname: {
-                type: 'string'
-            },
-            email: {
-                type: 'string',
-            },
-            role: {
-                type: 'number',
-            },
-            firstName: {
-                type: 'string',
-            },
-            lastName: {
-                type: 'string',
-            },
+            ...SharedFields.User,
         },
         required: ['id'],
         type: 'object',
@@ -66,21 +58,7 @@ const BasicSchemas = {
             id: {
                 type: 'number',
             },
-            nickname: {
-                type: 'string',
-            },
-            email: {
-                type: 'string',
-            },
-            role: {
-                type: 'number',
-            },
-            firstName: {
-                type: 'string',
-            },
-            lastName: {
-                type: 'string',
-            },
+            ...SharedFields.User,
         },
         required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',

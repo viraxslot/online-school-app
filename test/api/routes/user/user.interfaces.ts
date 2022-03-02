@@ -1,30 +1,19 @@
-import { UserRoles } from '../../../../src/api/v1/user/user.interfaces';
+import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
+import {
+    UserListResponse,
+    UserRequestData,
+    UserResponseData
+} from '../../../../src/api/v1/user/user.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
-interface UserData {
-    nickname: string;
-    email: string;
-    password: string;
-    role: UserRoles.Student | UserRoles.Teacher;
-    firstName?: string;
-    lastName?: string;
-}
-
 export interface ApiUserRequest extends ApiRequest {
-    body: UserData;
+    body: UserRequestData;
 }
 
 export interface ApiUserResponse extends ApiResponse {
-    body: UserData & { id: number } & { errors?: any };
+    body: UserResponseData & ErrorResponseData;
 }
 
 export interface ApiUserListResponse extends ApiResponse {
-    body: {
-        id: number;
-        nickname: string;
-        email: string;
-        firstName: string;
-        lastName: string;
-        role: number;
-    }[];
+    body: UserResponseData[] & ErrorResponseData;
 }

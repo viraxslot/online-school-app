@@ -5,7 +5,7 @@ import { validateRequest } from '../../../helpers/validate-request';
 import { ApiErrors } from '../../shared/errors';
 import { DefaultResponse } from '../../shared/interfaces';
 import { Helper } from '../helper';
-import { ChangeUserRequest, UserResponse, UserRoles } from './user.interfaces';
+import { ChangeUserRequest, UserListResponse, UserResponse, UserRoles } from './user.interfaces';
 
 /**
  * @swagger
@@ -23,7 +23,7 @@ import { ChangeUserRequest, UserResponse, UserRoles } from './user.interfaces';
  *               $ref: '#/components/schemas/UserListResponse'
  *         description: Return list of teachers
  */
-export async function handleGetTeachers(req: any, res: UserResponse) {
+export async function handleGetTeachers(req: any, res: UserListResponse) {
     const role = UserRoles.Teacher;
     const roleInstance: any = await Role.findOne({
         raw: true,
