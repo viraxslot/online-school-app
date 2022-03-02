@@ -31,4 +31,4 @@ CI mode: `npm run test:nowatch`
 If you have some tests failed try to run `npm run db:seed:all`
 
 ### Known problems
-From time to time `jest` tests return `socket hang up` error on the localhost (possible axios bug).
+1. `jest` tests return `socket hang up` error on the localhost: it's because backend still recompiles, please wait for it.
