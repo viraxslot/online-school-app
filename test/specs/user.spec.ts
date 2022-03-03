@@ -62,7 +62,7 @@ describe('API: user route suite', function () {
             expect(result.body.errors).toBe('Unable to find teacher record');
         });
 
-        it('should not be possible to change user password or role', async () => {
+        it('should not be possible to change teacher password or role', async () => {
             const { studentId, teacherId } = await SeedData.createTwoUsers();
             createdUserIds.push(studentId, teacherId);
 
@@ -91,7 +91,7 @@ describe('API: user route suite', function () {
             expect(userAfterChange?.getDataValue('role')).toBe(userBeforeChange?.getDataValue('role'));
         });
 
-        it('should be possible to change user data', async () => {
+        it('should be possible to change teacher data', async () => {
             const { studentId, teacherId } = await SeedData.createTwoUsers();
             createdUserIds.push(studentId, teacherId);
             const userBeforeChange = await User.findOne({
@@ -135,6 +135,18 @@ describe('API: user route suite', function () {
 
         // TODO: sequelize mock needed
         it.todo('should return 404 error if teacher role is not found');
+    });
+
+    describe('DELETE, remove teacher data:', function () {
+        it('should return validation error if no teacher id passed', async () => {
+            const result = await UserRoute.deleteTeacher();
+
+            expect(result.status).toBe(400);
+            const errorMessage = result.body.errors.find(
+                (el: any) => el.msg === 'Unable to parse teacher id, please add id parameter'
+            );
+            expect(errorMessage).not.toBeNull();
+        });
     });
 
     afterAll(async () => {

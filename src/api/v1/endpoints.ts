@@ -16,6 +16,7 @@ export const v1Methods = {
     },
     user: {
         teacher: 'teacher',
+        teacherId: 'teacher/:id',
         teachers: 'teachers'
     }
 };

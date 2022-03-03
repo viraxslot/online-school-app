@@ -12,7 +12,15 @@ export class UserRoute extends ApiRoute {
     static async putTeacher(reqBody?: ApiChangeUserRequest): Promise<ApiUserResponse> {
         return this.putMethod({
             path: v1Endpoints.user + '/' + v1Methods.user.teacher,
-            body: reqBody?.body
+            body: reqBody?.body,
+        });
+    }
+
+    static async deleteTeacher(id?: number): Promise<ApiUserResponse> {
+        const postfix = v1Methods.user.teacherId.replace(':id', id ? id.toString(): '');
+
+        return this.putMethod({
+            path: v1Endpoints.user + '/' + postfix,
         });
     }
 }

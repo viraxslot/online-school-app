@@ -1,5 +1,5 @@
 import express from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { ApiErrors } from '../../shared/errors';
 import { v1Methods } from '../endpoints';
 import { handleDeleteTeacher, handleGetTeachers, handlePutTeacher } from './user.controller';
@@ -14,6 +14,11 @@ userRouter.put(
     handlePutTeacher
 );
 
-userRouter.delete('/' + v1Methods.user.teacher, handleDeleteTeacher);
+userRouter.delete(
+    '/' + v1Methods.user.teacherId,
+    param('id', ApiErrors.user.unableToParseTeacherId).exists(),
+    param('id', ApiErrors.common.numericIdParameter).isNumeric(),
+    handleDeleteTeacher
+);
 
 export default userRouter;

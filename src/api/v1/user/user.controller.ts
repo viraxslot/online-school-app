@@ -127,5 +127,8 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
  *         description: Return information about removing result or an error
  */
 export async function handleDeleteTeacher(req: any, res: DefaultResponse) {
+    if (!validateRequest(req, res)) return;
+
+    
     res.status(501).json({});
 }
