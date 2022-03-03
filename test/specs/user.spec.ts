@@ -16,7 +16,7 @@ describe('API: user route suite', function () {
         it('should return list of teachers', async () => {
             const { studentId, teacherId } = await SeedData.createTwoUsers();
             createdUserIds.push(studentId, teacherId);
-            
+
             const result = await UserRoute.getTeachersList();
             expect(result.status).toBe(200);
 
@@ -116,10 +116,25 @@ describe('API: user route suite', function () {
             expect(result.body.role).toBe(userBeforeChange?.getDataValue('role'));
         });
 
+        const uniqueFieldsTests = [{ field: 'login' }, { field: 'email' }];
+
+        uniqueFieldsTests.forEach((test) => {
+            it(`should not be possible to change user data with existent ${test.field}`, async () => {
+                const studentData = TestData.getUserData({ role: UserRoles.Student });
+                const { studentId, teacherId } = await SeedData.createTwoUsers({ studentData: studentData });
+                createdUserIds.push(studentId, teacherId);
+
+                const result = await UserRoute.putTeacher({
+                    body: { id: teacherId, [test.field]: (studentData.body as any)[test.field] },
+                });
+
+                expect(result.status).toBe(400);
+                expect(result.body.errors).toBe('Unable to update user: login and email fields should be unique');
+            });
+        });
+
         // TODO: sequelize mock needed
         it.todo('should return 404 error if teacher role is not found');
-        it.todo('should not be possible to change user data with existent login');
-        it.todo('should not be possible to change user data with existent email');
     });
 
     afterAll(async () => {

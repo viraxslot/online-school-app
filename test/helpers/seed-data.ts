@@ -1,5 +1,6 @@
 import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
+import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 import { TestData } from './test-data';
 
 export class SeedData {
@@ -7,9 +8,12 @@ export class SeedData {
      * Create teacher and student records
      * @returns
      */
-    static createTwoUsers = async (): Promise<{ studentId: number; teacherId: number }> => {
-        const student = TestData.getUserData({ role: UserRoles.Student });
-        const teacher = TestData.getUserData({ role: UserRoles.Teacher });
+    static createTwoUsers = async (options?: {
+        studentData?: ApiUserRequest;
+        teacherData?: ApiUserRequest;
+    }): Promise<{ studentId: number; teacherId: number }> => {
+        const student = options?.studentData ?? TestData.getUserData({ role: UserRoles.Student });
+        const teacher = options?.teacherData ?? TestData.getUserData({ role: UserRoles.Teacher });
 
         let createdStudent: any;
         let createdTeacher: any;
