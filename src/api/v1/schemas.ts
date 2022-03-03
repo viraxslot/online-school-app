@@ -12,10 +12,10 @@ const SharedFields = {
             type: 'number',
         },
         firstName: {
-            type: 'string',
+            type: ['string', 'null'],
         },
         lastName: {
-            type: 'string',
+            type: ['string', 'null'],
         },
     },
 };

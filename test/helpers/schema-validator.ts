@@ -4,7 +4,12 @@ export class SchemaValidator {
         const ajv = new Ajv();
 
         const validate = ajv.compile(schema);
-        validate(data);
+        const valid = validate(data);
+
+        if (!valid) {
+            console.log(data);
+        }
+
         expect(validate?.errors).toBeNull();
     }
 }

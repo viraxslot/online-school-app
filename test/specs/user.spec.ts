@@ -3,6 +3,7 @@ import { UserRoles } from '../../src/api/v1/user/user.interfaces';
 import { User } from '../../src/db/models';
 import { UserRoute } from '../api/routes/user/user.route';
 import { SchemaValidator } from '../helpers/schema-validator';
+import { SeedData } from '../helpers/seed-data';
 import { TestData } from '../helpers/test-data';
 
 describe('API: user route suite', function () {
@@ -13,7 +14,9 @@ describe('API: user route suite', function () {
         it.todo('should return 404 if no teacher role found');
 
         it('should return list of teachers', async () => {
-            const { studentId, teacherId } = await prepareData();
+            const { studentId, teacherId } = await SeedData.createTwoUsers();
+            createdUserIds.push(studentId, teacherId);
+            
             const result = await UserRoute.getTeachersList();
             expect(result.status).toBe(200);
 
@@ -60,7 +63,9 @@ describe('API: user route suite', function () {
         });
 
         it('should not be possible to change user password or role', async () => {
-            const { teacherId } = await prepareData();
+            const { studentId, teacherId } = await SeedData.createTwoUsers();
+            createdUserIds.push(studentId, teacherId);
+
             const userBeforeChange = await User.findOne({
                 where: {
                     id: teacherId,
@@ -87,7 +92,8 @@ describe('API: user route suite', function () {
         });
 
         it('should be possible to change user data', async () => {
-            const { teacherId } = await prepareData();
+            const { studentId, teacherId } = await SeedData.createTwoUsers();
+            createdUserIds.push(studentId, teacherId);
             const userBeforeChange = await User.findOne({
                 where: {
                     id: teacherId,
@@ -125,28 +131,4 @@ describe('API: user route suite', function () {
             });
         }
     });
-
-    const prepareData = async (): Promise<{ studentId: number; teacherId: number }> => {
-        const student = TestData.getUserData({ role: UserRoles.Student });
-        const teacher = TestData.getUserData({ role: UserRoles.Teacher });
-
-        const createdStudent: any = await User.create(student.body);
-        const createdTeacher: any = await User.create(teacher.body);
-
-        const studentId = createdStudent.id;
-        const teacherId = createdTeacher.id;
-        expect(typeof studentId).toBe('number');
-        expect(typeof teacherId).toBe('number');
-
-        expect(studentId).toBeGreaterThan(0);
-        expect(teacherId).toBeGreaterThan(0);
-
-        createdUserIds.push(studentId);
-        createdUserIds.push(teacherId);
-
-        return {
-            studentId,
-            teacherId,
-        };
-    };
 });
