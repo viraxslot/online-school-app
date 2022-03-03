@@ -1,5 +1,4 @@
-import { ApiErrors } from '../../src/api/shared/errors';
-import { ApiMessages } from '../../src/api/shared/messages';
+import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { AuthRoute } from '../api/routes/auth/auth.route';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -10,7 +9,7 @@ describe('API: auth route suite', function () {
         it('should return result with no authentication', async () => {
             const result = await AuthRoute.getNoAuth();
             expect(result.status).toBe(200);
-            expect(result.body.result).toBe(ApiMessages.noAuthNeeded);
+            expect(result.body.result).toBe(ApiMessages.auth.noAuthNeeded);
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
@@ -19,14 +18,14 @@ describe('API: auth route suite', function () {
         it('should return 401 error if no api key passed', async () => {
             const result = await AuthRoute.getApiKeyAuth();
             expect(result.status).toBe(401);
-            expect(result.body).toBe(ApiErrors.common.unauthorized);
+            expect(result.body).toBe(ApiMessages.common.unauthorized);
         });
 
         it('should return correct response if api key were passed', async () => {
             const apiKey = config.apiKey;
             const result = await AuthRoute.getApiKeyAuth(apiKey);
             expect(result.status).toBe(200);
-            expect(result.body.result).toBe(ApiMessages.authPassed);
+            expect(result.body.result).toBe(ApiMessages.auth.authPassed);
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
@@ -42,7 +41,7 @@ describe('API: auth route suite', function () {
 
             const result = await AuthRoute.getBasicAuth(basicCredentials[0].username, basicCredentials[0].password);
             expect(result.status).toBe(200);
-            expect(result.body.result).toBe(ApiMessages.authPassed);
+            expect(result.body.result).toBe(ApiMessages.auth.authPassed);
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });

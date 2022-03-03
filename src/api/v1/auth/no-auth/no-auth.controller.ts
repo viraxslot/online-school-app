@@ -1,5 +1,6 @@
+import { Request } from "express";
 import { DefaultResponse } from "../../../shared/interfaces";
-import { ApiMessages } from "../../../shared/messages";
+import { ApiMessages } from "../../../shared/api-messages";
 
 /**
  * @swagger
@@ -17,6 +18,6 @@ import { ApiMessages } from "../../../shared/messages";
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Returns "No authentication needed" message
  */
-export function handleNoAuth(req: any, res: DefaultResponse) {
-    res.json({ result: ApiMessages.noAuthNeeded });
+export function handleNoAuth(req: Request, res: DefaultResponse) {
+    res.json({ result: ApiMessages.auth.noAuthNeeded });
 }

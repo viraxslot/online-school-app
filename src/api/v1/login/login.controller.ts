@@ -1,8 +1,8 @@
+import { validationResult } from 'express-validator';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
 import { User } from '../../../db/models';
-import { validateRequest } from '../../../helpers/validate-request';
-import { ApiErrors } from '../../shared/errors';
+import { ApiMessages } from '../../shared/api-messages';
 import { UserRequest, UserResponse } from '../user/user.interfaces';
 
 /**
@@ -26,7 +26,11 @@ import { UserRequest, UserResponse } from '../user/user.interfaces';
  *               $ref: '#/components/schemas/UserResponse'
  */
 export async function handleSignUp(req: UserRequest, res: UserResponse) {
-    if (!validateRequest(req, res)) return;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const body = req.body;
 
     const oldUser = await User.findOne({
@@ -36,8 +40,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
     });
 
     if (!isNil(oldUser)) {
-        res.status(400).json({ errors: ApiErrors.login.userExist });
-        return;
+        return res.status(400).json({ errors: ApiMessages.login.userExist });
     }
 
     let newUser;
@@ -51,7 +54,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
             role: body.role,
         });
     } catch (err) {
-        res.status(500).json({ errors: ApiErrors.login.unableToCreateUser + err });
+        return res.status(500).json({ errors: ApiMessages.login.unableToCreateUser + err });
     }
 
     if (newUser) {

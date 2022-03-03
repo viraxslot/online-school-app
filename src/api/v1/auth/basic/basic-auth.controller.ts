@@ -1,5 +1,6 @@
-import { DefaultResponse } from "../../../shared/interfaces";
-import { ApiMessages } from "../../../shared/messages";
+import { Request } from 'express';
+import { DefaultResponse } from '../../../shared/interfaces';
+import { ApiMessages } from '../../../shared/api-messages';
 
 /**
  * @swagger
@@ -17,6 +18,6 @@ import { ApiMessages } from "../../../shared/messages";
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Returns result message if authentication is passed and error message otherwise
  */
-export function handleBasicAuth(req: any, res: DefaultResponse) {
-    res.json({ result: ApiMessages.authPassed });
+export function handleBasicAuth(req: Request, res: DefaultResponse) {
+    res.json({ result: ApiMessages.auth.authPassed });
 }

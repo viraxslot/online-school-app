@@ -1,5 +1,6 @@
 import { v1Endpoints, v1Methods } from '../../../../src/api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
+import { ApiDefaultResponse } from '../auth/auth.interfaces';
 import { ApiChangeUserRequest, ApiUserListResponse, ApiUserResponse } from './user.interfaces';
 
 export class UserRoute extends ApiRoute {
@@ -16,10 +17,10 @@ export class UserRoute extends ApiRoute {
         });
     }
 
-    static async deleteTeacher(id?: number): Promise<ApiUserResponse> {
+    static async deleteTeacher(id?: number): Promise<ApiDefaultResponse> {
         const postfix = v1Methods.user.teacherId.replace(':id', id ? id.toString(): '');
 
-        return this.putMethod({
+        return this.deleteMethod({
             path: v1Endpoints.user + '/' + postfix,
         });
     }

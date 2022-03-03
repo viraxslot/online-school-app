@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, param } from 'express-validator';
-import { ApiErrors } from '../../shared/errors';
+import { ApiMessages } from '../../shared/api-messages';
 import { v1Methods } from '../endpoints';
 import { handleDeleteTeacher, handleGetTeachers, handlePutTeacher } from './user.controller';
 const userRouter = express.Router();
@@ -9,15 +9,15 @@ userRouter.get('/' + v1Methods.user.teachers, handleGetTeachers);
 
 userRouter.put(
     '/' + v1Methods.user.teacher,
-    body('id', ApiErrors.user.unableToParseTeacherId).exists(),
-    body('id', ApiErrors.common.numericIdParameter).isNumeric(),
+    body('id', ApiMessages.user.unableToParseTeacherId).exists(),
+    body('id', ApiMessages.common.numericIdParameter).isNumeric(),
     handlePutTeacher
 );
 
 userRouter.delete(
     '/' + v1Methods.user.teacherId,
-    param('id', ApiErrors.user.unableToParseTeacherId).exists(),
-    param('id', ApiErrors.common.numericIdParameter).isNumeric(),
+    param('id', ApiMessages.user.unableToParseTeacherId).exists(),
+    param('id', ApiMessages.common.numericIdParameter).isNumeric(),
     handleDeleteTeacher
 );
 

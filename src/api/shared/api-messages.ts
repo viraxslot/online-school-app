@@ -1,4 +1,8 @@
-export const ApiErrors = {
+export const ApiMessages = {
+    auth: {
+        noAuthNeeded: 'No authentication needed',
+        authPassed: 'Authentication passed!'
+    },
     common: {
         unauthorized: 'Unauthorized',
         noSuchRole: 'No such role in the database',
@@ -14,6 +18,8 @@ export const ApiErrors = {
         noTeacherRole: 'Unable to find teacher role',
         unableToParseTeacherId: 'Unable to parse teacher id, please add id parameter',
         unableToUpdate: 'Unable to update user: ',
-        uniqueFields: 'login and email fields should be unique'
+        uniqueFields: 'login and email fields should be unique',
+        unableToRemove: 'Unable to remove teacher record: ',
+        removeSuccess: 'Success: teacher record was removed.'
     }
 };

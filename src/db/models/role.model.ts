@@ -21,7 +21,7 @@ export const Role: ModelDefined<RoleAttributes, RoleCreationAttributes> = sequel
     },
 });
 
-User.belongsTo(Role, { onUpdate: 'CASCADE', onDelete: 'CASCADE', foreignKey: 'role', as: 'fkRole' });
+User.belongsTo(Role, { foreignKey: 'role', as: 'fkRole' });
 
 Role.belongsToMany(Permission, { through: 'RolePermissions' });
 Permission.belongsToMany(Role, { through: 'RolePermissions' });

@@ -63,8 +63,6 @@ User.beforeCreate(async (user: any) => {
 
     if (role) {
         user.role = role.id;
-    } else {
-        user.role = -1;
     }
 });
 

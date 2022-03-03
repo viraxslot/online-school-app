@@ -139,7 +139,7 @@ describe('API: user route suite', function () {
 
     describe('DELETE, remove teacher data:', function () {
         it('should return validation error if no teacher id passed', async () => {
-            const result = await UserRoute.deleteTeacher();
+            const result = await UserRoute.deleteTeacher('1a' as any);
 
             expect(result.status).toBe(400);
             const errorMessage = result.body.errors.find(
@@ -147,6 +147,49 @@ describe('API: user route suite', function () {
             );
             expect(errorMessage).not.toBeNull();
         });
+
+        it('should return an error if no teacher record found', async () => {
+            const result = await UserRoute.deleteTeacher(-1);
+
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to find teacher record');
+        });
+
+        it('should return an error if trying to remove student record', async () => {
+            const { studentId, teacherId } = await SeedData.createTwoUsers();
+            createdUserIds.push(studentId, teacherId);
+
+            const result = await UserRoute.deleteTeacher(studentId);
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to find teacher record');
+
+            const userRecord = await User.findOne({
+                raw: true,
+                where: {
+                    id: studentId
+                }
+            })
+
+            expect(userRecord).not.toBeNull();
+        })
+
+        it('should be possible to remove teacher record', async () => {
+            const { studentId, teacherId } = await SeedData.createTwoUsers();
+            createdUserIds.push(studentId, teacherId);
+
+            const result = await UserRoute.deleteTeacher(teacherId);
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('Success: teacher record was removed.');
+
+            const userRecord = await User.findOne({
+                raw: true,
+                where: {
+                    id: teacherId
+                }
+            })
+
+            expect(userRecord).toBeNull();
+        })
     });
 
     afterAll(async () => {

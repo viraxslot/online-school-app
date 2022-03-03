@@ -1,9 +1,11 @@
-import { isNil, omit, pick } from 'lodash';
+import { Request } from 'express';
+import { validationResult } from 'express-validator';
+import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
-import { Role, User } from '../../../db/models';
-import { validateRequest } from '../../../helpers/validate-request';
-import { ApiErrors } from '../../shared/errors';
+import { User } from '../../../db/models';
+import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
+import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
 import { ChangeUserRequest, UserListResponse, UserResponse, UserRoles } from './user.interfaces';
 
@@ -23,24 +25,17 @@ import { ChangeUserRequest, UserListResponse, UserResponse, UserRoles } from './
  *               $ref: '#/components/schemas/UserListResponse'
  *         description: Return list of teachers
  */
-export async function handleGetTeachers(req: any, res: UserListResponse) {
-    const role = UserRoles.Teacher;
-    const roleInstance: any = await Role.findOne({
-        raw: true,
-        where: {
-            role,
-        },
-    });
+export async function handleGetTeachers(req: Request, res: UserListResponse) {
+    const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
 
-    if (isNil(roleInstance)) {
-        return res.status(404).json({ errors: ApiErrors.user.noTeacherRole });
+    if (isNil(teacherRoleId)) {
+        return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
     }
 
-    const roleId = roleInstance?.id;
     const teachers: any = await User.findAll({
         raw: true,
         where: {
-            role: roleId,
+            role: teacherRoleId,
         },
     });
 
@@ -74,40 +69,37 @@ export async function handleGetTeachers(req: any, res: UserListResponse) {
  *         description: Return changed information about the teacher
  */
 export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse) {
-    if (!validateRequest(req, res)) return;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const body = req.body;
     const teacherId = body.id;
-    const teacherRole: any = await Role.findOne({
-        where: {
-            role: UserRoles.Teacher,
-        },
-    });
 
-    if (isNil(teacherRole)) {
-        return res.status(404).json({ errors: ApiErrors.user.noTeacherRole });
-    }
-    const teacher = await User.findOne({
-        where: {
-            [Op.and]: [{ id: teacherId }, { role: teacherRole.id }],
-        },
-    });
-    if (isNil(teacher)) {
-        return res.status(404).json({ errors: ApiErrors.user.noTeacher });
-    }
-
-    const valuesToChange = omit(body, ['id', 'password', 'role']);
     try {
+        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
+        if (isNil(teacherRoleId)) {
+            return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
+        }
+
+        const teacher = await searchForUserRecord(teacherId, teacherRoleId, res);
+        if (isNil(teacher)) {
+            return res.status(404).json({ errors: ApiMessages.user.noTeacher });
+        }
+
+        const valuesToChange = omit(body, ['id', 'password', 'role']);
         await teacher.update(valuesToChange);
+
+        const result: any = teacher.toJSON();
+        Helper.removeRedundantFields(result, ['password', 'createdAt', 'updatedAt']);
+        return res.status(200).json(result);
     } catch (err: any) {
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
-            return res.status(400).json({ errors: ApiErrors.user.unableToUpdate + ApiErrors.user.uniqueFields });
+            return res.status(400).json({ errors: ApiMessages.user.unableToUpdate + ApiMessages.user.uniqueFields });
         }
-        return res.status(500).json({ errors: ApiErrors.user.unableToUpdate + err });
+        return res.status(500).json({ errors: ApiMessages.user.unableToUpdate + err });
     }
-
-    const result: any = teacher.toJSON();
-    Helper.removeRedundantFields(result, ['password', 'createdAt', 'updatedAt']);
-    return res.status(200).json(result);
 }
 
 /**
@@ -124,11 +116,42 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
  *           json:
  *             schema:
  *               $ref: '#/components/schemas/DefaultResponse'
- *         description: Return information about removing result or an error
+ *         description: Return removing result or an error
  */
-export async function handleDeleteTeacher(req: any, res: DefaultResponse) {
-    if (!validateRequest(req, res)) return;
+export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-    
-    res.status(501).json({});
+    try {
+        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
+        if (isNil(teacherRoleId)) {
+            return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
+        }
+
+        const teacherId = parseInt(req.params?.id);
+        const teacher = await searchForUserRecord(teacherId, teacherRoleId, res);
+        if (isNil(teacher)) {
+            return res.status(404).json({ errors: ApiMessages.user.noTeacher });
+        }
+
+        await User.destroy({
+            where: {
+                id: teacherId,
+            },
+        });
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.user.unableToRemove + err });
+    }
+
+    return res.status(200).json({ result: ApiMessages.user.removeSuccess });
+}
+
+async function searchForUserRecord(userId: number, roleId: number, res: any) {
+    return await User.findOne({
+        where: {
+            [Op.and]: [{ id: userId }, { role: roleId }],
+        },
+    });
 }
