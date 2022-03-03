@@ -8,7 +8,7 @@ interface MaterialAttributes extends DbCommonAttributes {
     order: number;
 }
 
-interface MaterialCreationAttributes extends Optional<MaterialAttributes, 'id'> {}
+type MaterialCreationAttributes = Optional<MaterialAttributes, 'id'>
 
 export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttributes> = sequelize.define('material', {
     id: {

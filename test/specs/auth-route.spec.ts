@@ -2,7 +2,7 @@ import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { AuthRoute } from '../api/routes/auth/auth.route';
 import { SchemaValidator } from '../helpers/schema-validator';
-const config = require('../../config/config');
+import config from '../../config/config';
 
 describe('API: auth route suite', function () {
     describe('no-auth:', function () {

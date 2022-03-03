@@ -9,7 +9,7 @@ interface CourseAttributes extends DbCommonAttributes {
     visible: boolean;
 }
 
-interface CourseCreationAttributes extends Optional<CourseAttributes, 'id'> {}
+type CourseCreationAttributes = Optional<CourseAttributes, 'id'>
 
 export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = sequelize.define('course', {
     id: {

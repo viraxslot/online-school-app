@@ -1,7 +1,7 @@
 const config = require('../../../config/config');
 
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up(queryInterface) {
         let apiKeys;
         try {
             apiKeys = JSON.parse(config?.apiKeys) ?? [];
@@ -20,7 +20,7 @@ module.exports = {
         await queryInterface.bulkInsert('apiKeys', data, {});
     },
 
-    async down(queryInterface, Sequelize) {
+    async down(queryInterface) {
         return queryInterface.bulkDelete('apiKeys', null, {});
     },
 };

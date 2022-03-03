@@ -83,7 +83,7 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
             return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
         }
 
-        const teacher = await searchForUserRecord(teacherId, teacherRoleId, res);
+        const teacher = await searchForUserRecord(teacherId, teacherRoleId);
         if (isNil(teacher)) {
             return res.status(404).json({ errors: ApiMessages.user.noTeacher });
         }
@@ -131,7 +131,7 @@ export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
         }
 
         const teacherId = parseInt(req.params?.id);
-        const teacher = await searchForUserRecord(teacherId, teacherRoleId, res);
+        const teacher = await searchForUserRecord(teacherId, teacherRoleId);
         if (isNil(teacher)) {
             return res.status(404).json({ errors: ApiMessages.user.noTeacher });
         }
@@ -148,7 +148,7 @@ export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
     return res.status(200).json({ result: ApiMessages.user.removeSuccess });
 }
 
-async function searchForUserRecord(userId: number, roleId: number, res: any) {
+async function searchForUserRecord(userId: number, roleId: number) {
     return await User.findOne({
         where: {
             [Op.and]: [{ id: userId }, { role: roleId }],

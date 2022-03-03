@@ -7,7 +7,7 @@ interface BasicAuthAttributes extends DbCommonAttributes {
     password: string;
 }
 
-interface BasicAuthAttributesCreationAttributes extends Optional<BasicAuthAttributes, 'id'> {}
+type BasicAuthAttributesCreationAttributes = Optional<BasicAuthAttributes, 'id'>
 
 export const BasicAuth: ModelDefined<BasicAuthAttributes, BasicAuthAttributesCreationAttributes> = sequelize.define(
     'basicAuth',

@@ -1,5 +1,4 @@
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
-import { User } from '.';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
@@ -8,7 +7,7 @@ interface JwtAttributes extends DbCommonAttributes {
     ttlSeconds: number;
 }
 
-interface JwtAttributesCreationAttributes extends Optional<JwtAttributes, 'id'> {}
+type JwtAttributesCreationAttributes = Optional<JwtAttributes, 'id'>
 
 export const JwtAuth: ModelDefined<JwtAttributes, JwtAttributesCreationAttributes> = sequelize.define(
     'jwtAuth',

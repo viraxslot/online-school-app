@@ -76,7 +76,7 @@ describe('API: login route suite', function () {
     });
 
     afterAll(async () => {
-        for (let userId of createdUsers) {
+        for (const userId of createdUsers) {
             await User.destroy({
                 where: {
                     id: userId,

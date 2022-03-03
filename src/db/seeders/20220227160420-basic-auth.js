@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const config = require('../../../config/config');
 
 module.exports = {
-    async up(queryInterface, Sequelize) {
+    async up(queryInterface) {
         let credentials;
         try {
             credentials = JSON.parse(config.basicAuth) ?? [];
@@ -25,7 +25,7 @@ module.exports = {
         await queryInterface.bulkInsert('basicAuth', data, {});
     },
 
-    async down(queryInterface, Sequelize) {
+    async down(queryInterface) {
         return queryInterface.bulkDelete('basicAuth', null, {});
     },
 };

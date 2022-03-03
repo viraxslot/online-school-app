@@ -7,7 +7,7 @@ interface RoleAttributes extends DbCommonAttributes {
     role: string;
 }
 
-interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
+type RoleCreationAttributes = Optional<RoleAttributes, 'id'>
 
 export const Role: ModelDefined<RoleAttributes, RoleCreationAttributes> = sequelize.define('role', {
     id: {

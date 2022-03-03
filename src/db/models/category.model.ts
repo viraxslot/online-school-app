@@ -7,7 +7,7 @@ interface CategoryAttributes extends DbCommonAttributes {
     title: string;
 }
 
-interface CategoryCreationAttributes extends Optional<CategoryAttributes, 'id'> {}
+type CategoryCreationAttributes = Optional<CategoryAttributes, 'id'>
 
 export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttributes> = sequelize.define('category', {
     id: {

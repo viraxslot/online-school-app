@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { assign } from 'lodash';
 import { ApiRequest, ApiResponse } from './request-interfaces';
-const config = require('../../config/config');
+import config from '../../config/config';
 
 export class ApiRoute {
     private static instance: AxiosInstance;

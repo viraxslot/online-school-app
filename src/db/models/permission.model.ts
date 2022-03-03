@@ -6,7 +6,7 @@ interface PermissionAttributes extends DbCommonAttributes {
     title: string;
 }
 
-interface PermissionCreationAttributes extends Optional<PermissionAttributes, 'id'> {}
+type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>
 
 export const Permission: ModelDefined<PermissionAttributes, PermissionCreationAttributes> = sequelize.define('permission', {
     id: {

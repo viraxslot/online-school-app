@@ -15,7 +15,7 @@ export interface UserAttributes extends DbCommonAttributes {
     lastName?: string | null;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+type UserCreationAttributes = Optional<UserAttributes, 'id'>
 
 export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.define('user', {
     id: {

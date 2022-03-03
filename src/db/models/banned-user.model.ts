@@ -7,7 +7,7 @@ interface BannedUserAttributes extends DbCommonAttributes {
     bannedBy: string;
 }
 
-interface BannedUserCreationAttributes extends Optional<BannedUserAttributes, 'id'> {}
+type BannedUserCreationAttributes = Optional<BannedUserAttributes, 'id'>
 
 export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAttributes> = sequelize.define('bannedUser', {
     id: {
