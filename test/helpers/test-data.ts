@@ -7,7 +7,7 @@ export class TestData {
     static getUserData(options?: { role: UserRoles }): ApiUserRequest {
         return {
             body: {
-                nickname: faker.internet.userName(),
+                login: faker.internet.userName(),
                 email: faker.internet.email(),
                 password: faker.internet.password(),
                 role: options?.role ?? sample(Object.values(UserRoles)) as any,

@@ -2,7 +2,7 @@ import { assign } from 'lodash';
 
 const SharedFields = {
     User: {
-        nickname: {
+        login: {
             type: 'string',
         },
         email: {
@@ -38,7 +38,7 @@ const BasicSchemas = {
                 type: 'string',
             },
         },
-        required: ['nickname', 'email', 'password', 'role'],
+        required: ['login', 'email', 'password', 'role'],
         type: 'object',
     },
 
@@ -60,7 +60,7 @@ const BasicSchemas = {
             },
             ...SharedFields.User,
         },
-        required: ['id', 'nickname', 'email', 'role', 'firstName', 'lastName'],
+        required: ['id', 'login', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',
     },
 };

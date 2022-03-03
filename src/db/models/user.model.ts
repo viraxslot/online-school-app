@@ -7,7 +7,7 @@ import { BannedUser } from './banned-user.model';
 import { Course, JwtAuth, Like, Role } from './index';
 
 export interface UserAttributes extends DbCommonAttributes {
-    nickname: string;
+    login: string;
     email: string;
     password: string;
     role: UserRoles | number;
@@ -23,7 +23,7 @@ export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequel
         autoIncrement: true,
         primaryKey: true,
     },
-    nickname: {
+    login: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,

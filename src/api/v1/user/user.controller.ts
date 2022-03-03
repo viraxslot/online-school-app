@@ -77,7 +77,6 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
     if (!validateRequest(req, res)) return;
     const body = req.body;
     const teacherId = body.id;
-
     const teacherRole: any = await Role.findOne({
         where: {
             role: UserRoles.Teacher,
@@ -87,23 +86,28 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
     if (isNil(teacherRole)) {
         return res.status(404).json({ errors: ApiErrors.user.noTeacherRole });
     }
-
     const teacher = await User.findOne({
         where: {
             [Op.and]: [{ id: teacherId }, { role: teacherRole.id }],
         },
     });
-
     if (isNil(teacher)) {
         return res.status(404).json({ errors: ApiErrors.user.noTeacher });
     }
 
     const valuesToChange = omit(body, ['id', 'password', 'role']);
-    await teacher.update(valuesToChange);
+    try {
+        await teacher.update(valuesToChange);
+    } catch (err: any) {
+        if (err.toString().includes('SequelizeUniqueConstraintError')) {
+            return res.status(400).json({ errors: ApiErrors.user.unableToUpdate + ApiErrors.user.uniqueFields });
+        }
+        return res.status(500).json({ errors: ApiErrors.user.unableToUpdate + err });
+    }
 
     const result: any = teacher.toJSON();
     Helper.removeRedundantFields(result, ['password', 'createdAt', 'updatedAt']);
-    res.status(200).json(result);
+    return res.status(200).json(result);
 }
 
 /**

@@ -5,14 +5,20 @@ import { TestData } from './test-data';
 export class SeedData {
     /**
      * Create teacher and student records
-     * @returns 
+     * @returns
      */
     static createTwoUsers = async (): Promise<{ studentId: number; teacherId: number }> => {
         const student = TestData.getUserData({ role: UserRoles.Student });
         const teacher = TestData.getUserData({ role: UserRoles.Teacher });
 
-        const createdStudent: any = await User.create(student.body);
-        const createdTeacher: any = await User.create(teacher.body);
+        let createdStudent: any;
+        let createdTeacher: any;
+        try {
+            createdStudent = await User.create(student.body);
+            createdTeacher = await User.create(teacher.body);
+        } catch (err) {
+            console.log('Unable to create user data: ' + err);
+        }
 
         const studentId = createdStudent.id;
         const teacherId = createdTeacher.id;

@@ -31,7 +31,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
 
     const oldUser = await User.findOne({
         where: {
-            [Op.or]: [{ nickname: body?.nickname }, { email: body?.email }],
+            [Op.or]: [{ login: body?.login }, { email: body?.email }],
         },
     });
 
@@ -43,7 +43,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
     let newUser;
     try {
         newUser = await User.create({
-            nickname: body.nickname,
+            login: body.login,
             email: body.email,
             firstName: body?.firstName ?? null,
             lastName: body?.lastName ?? null,

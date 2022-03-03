@@ -6,7 +6,7 @@ export enum UserRoles {
 }
 
 export interface UserRequestData {
-    nickname: string;
+    login: string;
     email: string;
     password: string
     role: number;
@@ -15,7 +15,7 @@ export interface UserRequestData {
 }
 export interface UserResponseData extends ResponseData {
     id: number;
-    nickname: string;
+    login: string;
     email: string;
     password: string
     role: number;
@@ -25,7 +25,7 @@ export interface UserResponseData extends ResponseData {
 
 export interface ChangeUserRequestData {
     id: number;
-    nickname?: string;
+    login?: string;
     email?: string;
     firstName?: string;
     lastName?: string;

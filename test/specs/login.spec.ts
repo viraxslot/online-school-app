@@ -34,7 +34,7 @@ describe('API: login route suite', function () {
     it('should return validation error if user already exists', async () => {
         const user = TestData.getUserData();
         const createdUser = await User.create({
-            nickname: user.body.nickname,
+            login: user.body.login,
             email: user.body.email,
             password: user.body.password,
             role: user.body.role,
@@ -66,7 +66,7 @@ describe('API: login route suite', function () {
             expect(result.status).toBe(200);
             SchemaValidator.check(result.body, SchemasV1.UserResponse);
 
-            expect(result.body.nickname).toBe(user.body.nickname);
+            expect(result.body.login).toBe(user.body.login);
             expect(result.body.email).toBe(user.body.email);
             expect(result.body.password).not.toBe(user.body.password);
             expect(result.body.firstName).toBe(user.body.firstName);

@@ -109,7 +109,7 @@ describe('API: user route suite', function () {
             SchemaValidator.check(result.body, SchemasV1.UserResponse);
 
             expect(result.body.id).toBe(teacherId);
-            expect(result.body.nickname).toBe(newUser.body.nickname);
+            expect(result.body.login).toBe(newUser.body.login);
             expect(result.body.email).toBe(newUser.body.email);
             expect(result.body.firstName).toBe(newUser.body.firstName);
             expect(result.body.lastName).toBe(newUser.body.lastName);
@@ -118,7 +118,7 @@ describe('API: user route suite', function () {
 
         // TODO: sequelize mock needed
         it.todo('should return 404 error if teacher role is not found');
-        it.todo('should not be possible to change user data with existent nickname');
+        it.todo('should not be possible to change user data with existent login');
         it.todo('should not be possible to change user data with existent email');
     });
 

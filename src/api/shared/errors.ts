@@ -13,5 +13,7 @@ export const ApiErrors = {
         noTeacher: 'Unable to find teacher record',
         noTeacherRole: 'Unable to find teacher role',
         unableToParseTeacherId: 'Unable to parse teacher id, please add id parameter',
+        unableToUpdate: 'Unable to update user: ',
+        uniqueFields: 'login and email fields should be unique'
     }
 };
