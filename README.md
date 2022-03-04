@@ -2,7 +2,9 @@
 ## Project: test REST API
 ### Project setup
 - [typescript](https://www.typescriptlang.org/)
+- docker compose
 - [express](https://expressjs.com/) REST API with [swagger](https://swagger.io/)
+- postgres database + [sequelize](https://sequelize.org/)
 - [eslint](https://github.com/eslint/eslint) + [husky](https://github.com/typicode/husky) + [lint-staged](https://github.com/okonet/lint-staged) checks
 - JSON schemas
 - API tests based on [axios](https://github.com/axios/axios) + schema validation
