@@ -10,10 +10,10 @@ export class UserRoute extends ApiRoute {
         });
     }
 
-    static async putTeacher(reqBody?: ApiChangeUserRequest): Promise<ApiUserResponse> {
+    static async putTeacher(req?: ApiChangeUserRequest): Promise<ApiUserResponse> {
         return this.putMethod({
             path: v1Methods.user.teacher,
-            body: reqBody?.body,
+            body: req?.body,
         });
     }
 

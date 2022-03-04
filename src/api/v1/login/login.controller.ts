@@ -43,9 +43,8 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
         return res.status(400).json({ errors: ApiMessages.login.userExist });
     }
 
-    let newUser;
     try {
-        newUser = await User.create({
+        const newUser = await User.create({
             login: body.login,
             email: body.email,
             firstName: body?.firstName ?? null,
@@ -53,11 +52,9 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
             password: body.password,
             role: body.role,
         });
+
+        return res.json(omit(newUser.toJSON(), 'password') as any);
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.login.unableToCreateUser + err });
-    }
-
-    if (newUser) {
-        res.json(omit(newUser.toJSON(), 'password') as any);
     }
 }

@@ -179,6 +179,8 @@ describe('API: user route suite', function () {
 
             const result = await UserRoute.deleteTeacher(teacherId);
             expect(result.status).toBe(200);
+
+            SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
             expect(result.body.result).toBe('Success: teacher record was removed.');
 
             const userRecord = await User.findOne({

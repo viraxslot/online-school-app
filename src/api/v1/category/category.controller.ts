@@ -1,4 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
+import { Category } from '../../../db/models';
+import { ApiMessages } from '../../shared/api-messages';
+import { CategoryRequest, CategoryResponse } from './category.interfaces';
 
 /**
  * @swagger
@@ -16,8 +20,8 @@ import { Request, Response } from "express";
  *               $ref: '#/components/schemas/CategoryListResponse'
  *         description: Return list of categories
  */
-export function handleGetCategoriesList(req: Request, res: Response) {
-    res.status(501).json({})    
+export async function handleGetCategoriesList(req: Request, res: Response) {
+    res.status(501).json({});
 }
 
 /**
@@ -36,8 +40,8 @@ export function handleGetCategoriesList(req: Request, res: Response) {
  *               $ref: '#/components/schemas/CategoryResponse'
  *         description: Return requested category information
  */
-export function handleGetCategoryById(req: Request, res: Response) {
-    res.status(501).json({})    
+export async function handleGetCategoryById(req: Request, res: Response) {
+    res.status(501).json({});
 }
 
 /**
@@ -61,8 +65,23 @@ export function handleGetCategoryById(req: Request, res: Response) {
  *               $ref: '#/components/schemas/CategoryResponse'
  *         description: Return created category information
  */
-export function handlePostCategory(req: Request, res: Response) {
-    res.status(501).json({})    
+export async function handlePostCategory(req: CategoryRequest, res: CategoryResponse) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const createdCategory: any = await Category.create({
+            title: req.body.title,
+        });
+
+        res.status(200).json(createdCategory.toJSON());
+    } catch (err) {
+        return res.status(500).json({
+            errors: ApiMessages.category.unableCreateCategory + err,
+        });
+    }
 }
 
 /**
@@ -77,7 +96,7 @@ export function handlePostCategory(req: Request, res: Response) {
  *       content:
  *         json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest' 
+ *             $ref: '#/components/schemas/CategoryRequest'
  *     responses:
  *       200:
  *         content:
@@ -86,8 +105,8 @@ export function handlePostCategory(req: Request, res: Response) {
  *               $ref: '#/components/schemas/CategoryResponse'
  *         description: Return changed category information
  */
-export function handlePutCategory(req: Request, res: Response) {
-    res.status(501).json({})    
+export async function handlePutCategory(req: Request, res: Response) {
+    res.status(501).json({});
 }
 
 /**
@@ -106,6 +125,6 @@ export function handlePutCategory(req: Request, res: Response) {
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Return operation result or an error
  */
-export function handleDeleteCategory(req: Request, res: Response) {
-    res.status(501).json({})    
+export async function handleDeleteCategory(req: Request, res: Response) {
+    res.status(501).json({});
 }
