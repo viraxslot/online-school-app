@@ -32,7 +32,7 @@
             "pre-commit": "lint-staged"
         }
     },
-    "keywords": [],
+    "keywords": ["api", "express", "rest api"],
     "author": "",
     "license": "ISC",
     "devDependencies": {

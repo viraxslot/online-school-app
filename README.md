@@ -1,3 +1,11 @@
+
+## Project: test REST API
+### Project setup
+- [typescript](https://www.typescriptlang.org/)
+- [express](https://expressjs.com/) REST API with [swagger](https://swagger.io/)
+- [eslint](https://github.com/eslint/eslint) + [husky](https://github.com/typicode/husky) + [lint-staged](https://github.com/okonet/lint-staged) checks
+- JSON schemas
+- API tests based on [axios](https://github.com/axios/axios) + schema validation
 ### How to run the project
 1. Create `env` folder in the root project folder
 2. Create `env/.env.dev` and `env/.env.production` files
@@ -31,4 +39,4 @@ It'll create all data needed for tests.
 Dev mode: `npm test`
 CI mode: `npm run test:nowatch`
 ### Known problems
-1. `jest` tests return `socket hang up` error on the localhost: it's because backend still recompiles, please wait for it.
+1. `jest` tests return `socket hang up` error on the localhost: it's because backend still recompiles, please wait for it and rerun tests.
