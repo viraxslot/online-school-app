@@ -17,6 +17,7 @@ export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttribut
     },
     title: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false
     }
 });

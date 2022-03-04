@@ -58,7 +58,9 @@ const CategorySchemas = {
         type: 'object',
         properties: {
             title: {
-                type: 'string'
+                type: 'string',
+                minLength: 3,
+                maxLength: 100
             }
         },
         required: ['title']

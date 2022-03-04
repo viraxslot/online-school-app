@@ -19,6 +19,15 @@ categoryRouter.post(
     '/' + v1Methods.category.category,
     body(SchemasV1.CategoryRequest.required, ApiMessages.category.requiredFields).exists(),
     body('title', ApiMessages.common.stringParameter).isString(),
+    body('title', ApiMessages.category.wrongMinCategoryLength).isLength({
+        min: SchemasV1.CategoryRequest.properties.title.minLength,
+    }),
+    body('title', ApiMessages.category.wrongMaxCategoryLength).isLength({
+        max: SchemasV1.CategoryRequest.properties.title.maxLength,
+    }),
+    body('title', ApiMessages.common.onlyAlphabetAllowed).custom((value) => {
+        return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
+    }),
     handlePostCategory
 );
 

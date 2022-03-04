@@ -25,10 +25,10 @@ Use case: if you need to recreate table with a lot of relations.
 3. Run app: `npm run dc:dev` - database will be created from scratch
 
 ### How to run tests
+If it's the first run please execute the command: `npm run db:seed:all`
+It'll create all data needed for tests.
+
 Dev mode: `npm test`
 CI mode: `npm run test:nowatch`
-
-If you have some tests failed try to run `npm run db:seed:all`
-
 ### Known problems
 1. `jest` tests return `socket hang up` error on the localhost: it's because backend still recompiles, please wait for it.

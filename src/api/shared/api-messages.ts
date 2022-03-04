@@ -6,6 +6,7 @@ export const ApiMessages = {
         noSuchRole: 'No such role in the database',
         numericIdParameter: 'ID parameter should be numeric',
         stringParameter: 'Parameter should be a string',
+        onlyAlphabetAllowed: 'Only RU/EN alphabet symbols allowed, please change your request',
     },
     auth: {
         noAuthNeeded: 'No authentication needed',
@@ -29,5 +30,8 @@ export const ApiMessages = {
         requiredFields: `Please send required fields: ` + SchemasV1.CategoryRequest.required.toString(),
         unableCreateCategory: 'Unable to create category: ',
         unableRemoveCategory: 'Unable to remove category: ',
+        wrongMinCategoryLength: 'Minimum category length is: ' + SchemasV1.CategoryRequest.properties.title.minLength,
+        wrongMaxCategoryLength: 'Maximum category length is: ' + SchemasV1.CategoryRequest.properties.title.maxLength,
+        uniqueFields: 'title should be unique',
     },
 };

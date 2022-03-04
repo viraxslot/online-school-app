@@ -77,7 +77,11 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
         });
 
         res.status(200).json(createdCategory.toJSON());
-    } catch (err) {
+    } catch (err: any) {
+        if (err.toString().includes('SequelizeUniqueConstraintError')) {
+            return res.status(400).json({ errors: ApiMessages.category.uniqueFields})
+        }
+
         return res.status(500).json({
             errors: ApiMessages.category.unableCreateCategory + err,
         });
