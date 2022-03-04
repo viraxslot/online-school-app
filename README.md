@@ -10,12 +10,12 @@ Production environment: `npm run dc:prod`
 
 ### How to apply and undo migrations
 Dev environment only:
-Apply: `npm run db:migrate:dev`
+Apply: `npm run db:migrate:dev`\
 Undo: `npm run db:undo:dev`
 
 ### How to apply/undo seeds to the database
 Dev environment only:
-Apply: `npm run db:seed:all`
+Apply: `npm run db:seed:all`\
 Undo: `npm run db:seed:undo`
 
 ### How to init database from scratch
