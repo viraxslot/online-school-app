@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { isNil } from 'lodash';
 import { Category } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { CategoryRequest, CategoryResponse } from './category.interfaces';
@@ -40,8 +41,30 @@ export async function handleGetCategoriesList(req: Request, res: Response) {
  *               $ref: '#/components/schemas/CategoryResponse'
  *         description: Return requested category information
  */
-export async function handleGetCategoryById(req: Request, res: Response) {
-    res.status(501).json({});
+export async function handleGetCategoryById(req: Request, res: CategoryResponse) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const categoryId = req.params.id;
+
+    try {
+        const category: any = await Category.findOne({
+            raw: true,
+            where: {
+                id: categoryId,
+            },
+        });
+
+        if (isNil(category)) {
+            return res.status(404).json({ errors: ApiMessages.category.unableGetCategory });
+        }
+
+        return res.status(200).json(category);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.category.unableGetCategory + ': ' + err });
+    }
 }
 
 /**
@@ -79,7 +102,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
         res.status(200).json(createdCategory.toJSON());
     } catch (err: any) {
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
-            return res.status(400).json({ errors: ApiMessages.category.uniqueFields})
+            return res.status(400).json({ errors: ApiMessages.category.uniqueFields });
         }
 
         return res.status(500).json({

@@ -3,18 +3,50 @@ import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category } from '../../src/db/models';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { SchemaValidator } from '../helpers/schema-validator';
+import { TestData } from '../helpers/test-data';
 
 describe('API: category suite', function () {
+    const createdCategoryIds: number[] = [];
+
     describe('GET, category list', function () {
         //
     });
 
     describe('GET, category', function () {
-        //
+        it('should return valudation error if id is not number', async () => {
+            const result = await CategoryRoute.getCategory('test' as any);
+            
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0]; 
+            expect(error.msg).toBe('ID parameter should be numeric');
+            expect(error.param).toBe('id');
+            expect(error.location).toBe('params');
+        });
+
+        it('should return error if category is not found', async () => {
+            const result = await CategoryRoute.getCategory(-1);
+            
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to get category');
+        });
+
+        it('should be possible to get category', async () => {
+            const category = TestData.getCategory();
+
+            const result = await CategoryRoute.postCategory(category);
+            expect(result.status).toBe(200);
+            const categoryId = result.body.id;
+            createdCategoryIds.push(categoryId);
+
+            const createdCategory = await CategoryRoute.getCategory(categoryId);
+            SchemaValidator.check(createdCategory.body, SchemasV1.CategoryResponse);
+
+            expect(createdCategory.body.id).toBe(categoryId);
+            expect(createdCategory.body.title).toBe(category.body.title);
+        });
     });
 
     describe('POST, add category', function () {
-        const createdCategoryIds: number[] = [];
         it('should return validation error if there is no title passed', async () => {
             const result = await CategoryRoute.postCategory({} as any);
 
@@ -55,19 +87,19 @@ describe('API: category suite', function () {
         const allowedLengthTestCases = [
             {
                 title: 'less than minimum length',
-                data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.minLength - 1),
+                data: TestData.getCategory(SchemasV1.CategoryRequest.properties.title.minLength - 1),
                 expectedError: `Minimum category length is: ` + SchemasV1.CategoryRequest.properties.title.minLength,
             },
             {
                 title: 'greater than maximum length',
-                data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.maxLength + 1),
+                data: TestData.getCategory(SchemasV1.CategoryRequest.properties.title.maxLength + 1),
                 expectedError: `Maximum category length is: ` + SchemasV1.CategoryRequest.properties.title.maxLength,
             },
         ];
 
         allowedLengthTestCases.forEach((test) => {
             it(`should return validation error if title has ${test.title}`, async () => {
-                const result = await CategoryRoute.postCategory({ body: { title: test.data } });
+                const result = await CategoryRoute.postCategory(test.data);
 
                 expect(result.status).toBe(400);
                 const error = result.body.errors[0];
@@ -78,11 +110,8 @@ describe('API: category suite', function () {
         });
 
         it('should not be possible to create category with the same title', async () => {
-            const category = {
-                body: {
-                    title: 'test category',
-                },
-            };
+            const category = TestData.getCategory();
+            
             const result1 = await CategoryRoute.postCategory(category);
             const categoryId1 = result1.body.id;
             createdCategoryIds.push(categoryId1);
@@ -90,7 +119,7 @@ describe('API: category suite', function () {
             const result2 = await CategoryRoute.postCategory(category);
             expect(result2.status).toBe(400);
             expect(result2.body.errors).toBe('title should be unique');
-        })
+        });
 
         const createCategoryTestCases = [
             { title: 'using en locale', data: 'Test Category Z' },
@@ -127,20 +156,6 @@ describe('API: category suite', function () {
                 expect(createdCategory).not.toBeNull();
             });
         });
-
-        afterAll(async () => {
-            for (const id of createdCategoryIds) {
-                try {
-                    await Category.destroy({
-                        where: {
-                            id,
-                        },
-                    });
-                } catch (err) {
-                    console.log(ApiMessages.category.unableRemoveCategory + err);
-                }
-            }
-        });
     });
 
     describe('PUT, change category', function () {
@@ -149,5 +164,19 @@ describe('API: category suite', function () {
 
     describe('DELETE, remove category', function () {
         //
+    });
+
+    afterAll(async () => {
+        for (const id of createdCategoryIds) {
+            try {
+                await Category.destroy({
+                    where: {
+                        id,
+                    },
+                });
+            } catch (err) {
+                console.log(ApiMessages.category.unableRemoveCategory + err);
+            }
+        }
     });
 });

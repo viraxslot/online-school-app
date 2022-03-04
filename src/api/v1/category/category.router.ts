@@ -1,5 +1,5 @@
 import express from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { ApiMessages } from '../../shared/api-messages';
 import { v1Methods } from '../endpoints';
 import { SchemasV1 } from '../schemas';
@@ -12,7 +12,12 @@ import {
 } from './category.controller';
 const categoryRouter = express.Router();
 
-categoryRouter.get('/' + v1Methods.category.categoryId, handleGetCategoryById);
+categoryRouter.get(
+    '/' + v1Methods.category.categoryId,
+    param('id', ApiMessages.common.unableToParseId).exists(),
+    param('id', ApiMessages.common.numericIdParameter).isNumeric(),
+    handleGetCategoryById
+);
 categoryRouter.get('/' + v1Methods.category.category, handleGetCategoriesList);
 
 categoryRouter.post(
@@ -32,6 +37,12 @@ categoryRouter.post(
 );
 
 categoryRouter.get('/' + v1Methods.category.category, handlePutCategory);
-categoryRouter.get('/' + v1Methods.category.categoryId, handleDeleteCategory);
+
+categoryRouter.get(
+    '/' + v1Methods.category.categoryId,
+    param('id', ApiMessages.common.unableToParseId).exists(),
+    param('id', ApiMessages.common.numericIdParameter).isNumeric(),
+    handleDeleteCategory
+);
 
 export default categoryRouter;
