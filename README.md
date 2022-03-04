@@ -1,5 +1,5 @@
 
-## Project: test REST API
+## Project: REST API for testing
 ### Project setup
 - [typescript](https://www.typescriptlang.org/)
 - docker compose
