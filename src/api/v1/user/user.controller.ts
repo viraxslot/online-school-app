@@ -11,7 +11,7 @@ import { ChangeUserRequest, UserListResponse, UserResponse, UserRoles } from './
 
 /**
  * @swagger
- * /api/v1/user/teachers:
+ * /api/v1/teachers:
  *   get:
  *     tags:
  *       - User
@@ -48,7 +48,7 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
 
 /**
  * @swagger
- * /api/v1/user/teacher:
+ * /api/v1/teacher:
  *   put:
  *     tags:
  *       - User
@@ -104,7 +104,7 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
 
 /**
  * @swagger
- * /api/v1/user/teacher/{id}:
+ * /api/v1/teacher/{id}:
  *   delete:
  *     tags:
  *       - User

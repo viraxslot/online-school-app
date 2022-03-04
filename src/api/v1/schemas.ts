@@ -1,5 +1,3 @@
-import { assign } from 'lodash';
-
 const SharedFields = {
     User: {
         login: {
@@ -20,17 +18,7 @@ const SharedFields = {
     },
 };
 
-const BasicSchemas = {
-    DefaultResponse: {
-        properties: {
-            result: {
-                type: 'string',
-            },
-        },
-        required: ['result'],
-        type: 'object',
-    },
-
+const UserSchemas = {
     UserRequest: {
         properties: {
             ...SharedFields.User,
@@ -63,13 +51,64 @@ const BasicSchemas = {
         required: ['id', 'login', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',
     },
-};
+}
 
-const ExtendedSchemas = {
+const CategorySchemas = {
+    CategoryRequest: {
+        type: 'object',
+        properties: {
+            title: {
+                type: 'string'
+            }
+        },
+        required: ['title']
+    },
+
+    ChangeCategoryRequest: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string'
+            }
+        },
+        required: ['id', 'title']
+    },
+
+    CategoryResponse: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string'
+            }
+        },
+        required: ['id', 'title']
+    }
+}
+
+export const SchemasV1 = {
+    DefaultResponse: {
+        properties: {
+            result: {
+                type: 'string',
+            },
+        },
+        required: ['result'],
+        type: 'object',
+    },
+    ...UserSchemas,
     UserListResponse: {
         type: 'array',
-        items: BasicSchemas.UserResponse,
+        items: UserSchemas.UserResponse,
     },
+    ...CategorySchemas,
+    CategoryListResponse: {
+        type: 'array',
+        items: CategorySchemas.CategoryResponse
+    }
 };
-
-export const SchemasV1 = assign({}, BasicSchemas, ExtendedSchemas);

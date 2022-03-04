@@ -4,7 +4,7 @@ import { ApiMessages } from '../../../shared/api-messages';
 
 /**
  * @swagger
- * /api/v1/auth/api-key:
+ * /api/v1/api-key:
  *   get:
  *     tags:
  *       - Auth

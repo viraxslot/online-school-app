@@ -1,10 +1,3 @@
-export const v1Endpoints = {
-    swagger: 'api-docs',
-    auth: 'auth',
-    login: 'login',
-    user: 'user'
-};
-
 export const v1Methods = {
     auth: {
         noAuth: 'no-auth',
@@ -18,5 +11,10 @@ export const v1Methods = {
         teacher: 'teacher',
         teacherId: 'teacher/:id',
         teachers: 'teachers'
+    },
+    category: {
+        category: 'category',
+        categoryId: 'category/:id',
+        categories: 'categories',
     }
 };

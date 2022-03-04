@@ -3,7 +3,7 @@ import express from 'express';
 import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
 import basicRouter from './api/v1/auth/basic/basic-auth.router';
 import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
-import { v1Endpoints } from './api/v1/endpoints';
+import categoryRouter from './api/v1/category/category.router';
 import loginRouter from './api/v1/login/login.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
 import { UserRoles } from './api/v1/user/user.interfaces';
@@ -19,15 +19,15 @@ const supportedVersions = ['v1'];
 supportedVersions.forEach((version) => {
     const versionPrefix = `/api/${version}/`;
     // swagger
-    app.use(versionPrefix + v1Endpoints.swagger, swaggerRouter);
+    app.use(versionPrefix + 'api-docs', swaggerRouter);
     // auth
-    app.use(versionPrefix + v1Endpoints.auth, noAuthRouter);
-    app.use(versionPrefix + v1Endpoints.auth, apiKeyRouter);
-    app.use(versionPrefix + v1Endpoints.auth, basicRouter);
-    // login
-    app.use(versionPrefix + v1Endpoints.login, loginRouter);
-    // user
-    app.use(versionPrefix + v1Endpoints.user, userRouter);
+    app.use(versionPrefix, noAuthRouter);
+    app.use(versionPrefix, apiKeyRouter);
+    app.use(versionPrefix, basicRouter);
+    // logic
+    app.use(versionPrefix, loginRouter);
+    app.use(versionPrefix, userRouter);
+    app.use(versionPrefix, categoryRouter);
 });
 
 const port = process.env.PORT ?? 4000;

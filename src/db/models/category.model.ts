@@ -21,5 +21,5 @@ export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttribut
     }
 });
 
-Category.hasMany(Course, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
+Category.hasMany(Course, { onUpdate: 'CASCADE' });
 Course.belongsTo(Category);

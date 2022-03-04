@@ -7,7 +7,7 @@ import { UserRequest, UserResponse } from '../user/user.interfaces';
 
 /**
  * @swagger
- * /api/v1/login/signup:
+ * /api/v1/signup:
  *   post:
  *     tags:
  *       - Login
