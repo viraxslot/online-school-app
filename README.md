@@ -40,5 +40,3 @@ It'll create all data needed for tests.
 
 Dev mode: `npm test`
 CI mode: `npm run test:nowatch`
-### Known problems
-1. `jest` tests return `socket hang up` error on the localhost: it's because backend still recompiles, please wait for it and rerun tests.
