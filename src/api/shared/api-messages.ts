@@ -28,7 +28,7 @@ export const ApiMessages = {
         unableToRemove: 'Unable to remove teacher record: ',
     },
     category: {
-        noCategory: 'Unable to find category record',
+        noCategory: 'Unable to find category record(s)',
         unableCreateCategory: 'Unable to create category: ',
         unableChangeCategory: 'Unable to change category: ',
         unableRemoveCategory: 'Unable to remove category: ',

@@ -1,7 +1,7 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category } from '../../src/db/models';
-import { ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
+import { ApiCategoryRequest, ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
@@ -10,7 +10,23 @@ describe('API: category suite', function () {
     const createdCategoryIds: number[] = [];
 
     describe('GET, category list', function () {
-        //
+        it('should return categories list', async () => {
+            const category1: ApiCategoryRequest = TestData.getCategory();
+            const category2: ApiCategoryRequest = TestData.getCategory();
+
+            const result1 = await CategoryRoute.postCategory(category1);
+            const result2 = await CategoryRoute.postCategory(category2);
+            expect(result1.status).toBe(200);
+            expect(result2.status).toBe(200);
+            createdCategoryIds.push(result1.body.id, result2.body.id);
+
+            const categories = await CategoryRoute.getCategoriesList();
+            expect(categories.status).toBe(200);
+            expect(categories.body.length).toBeGreaterThanOrEqual(2);
+
+            expect(categories.body.find((el) => el.title === category1.body.title)).not.toBeNull();
+            expect(categories.body.find((el) => el.title === category2.body.title)).not.toBeNull();
+        });
     });
 
     describe('GET, category', function () {
@@ -28,7 +44,7 @@ describe('API: category suite', function () {
             const result = await CategoryRoute.getCategory(-1);
 
             expect(result.status).toBe(404);
-            expect(result.body.errors).toBe('Unable to find category record');
+            expect(result.body.errors).toBe('Unable to find category record(s)');
         });
 
         it('should be possible to get category', async () => {
@@ -205,12 +221,12 @@ describe('API: category suite', function () {
             const result = await CategoryRoute.putCategory({
                 body: {
                     id: -1,
-                    title: 'test'
-                }
+                    title: 'test',
+                },
             });
 
             expect(result.status).toBe(404);
-            expect(result.body.errors).toBe('Unable to find category record');
+            expect(result.body.errors).toBe('Unable to find category record(s)');
         });
 
         it('should be possible to change category', async () => {

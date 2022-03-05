@@ -18,7 +18,8 @@ categoryRouter.get(
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     handleGetCategoryById
 );
-categoryRouter.get('/' + v1Methods.category.category, handleGetCategoriesList);
+
+categoryRouter.get('/' + v1Methods.category.categories, handleGetCategoriesList);
 
 categoryRouter.post(
     '/' + v1Methods.category.category,

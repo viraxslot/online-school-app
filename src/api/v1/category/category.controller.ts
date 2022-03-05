@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { validationResult } from 'express-validator';
-import { isNil } from 'lodash';
+import { isNil, omit } from 'lodash';
 import { Category } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
-import { CategoryRequest, CategoryResponse, ChangeCategoryRequest } from './category.interfaces';
+import { CategoryListResponse, CategoryRequest, CategoryResponse, ChangeCategoryRequest } from './category.interfaces';
 
 /**
  * @swagger
@@ -22,8 +22,20 @@ import { CategoryRequest, CategoryResponse, ChangeCategoryRequest } from './cate
  *               $ref: '#/components/schemas/CategoryListResponse'
  *         description: Return list of categories
  */
-export async function handleGetCategoriesList(req: Request, res: Response) {
-    res.status(501).json({});
+export async function handleGetCategoriesList(req: Request, res: CategoryListResponse) {
+    try {
+        const categories: any = await Category.findAll({
+            raw: true,
+        });
+
+        const result = categories.map((el: any) => {
+            return omit(el, ['createdAt', 'updatedAt']);
+        });
+
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.category.noCategory + err });
+    }
 }
 
 /**
