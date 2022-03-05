@@ -15,9 +15,9 @@ describe('API: category suite', function () {
     describe('GET, category', function () {
         it('should return valudation error if id is not number', async () => {
             const result = await CategoryRoute.getCategory('test' as any);
-            
+
             expect(result.status).toBe(400);
-            const error = result.body.errors[0]; 
+            const error = result.body.errors[0];
             expect(error.msg).toBe('ID parameter should be numeric');
             expect(error.param).toBe('id');
             expect(error.location).toBe('params');
@@ -25,7 +25,7 @@ describe('API: category suite', function () {
 
         it('should return error if category is not found', async () => {
             const result = await CategoryRoute.getCategory(-1);
-            
+
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to get category');
         });
@@ -111,7 +111,7 @@ describe('API: category suite', function () {
 
         it('should not be possible to create category with the same title', async () => {
             const category = TestData.getCategory();
-            
+
             const result1 = await CategoryRoute.postCategory(category);
             const categoryId1 = result1.body.id;
             createdCategoryIds.push(categoryId1);
@@ -163,7 +163,37 @@ describe('API: category suite', function () {
     });
 
     describe('DELETE, remove category', function () {
-        //
+        it('should return valudation error if id is not number', async () => {
+            const result = await CategoryRoute.deleteCategory('test' as any);
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('ID parameter should be numeric');
+            expect(error.param).toBe('id');
+            expect(error.location).toBe('params');
+        });
+
+        it('should be possible to remove category', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category);
+            expect(result.status).toBe(200);
+
+            const categoryId = result.body.id;
+            let getResult = await CategoryRoute.getCategory(categoryId);
+            expect(getResult.status).toBe(200);
+
+            const removeResult = await CategoryRoute.deleteCategory(categoryId);
+            expect(removeResult.status).toBe(200);
+            getResult = await CategoryRoute.getCategory(categoryId);
+            expect(getResult.status).toBe(404);
+
+            const dbRecord = await Category.findOne({
+                where: {
+                    id: categoryId,
+                },
+            });
+            expect(dbRecord).toBeNull();
+        });
     });
 
     afterAll(async () => {

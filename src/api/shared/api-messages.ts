@@ -8,6 +8,7 @@ export const ApiMessages = {
         numericIdParameter: 'ID parameter should be numeric',
         stringParameter: 'Parameter should be a string',
         onlyAlphabetAllowed: 'Only RU/EN alphabet symbols allowed, please change your request',
+        removeSuccess: 'Success: record was removed.',
     },
     auth: {
         noAuthNeeded: 'No authentication needed',
@@ -24,7 +25,6 @@ export const ApiMessages = {
         unableToUpdate: 'Unable to update user: ',
         uniqueFields: 'login and email fields should be unique',
         unableToRemove: 'Unable to remove teacher record: ',
-        removeSuccess: 'Success: teacher record was removed.',
     },
     category: {
         noCategory: 'Unable to find category record',

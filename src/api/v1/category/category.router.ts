@@ -36,9 +36,9 @@ categoryRouter.post(
     handlePostCategory
 );
 
-categoryRouter.get('/' + v1Methods.category.category, handlePutCategory);
+categoryRouter.put('/' + v1Methods.category.category, handlePutCategory);
 
-categoryRouter.get(
+categoryRouter.delete(
     '/' + v1Methods.category.categoryId,
     param('id', ApiMessages.common.unableToParseId).exists(),
     param('id', ApiMessages.common.numericIdParameter).isNumeric(),

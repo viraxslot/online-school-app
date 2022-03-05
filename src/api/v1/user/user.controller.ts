@@ -145,7 +145,7 @@ export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
         return res.status(500).json({ errors: ApiMessages.user.unableToRemove + err });
     }
 
-    return res.status(200).json({ result: ApiMessages.user.removeSuccess });
+    return res.status(200).json({ result: ApiMessages.common.removeSuccess });
 }
 
 async function searchForUserRecord(userId: number, roleId: number) {

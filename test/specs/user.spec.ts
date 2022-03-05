@@ -181,7 +181,7 @@ describe('API: user route suite', function () {
             expect(result.status).toBe(200);
 
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
-            expect(result.body.result).toBe('Success: teacher record was removed.');
+            expect(result.body.result).toBe('Success: record was removed.');
 
             const userRecord = await User.findOne({
                 raw: true,

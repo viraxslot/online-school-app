@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import { isNil } from 'lodash';
 import { Category } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
+import { DefaultResponse } from '../../shared/interfaces';
 import { CategoryRequest, CategoryResponse } from './category.interfaces';
 
 /**
@@ -152,6 +153,23 @@ export async function handlePutCategory(req: Request, res: Response) {
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Return operation result or an error
  */
-export async function handleDeleteCategory(req: Request, res: Response) {
-    res.status(501).json({});
+export async function handleDeleteCategory(req: Request, res: DefaultResponse ) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const categoryId = req.params.id;
+    
+    try {
+        await Category.destroy({
+            where: {
+                id: categoryId
+            }
+        })
+        return res.status(200).json({ result: ApiMessages.common.removeSuccess });
+    }
+    catch (err) {
+        return res.status(500).json({ errors: ApiMessages.category.unableRemoveCategory + err })
+    }
 }
