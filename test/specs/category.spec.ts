@@ -1,6 +1,7 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category } from '../../src/db/models';
+import { ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
@@ -18,7 +19,7 @@ describe('API: category suite', function () {
 
             expect(result.status).toBe(400);
             const error = result.body.errors[0];
-            expect(error.msg).toBe('ID parameter should be numeric');
+            expect(error.msg).toBe('Parameter should be numeric');
             expect(error.param).toBe('id');
             expect(error.location).toBe('params');
         });
@@ -27,7 +28,7 @@ describe('API: category suite', function () {
             const result = await CategoryRoute.getCategory(-1);
 
             expect(result.status).toBe(404);
-            expect(result.body.errors).toBe('Unable to get category');
+            expect(result.body.errors).toBe('Unable to find category record');
         });
 
         it('should be possible to get category', async () => {
@@ -87,12 +88,12 @@ describe('API: category suite', function () {
         const allowedLengthTestCases = [
             {
                 title: 'less than minimum length',
-                data: TestData.getCategory(SchemasV1.CategoryRequest.properties.title.minLength - 1),
+                data: TestData.getCategory({ titleLength: SchemasV1.CategoryRequest.properties.title.minLength - 1 }),
                 expectedError: `Minimum category length is: ` + SchemasV1.CategoryRequest.properties.title.minLength,
             },
             {
                 title: 'greater than maximum length',
-                data: TestData.getCategory(SchemasV1.CategoryRequest.properties.title.maxLength + 1),
+                data: TestData.getCategory({ titleLength: SchemasV1.CategoryRequest.properties.title.maxLength + 1 }),
                 expectedError: `Maximum category length is: ` + SchemasV1.CategoryRequest.properties.title.maxLength,
             },
         ];
@@ -159,7 +160,86 @@ describe('API: category suite', function () {
     });
 
     describe('PUT, change category', function () {
-        //
+        it('should return valudation error if required parameters is not passed', async () => {
+            const result = await CategoryRoute.putCategory();
+            expect(result.status).toBe(400);
+            const errors = result.body.errors.filter((el: any) => el.msg === 'Please send required fields: id,title');
+            expect(errors.length).toBe(2);
+        });
+
+        it('should return valudation error if id is not a number', async () => {
+            const testData = 'test';
+            const result = await CategoryRoute.putCategory({
+                body: {
+                    id: testData as any,
+                    title: testData,
+                },
+            });
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.value).toBe(testData);
+            expect(error.msg).toBe('Parameter should be numeric');
+            expect(error.param).toBe('id');
+            expect(error.location).toBe('body');
+        });
+
+        it('should return valudation error if title is not a string', async () => {
+            const testData = 123;
+            const result = await CategoryRoute.putCategory({
+                body: {
+                    id: testData,
+                    title: testData as any,
+                },
+            });
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.value).toBe(testData);
+            expect(error.msg).toBe('Parameter should be a string');
+            expect(error.param).toBe('title');
+            expect(error.location).toBe('body');
+        });
+
+        it('should return error if category is not found', async () => {
+            const result = await CategoryRoute.putCategory({
+                body: {
+                    id: -1,
+                    title: 'test'
+                }
+            });
+
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to find category record');
+        });
+
+        it('should be possible to change category', async () => {
+            const category = TestData.getCategory();
+            const createResult = await CategoryRoute.postCategory(category);
+            expect(createResult.status).toBe(200);
+
+            const categoryId = createResult.body.id;
+            createdCategoryIds.push(categoryId);
+
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+                categoryId,
+            });
+            expect(category.body.title).not.toBe(newCategory.body.title);
+
+            const changeResult = await CategoryRoute.putCategory(newCategory);
+            expect(changeResult.status).toBe(200);
+            expect(changeResult.body.id).toBe(newCategory.body.id);
+            expect(changeResult.body.title).toBe(newCategory.body.title);
+
+            const dbRecord: any = await Category.findOne({
+                raw: true,
+                where: {
+                    id: categoryId,
+                },
+            });
+
+            expect(dbRecord.title).toBe(newCategory.body.title);
+        });
     });
 
     describe('DELETE, remove category', function () {
@@ -168,7 +248,7 @@ describe('API: category suite', function () {
 
             expect(result.status).toBe(400);
             const error = result.body.errors[0];
-            expect(error.msg).toBe('ID parameter should be numeric');
+            expect(error.msg).toBe('Parameter should be numeric');
             expect(error.param).toBe('id');
             expect(error.location).toBe('params');
         });

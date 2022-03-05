@@ -5,10 +5,11 @@ export const ApiMessages = {
         unauthorized: 'Unauthorized',
         noSuchRole: 'No such role in the database',
         unableToParseId: 'Unable to parse id, please add id parameter',
-        numericIdParameter: 'ID parameter should be numeric',
+        numericParameter: 'Parameter should be numeric',
         stringParameter: 'Parameter should be a string',
         onlyAlphabetAllowed: 'Only RU/EN alphabet symbols allowed, please change your request',
         removeSuccess: 'Success: record was removed.',
+        requiredFields: (fields: string) => `Please send required fields: ` + fields,
     },
     auth: {
         noAuthNeeded: 'No authentication needed',
@@ -28,9 +29,8 @@ export const ApiMessages = {
     },
     category: {
         noCategory: 'Unable to find category record',
-        requiredFields: `Please send required fields: ` + SchemasV1.CategoryRequest.required.toString(),
-        unableGetCategory: 'Unable to get category',
         unableCreateCategory: 'Unable to create category: ',
+        unableChangeCategory: 'Unable to change category: ',
         unableRemoveCategory: 'Unable to remove category: ',
         wrongMinCategoryLength: 'Minimum category length is: ' + SchemasV1.CategoryRequest.properties.title.minLength,
         wrongMaxCategoryLength: 'Maximum category length is: ' + SchemasV1.CategoryRequest.properties.title.maxLength,

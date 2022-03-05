@@ -1,4 +1,7 @@
 export const v1Methods = {
+    health: {
+        health: 'health'
+    },
     auth: {
         noAuth: 'no-auth',
         apiKey: 'api-key',

@@ -2,7 +2,6 @@ import { faker } from '@faker-js/faker';
 import { sample } from 'lodash';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { UserRoles } from '../../src/api/v1/user/user.interfaces';
-import { ApiCategoryRequest } from '../api/routes/category/category.interfaces';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 
 export class TestData {
@@ -19,16 +18,22 @@ export class TestData {
         };
     }
 
-    static getCategory(length?: number): ApiCategoryRequest {
+    static getCategory(options?: { titleLength?: number; categoryId?: number }): any {
         const randomCount = faker.datatype.number({
             min: SchemasV1.CategoryRequest.properties.title.minLength,
             max: SchemasV1.CategoryRequest.properties.title.maxLength,
         });
-        
+
+        const body: any = {
+            title: faker.random.alpha(options?.titleLength ?? randomCount),
+        };
+
+        if (options?.categoryId) {
+            body.id = options?.categoryId;
+        }
+
         return {
-            body: {
-                title: faker.random.alpha(length ?? randomCount),
-            },
+            body,
         };
     }
 }

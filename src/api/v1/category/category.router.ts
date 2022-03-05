@@ -15,14 +15,17 @@ const categoryRouter = express.Router();
 categoryRouter.get(
     '/' + v1Methods.category.categoryId,
     param('id', ApiMessages.common.unableToParseId).exists(),
-    param('id', ApiMessages.common.numericIdParameter).isNumeric(),
+    param('id', ApiMessages.common.numericParameter).isNumeric(),
     handleGetCategoryById
 );
 categoryRouter.get('/' + v1Methods.category.category, handleGetCategoriesList);
 
 categoryRouter.post(
     '/' + v1Methods.category.category,
-    body(SchemasV1.CategoryRequest.required, ApiMessages.category.requiredFields).exists(),
+    body(
+        SchemasV1.CategoryRequest.required,
+        ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())
+    ).exists(),
     body('title', ApiMessages.common.stringParameter).isString(),
     body('title', ApiMessages.category.wrongMinCategoryLength).isLength({
         min: SchemasV1.CategoryRequest.properties.title.minLength,
@@ -36,12 +39,21 @@ categoryRouter.post(
     handlePostCategory
 );
 
-categoryRouter.put('/' + v1Methods.category.category, handlePutCategory);
+categoryRouter.put(
+    '/' + v1Methods.category.category,
+    body(
+        SchemasV1.ChangeCategoryRequest.required,
+        ApiMessages.common.requiredFields(SchemasV1.ChangeCategoryRequest.required.toString())
+    ).exists(),
+    body('id', ApiMessages.common.numericParameter).isNumeric(),
+    body('title', ApiMessages.common.stringParameter).isString(),
+    handlePutCategory
+);
 
 categoryRouter.delete(
     '/' + v1Methods.category.categoryId,
     param('id', ApiMessages.common.unableToParseId).exists(),
-    param('id', ApiMessages.common.numericIdParameter).isNumeric(),
+    param('id', ApiMessages.common.numericParameter).isNumeric(),
     handleDeleteCategory
 );
 

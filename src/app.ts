@@ -4,6 +4,7 @@ import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
 import basicRouter from './api/v1/auth/basic/basic-auth.router';
 import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
 import categoryRouter from './api/v1/category/category.router';
+import healthRouter from './api/v1/health/health.router';
 import loginRouter from './api/v1/login/login.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
 import { UserRoles } from './api/v1/user/user.interfaces';
@@ -25,6 +26,7 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, apiKeyRouter);
     app.use(versionPrefix, basicRouter);
     // logic
+    app.use(versionPrefix, healthRouter);
     app.use(versionPrefix, loginRouter);
     app.use(versionPrefix, userRouter);
     app.use(versionPrefix, categoryRouter);

@@ -51,7 +51,7 @@ const UserSchemas = {
         required: ['id', 'login', 'email', 'role', 'firstName', 'lastName'],
         type: 'object',
     },
-}
+};
 
 const CategorySchemas = {
     CategoryRequest: {
@@ -60,10 +60,10 @@ const CategorySchemas = {
             title: {
                 type: 'string',
                 minLength: 3,
-                maxLength: 100
-            }
+                maxLength: 100,
+            },
         },
-        required: ['title']
+        required: ['title'],
     },
 
     ChangeCategoryRequest: {
@@ -73,10 +73,10 @@ const CategorySchemas = {
                 type: 'number',
             },
             title: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
-        required: ['id', 'title']
+        required: ['id', 'title'],
     },
 
     CategoryResponse: {
@@ -86,18 +86,35 @@ const CategorySchemas = {
                 type: 'number',
             },
             title: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
-        required: ['id', 'title']
-    }
-}
+        required: ['id', 'title'],
+    },
+};
 
 export const SchemasV1 = {
     DefaultResponse: {
         properties: {
             result: {
                 type: 'string',
+            },
+        },
+        required: ['result'],
+        type: 'object',
+    },
+    HealthResponse: {
+        properties: {
+            result: {
+                type: 'object',
+                properties: {
+                    status: {
+                        type: 'string'
+                    },
+                    currentDate: {
+                        type: 'string'
+                    }
+                },
             },
         },
         required: ['result'],
@@ -111,6 +128,6 @@ export const SchemasV1 = {
     ...CategorySchemas,
     CategoryListResponse: {
         type: 'array',
-        items: CategorySchemas.CategoryResponse
-    }
+        items: CategorySchemas.CategoryResponse,
+    },
 };

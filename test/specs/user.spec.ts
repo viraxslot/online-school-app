@@ -51,7 +51,7 @@ describe('API: user route suite', function () {
             const result = await UserRoute.putTeacher({ body: { id: 'test' } as any });
 
             expect(result.status).toBe(400);
-            const error = result.body.errors.find((el: any) => el.msg === 'ID parameter should be numeric');
+            const error = result.body.errors.find((el: any) => el.msg === 'Parameter should be numeric');
             expect(error).not.toBeNull();
         });
 
