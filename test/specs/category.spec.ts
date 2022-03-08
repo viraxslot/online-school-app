@@ -10,7 +10,8 @@ describe('API: category suite', function () {
     const createdCategoryIds: number[] = [];
 
     describe('GET, category list', function () {
-        it('should return categories list', async () => {
+
+        it.only('should return categories list', async () => {
             const category1: ApiCategoryRequest = TestData.getCategory();
             const category2: ApiCategoryRequest = TestData.getCategory();
 

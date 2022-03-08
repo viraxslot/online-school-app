@@ -137,7 +137,7 @@ export async function handleSignIn(req: SignInRequest, res: SignInResponse) {
 
     let token: string;
     try {
-        token = jwt.sign({ username, role: existentUser.role }, config.jwtSecret, {
+        token = jwt.sign({ username, roleId: existentUser.role }, config.jwtSecret, {
             expiresIn: config.jwtExpiresIn,
         });
 

@@ -1,5 +1,4 @@
-import { UserRoles } from '../../src/api/v1/user/user.interfaces';
-import { User } from '../../src/db/models';
+import { User, UserRoles } from '../../src/db/models';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 import { TestData } from './test-data';
 

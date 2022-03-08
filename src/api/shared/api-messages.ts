@@ -4,6 +4,8 @@ export const ApiMessages = {
     common: {
         unexpectedError: 'Unexpected error',
         unauthorized: 'Unauthorized',
+        tokenIsNotSet: 'JWT is not set',
+        forbiddenForRole: (role: string) => `This action is forbidden for role ${role}`,
         noSuchRole: 'No such role in the database',
         unableToParseId: 'Unable to parse id, please add id parameter',
         numericParameter: 'Parameter should be numeric',
@@ -42,4 +44,7 @@ export const ApiMessages = {
         wrongMaxCategoryLength: 'Maximum category length is: ' + SchemasV1.CategoryRequest.properties.title.maxLength,
         uniqueFields: 'title should be unique',
     },
+    permission: {
+        noPermission: (permission: string) => `Unable to find permission ${permission}`,
+    }
 };

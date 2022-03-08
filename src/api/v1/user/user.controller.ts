@@ -1,12 +1,12 @@
 import { Request } from 'express';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
-import { User } from '../../../db/models';
+import { User, UserRoles } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
-import { ChangeUserRequest, UserListResponse, UserResponse, UserRoles } from './user.interfaces';
+import { ChangeUserRequest, UserListResponse, UserResponse } from './user.interfaces';
 
 /**
  * @swagger

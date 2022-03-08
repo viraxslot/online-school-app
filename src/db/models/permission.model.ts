@@ -2,20 +2,34 @@ import { DataTypes, ModelDefined, Optional } from 'sequelize';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
-interface PermissionAttributes extends DbCommonAttributes {
-    title: string;
+export enum Permissions {
+    // category permissions
+    CreateCategory = 'Create category',
+    GetCategory = 'Get category by id',
+    GetCategoryList = 'Get category list',
+    ChangeCategory = 'Change category',
+    RemoveCategory = 'Remove category',
 }
 
-type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>
+interface PermissionAttributes extends DbCommonAttributes {
+    id: number;
+    permission: string;
+}
 
-export const Permission: ModelDefined<PermissionAttributes, PermissionCreationAttributes> = sequelize.define('permission', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false
+type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>;
+
+export const Permission: ModelDefined<PermissionAttributes, PermissionCreationAttributes> = sequelize.define(
+    'permission',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        permission: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false,
+        },
     }
-});
+);

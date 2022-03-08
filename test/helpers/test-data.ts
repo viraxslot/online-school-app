@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { sample } from 'lodash';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { UserRoles } from '../../src/api/v1/user/user.interfaces';
+import { UserRoles } from '../../src/db/models';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 
 export class TestData {

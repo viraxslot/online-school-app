@@ -12,6 +12,7 @@ export * from './banned-user.model';
 export * from './user.model';
 export * from './permission.model';
 export * from './role.model';
+export * from './role-permissions.model';
 
 export * from './api-key.model';
 export * from './basic-auth.model';

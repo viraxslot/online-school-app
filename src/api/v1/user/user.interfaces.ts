@@ -1,10 +1,5 @@
 import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces';
 
-export enum UserRoles {
-    Student = 'student',
-    Teacher = 'teacher',
-}
-
 export interface UserRequestData {
     login: string;
     email: string;

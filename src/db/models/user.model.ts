@@ -1,11 +1,14 @@
 import * as bcrypt from 'bcryptjs';
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
-import { UserRoles } from '../../api/v1/user/user.interfaces';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 import { BannedUser } from './banned-user.model';
 import { Course, JwtAuth, Like, Role } from './index';
 
+export enum UserRoles {
+    Student = 'student',
+    Teacher = 'teacher',
+}
 export interface UserAttributes extends DbCommonAttributes {
     login: string;
     email: string;

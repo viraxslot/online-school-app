@@ -6,7 +6,7 @@ import { JwtAuth } from '../../db/models';
 import { ApiMessages } from '../shared/api-messages';
 import { DefaultResponse } from '../shared/interfaces';
 
-export async function jwtAuth(req: Request, res: DefaultResponse, next: NextFunction) {
+export async function checkJwtAuth(req: Request, res: DefaultResponse, next: NextFunction) {
     const authHeader = req?.headers?.authorization?.replace('Bearer ', '');
 
     if (isNil(authHeader)) {

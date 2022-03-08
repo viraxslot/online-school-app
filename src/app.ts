@@ -8,11 +8,9 @@ import categoryRouter from './api/v1/category/category.router';
 import healthRouter from './api/v1/health/health.router';
 import loginRouter from './api/v1/login/login.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
-import { UserRoles } from './api/v1/user/user.interfaces';
 import userRouter from './api/v1/user/user.router';
-// without this import sequelize.sync() won't work
-import * as models from './db/models/index';
 import sequelize from './db/sequelize';
+import { InitialDbSeed } from './helpers/initial-db-seed';
 
 const app = express();
 app.use(bodyParser.json());
@@ -40,16 +38,7 @@ const port = process.env.PORT ?? 4000;
     await sequelize
         .sync()
         .then(async () => {
-            for (const role of Object.values(UserRoles)) {
-                await models.Role.findOrCreate({
-                    where: {
-                        role,
-                    },
-                    defaults: {
-                        role,
-                    },
-                });
-            }
+            await InitialDbSeed();
         })
         .then(() => {
             console.log('Database is synchronized');

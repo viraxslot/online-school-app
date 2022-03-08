@@ -1,6 +1,9 @@
 import express from 'express';
 import { body, param } from 'express-validator';
+import { Permissions } from '../../../db/models';
+import { checkPermission } from '../../middleware/check-permission';
 import { checkValidation } from '../../middleware/check-validation';
+import { checkJwtAuth } from '../../middleware/check-jwt-auth';
 import { ApiMessages } from '../../shared/api-messages';
 import { v1Methods } from '../endpoints';
 import { SchemasV1 } from '../schemas';
@@ -18,10 +21,12 @@ categoryRouter.get(
     param('id', ApiMessages.common.unableToParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.GetCategory),
     handleGetCategoryById
 );
 
-categoryRouter.get('/' + v1Methods.category.categories, handleGetCategoriesList);
+categoryRouter.get('/' + v1Methods.category.categories, checkJwtAuth, handleGetCategoriesList);
 
 categoryRouter.post(
     '/' + v1Methods.category.category,
@@ -52,6 +57,7 @@ categoryRouter.put(
     body('id', ApiMessages.common.numericParameter).isNumeric(),
     body('title', ApiMessages.common.stringParameter).isString(),
     checkValidation,
+    checkJwtAuth,
     handlePutCategory
 );
 
@@ -60,6 +66,7 @@ categoryRouter.delete(
     param('id', ApiMessages.common.unableToParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
+    checkJwtAuth,
     handleDeleteCategory
 );
 

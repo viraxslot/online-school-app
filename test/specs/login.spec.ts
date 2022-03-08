@@ -1,6 +1,5 @@
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { UserRoles } from '../../src/api/v1/user/user.interfaces';
-import { User } from '../../src/db/models';
+import { User, UserRoles } from '../../src/db/models';
 import { LoginRoute } from '../api/routes/login/login.route';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
