@@ -1,13 +1,12 @@
-import { validationResult } from 'express-validator';
+import * as bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
+import config from '../../../../config/config';
 import { JwtAuth, User } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { UserRequest, UserResponse } from '../user/user.interfaces';
 import { SignInRequest, SignInResponse } from './login.interfaces';
-import * as bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import config from '../../../../config/config';
 
 /**
  * @swagger
@@ -30,11 +29,6 @@ import config from '../../../../config/config';
  *               $ref: '#/components/schemas/UserResponse'
  */
 export async function handleSignUp(req: UserRequest, res: UserResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const body = req.body;
 
     const oldUser = await User.findOne({

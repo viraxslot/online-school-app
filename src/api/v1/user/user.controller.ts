@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { validationResult } from 'express-validator';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
 import { User } from '../../../db/models';
@@ -69,11 +68,6 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
  *         description: Return changed information about the teacher
  */
 export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const body = req.body;
     const teacherId = body.id;
 
@@ -119,11 +113,6 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
  *         description: Return removing result or an error
  */
 export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
         const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
         if (isNil(teacherRoleId)) {

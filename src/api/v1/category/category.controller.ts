@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { validationResult } from 'express-validator';
 import { isNil, omit } from 'lodash';
 import { Category } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
@@ -55,11 +54,6 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
  *         description: Return requested category information
  */
 export async function handleGetCategoryById(req: Request, res: CategoryResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const categoryId = req.params.id;
 
     try {
@@ -102,11 +96,6 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
  *         description: Return created category information
  */
 export async function handlePostCategory(req: CategoryRequest, res: CategoryResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
         const createdCategory: any = await Category.create({
             title: req.body.title,
@@ -146,11 +135,6 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
  *         description: Return changed category information
  */
 export async function handlePutCategory(req: ChangeCategoryRequest, res: CategoryResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const categoryId = req.body.id;
     try {
         const foundCategory = await Category.findByPk(categoryId);
@@ -185,11 +169,6 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
  *         description: Return operation result or an error
  */
 export async function handleDeleteCategory(req: Request, res: DefaultResponse) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const categoryId = req.params.id;
 
     try {

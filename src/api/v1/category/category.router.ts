@@ -1,5 +1,6 @@
 import express from 'express';
 import { body, param } from 'express-validator';
+import { checkValidation } from '../../middleware/check-validation';
 import { ApiMessages } from '../../shared/api-messages';
 import { v1Methods } from '../endpoints';
 import { SchemasV1 } from '../schemas';
@@ -8,7 +9,7 @@ import {
     handleGetCategoriesList,
     handleGetCategoryById,
     handlePostCategory,
-    handlePutCategory,
+    handlePutCategory
 } from './category.controller';
 const categoryRouter = express.Router();
 
@@ -16,6 +17,7 @@ categoryRouter.get(
     '/' + v1Methods.category.categoryId,
     param('id', ApiMessages.common.unableToParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
+    checkValidation,
     handleGetCategoryById
 );
 
@@ -37,6 +39,7 @@ categoryRouter.post(
     body('title', ApiMessages.common.onlyAlphabetAllowed).custom((value) => {
         return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
     }),
+    checkValidation,
     handlePostCategory
 );
 
@@ -48,6 +51,7 @@ categoryRouter.put(
     ).exists(),
     body('id', ApiMessages.common.numericParameter).isNumeric(),
     body('title', ApiMessages.common.stringParameter).isString(),
+    checkValidation,
     handlePutCategory
 );
 
@@ -55,6 +59,7 @@ categoryRouter.delete(
     '/' + v1Methods.category.categoryId,
     param('id', ApiMessages.common.unableToParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
+    checkValidation,
     handleDeleteCategory
 );
 
