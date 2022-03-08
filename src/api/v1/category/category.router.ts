@@ -12,7 +12,7 @@ import {
     handleGetCategoriesList,
     handleGetCategoryById,
     handlePostCategory,
-    handlePutCategory
+    handlePutCategory,
 } from './category.controller';
 const categoryRouter = express.Router();
 
@@ -26,7 +26,12 @@ categoryRouter.get(
     handleGetCategoryById
 );
 
-categoryRouter.get('/' + v1Methods.category.categories, checkJwtAuth, handleGetCategoriesList);
+categoryRouter.get(
+    '/' + v1Methods.category.categories,
+    checkJwtAuth,
+    checkPermission(Permissions.GetCategoryList),
+    handleGetCategoriesList
+);
 
 categoryRouter.post(
     '/' + v1Methods.category.category,
@@ -46,6 +51,7 @@ categoryRouter.post(
     }),
     checkValidation,
     checkJwtAuth,
+    checkPermission(Permissions.CreateCategory),
     handlePostCategory
 );
 
@@ -59,6 +65,7 @@ categoryRouter.put(
     body('title', ApiMessages.common.stringParameter).isString(),
     checkValidation,
     checkJwtAuth,
+    checkPermission(Permissions.ChangeCategory),
     handlePutCategory
 );
 
@@ -68,6 +75,7 @@ categoryRouter.delete(
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,
+    checkPermission(Permissions.RemoveCategory),
     handleDeleteCategory
 );
 
