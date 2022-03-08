@@ -15,6 +15,7 @@ export const ApiMessages = {
     auth: {
         noAuthNeeded: 'No authentication needed',
         authPassed: 'Authentication passed!',
+        expiredToken: 'Token is expired'
     },
     login: {
         wrongRole: (roles: any) => `Wrong role, please send the right role: ${roles}`,

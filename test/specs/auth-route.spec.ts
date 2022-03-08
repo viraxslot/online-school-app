@@ -45,4 +45,11 @@ describe('API: auth route suite', function () {
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
         });
     });
+
+    describe('jwt:', function() {
+        it.todo('should return 401 error if no jwt passed');
+        it.todo('should return 401 error if jwt is not found');
+        it.todo('should return 401 error if jwt is expired');
+        it.todo('should be possible to authenticate with a valid jwt');
+    })
 });

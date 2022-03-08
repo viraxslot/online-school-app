@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
 import basicRouter from './api/v1/auth/basic/basic-auth.router';
+import jwtRouter from './api/v1/auth/jwt/jwt.router';
 import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
 import categoryRouter from './api/v1/category/category.router';
 import healthRouter from './api/v1/health/health.router';
@@ -25,6 +26,7 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, noAuthRouter);
     app.use(versionPrefix, apiKeyRouter);
     app.use(versionPrefix, basicRouter);
+    app.use(versionPrefix, jwtRouter);
     // logic
     app.use(versionPrefix, healthRouter);
     app.use(versionPrefix, loginRouter);
