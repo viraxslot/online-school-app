@@ -78,6 +78,38 @@ describe('API: login route suite', function () {
     });
 
     describe('POST, signin', function () {
+        it('should return validation error if no username passed', async () => {
+            const signInResponse = await LoginRoute.postSignIn({
+                body: {
+                    password: 'test',
+                } as any,
+            });
+
+            expect(signInResponse.status).toBe(400);
+            expect(signInResponse.body.errors.length).toBe(1);
+            const error = signInResponse.body.errors[0];
+
+            expect(error.location).toBe('body');
+            expect(error.param).toBe('username');
+            expect(error.msg).toBe('Invalid value');
+        });
+
+        it('should return validation error if no password passed', async () => {
+            const signInResponse = await LoginRoute.postSignIn({
+                body: {
+                    username: 'test',
+                } as any,
+            });
+
+            expect(signInResponse.status).toBe(400);
+            expect(signInResponse.body.errors.length).toBe(1);
+            const error = signInResponse.body.errors[0];
+
+            expect(error.location).toBe('body');
+            expect(error.param).toBe('password');
+            expect(error.msg).toBe('Invalid value');
+        });
+
         it('should return validation error if user not found', async () => {
             const user = TestData.getUserData();
             const signInResponse = await LoginRoute.postSignIn({

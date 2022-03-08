@@ -12,12 +12,12 @@ loginRouter.post(
     body(SchemasV1.UserRequest.required).exists(),
     body('email').isEmail(),
     body('role', ApiMessages.login.wrongRole(Object.values(UserRoles))).custom((value) => {
-        return Object.values(UserRoles).includes(value)
+        return Object.values(UserRoles).includes(value);
     }),
     checkValidation,
     handleSignUp
 );
 
-loginRouter.post('/signin', handleSignIn);
+loginRouter.post('/signin', body(SchemasV1.SignInRequest.required).exists(), checkValidation, handleSignIn);
 
 export default loginRouter;
