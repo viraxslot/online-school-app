@@ -24,6 +24,8 @@ const UserSchemas = {
             ...SharedFields.User,
             password: {
                 type: 'string',
+                minLength: 8,
+                maxLength: 20
             },
         },
         required: ['login', 'email', 'password', 'role'],

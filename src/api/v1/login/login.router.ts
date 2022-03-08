@@ -11,6 +11,12 @@ loginRouter.post(
     '/signup',
     body(SchemasV1.UserRequest.required).exists(),
     body('email').isEmail(),
+    body('password', ApiMessages.login.wrongMinPasswordLength).isLength({
+        min: SchemasV1.UserRequest.properties.password.minLength
+    }),
+    body('password', ApiMessages.login.wrongMaxPasswordLength).isLength({
+        max: SchemasV1.UserRequest.properties.password.maxLength
+    }),
     body('role', ApiMessages.login.wrongRole(Object.values(UserRoles))).custom((value) => {
         return Object.values(UserRoles).includes(value);
     }),

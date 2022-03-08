@@ -18,6 +18,8 @@ export const ApiMessages = {
         expiredToken: 'Token is expired'
     },
     login: {
+        wrongMinPasswordLength: 'Minimum password length is: ' + SchemasV1.UserRequest.properties.password.minLength,
+        wrongMaxPasswordLength: 'Maximum password length is: ' + SchemasV1.UserRequest.properties.password.maxLength,
         wrongRole: (roles: any) => `Wrong role, please send the right role: ${roles}`,
         userExist: 'User with such credentials already exist',
         unableToCreateUser: 'Unable to create user: ',

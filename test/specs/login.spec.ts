@@ -9,6 +9,35 @@ describe('API: login route suite', function () {
     const createdUsers: number[] = [];
 
     describe('POST, signup', function () {
+        const passwordValidationTestCases = [
+            {
+                title: 'less than minimum length',
+                password: '1'.repeat(SchemasV1.UserRequest.properties.password.minLength - 1),
+                expectedError: 'Minimum password length is: 8',
+            },
+            {
+                title: 'greater than maximum length',
+                password: '1'.repeat(SchemasV1.UserRequest.properties.password.maxLength + 1),
+                expectedError: 'Maximum password length is: 20',
+            },
+        ];
+
+        passwordValidationTestCases.forEach((test) => {
+            it(`should return error if password ${test.title}`, async () => {
+                const user = TestData.getUserData();
+                user.body.password = test.password
+
+                const result = await LoginRoute.postSignUp(user);
+                expect(result.status).toBe(400);
+                expect(result.body.errors.length).toBe(1);
+
+                const error = result.body.errors[0];
+                expect(error.location).toBe('body');
+                expect(error.param).toBe('password');
+                expect(error.msg).toBe(test.expectedError);
+            });
+        });
+
         it('should return validation error if role has wrong value', async () => {
             const user = TestData.getUserData();
             user.body.role = 'test' as any;
