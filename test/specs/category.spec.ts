@@ -1,27 +1,40 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category } from '../../src/db/models';
+import { Category, User } from '../../src/db/models';
 import { ApiCategoryRequest, ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
 import { CategoryRoute } from '../api/routes/category/category.route';
+import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 
 describe('API: category suite', function () {
+    const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
-    describe('GET, category list', function () {
+    let authToken: string;
+    beforeAll(async () => {
+        const { userId, token } = await ApiHelper.getStudentToken();
+        authToken = token;
+        createdUserIds.push(userId);
+    });
 
-        it.only('should return categories list', async () => {
+    describe('GET, category list', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CategoryRoute.getCategoriesList();
+            expect(result.status).toBe(401);
+        });
+
+        it('should return categories list', async () => {
             const category1: ApiCategoryRequest = TestData.getCategory();
             const category2: ApiCategoryRequest = TestData.getCategory();
 
-            const result1 = await CategoryRoute.postCategory(category1);
-            const result2 = await CategoryRoute.postCategory(category2);
+            const result1 = await CategoryRoute.postCategory(category1, authToken);
+            const result2 = await CategoryRoute.postCategory(category2, authToken);
             expect(result1.status).toBe(200);
             expect(result2.status).toBe(200);
             createdCategoryIds.push(result1.body.id, result2.body.id);
 
-            const categories = await CategoryRoute.getCategoriesList();
+            const categories = await CategoryRoute.getCategoriesList(authToken);
             expect(categories.status).toBe(200);
             expect(categories.body.length).toBeGreaterThanOrEqual(2);
 
@@ -31,6 +44,11 @@ describe('API: category suite', function () {
     });
 
     describe('GET, category', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CategoryRoute.getCategory(1);
+            expect(result.status).toBe(401);
+        });
+
         it('should return valudation error if id is not number', async () => {
             const result = await CategoryRoute.getCategory('test' as any);
 
@@ -42,7 +60,7 @@ describe('API: category suite', function () {
         });
 
         it('should return error if category is not found', async () => {
-            const result = await CategoryRoute.getCategory(-1);
+            const result = await CategoryRoute.getCategory(-1, authToken);
 
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find category record(s)');
@@ -51,12 +69,13 @@ describe('API: category suite', function () {
         it('should be possible to get category', async () => {
             const category = TestData.getCategory();
 
-            const result = await CategoryRoute.postCategory(category);
+            const result = await CategoryRoute.postCategory(category, authToken);
             expect(result.status).toBe(200);
             const categoryId = result.body.id;
             createdCategoryIds.push(categoryId);
 
-            const createdCategory = await CategoryRoute.getCategory(categoryId);
+            const createdCategory = await CategoryRoute.getCategory(categoryId, authToken);
+            expect(createdCategory.status).toBe(200);
             SchemaValidator.check(createdCategory.body, SchemasV1.CategoryResponse);
 
             expect(createdCategory.body.id).toBe(categoryId);
@@ -65,9 +84,13 @@ describe('API: category suite', function () {
     });
 
     describe('POST, add category', function () {
+        it('should return 401 error if no token passed', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category);
+            expect(result.status).toBe(401);
+        });
         it('should return validation error if there is no title passed', async () => {
             const result = await CategoryRoute.postCategory({} as any);
-
             expect(result.status).toBe(400);
 
             const error = result.body.errors[0];
@@ -130,11 +153,11 @@ describe('API: category suite', function () {
         it('should not be possible to create category with the same title', async () => {
             const category = TestData.getCategory();
 
-            const result1 = await CategoryRoute.postCategory(category);
+            const result1 = await CategoryRoute.postCategory(category, authToken);
             const categoryId1 = result1.body.id;
             createdCategoryIds.push(categoryId1);
 
-            const result2 = await CategoryRoute.postCategory(category);
+            const result2 = await CategoryRoute.postCategory(category, authToken);
             expect(result2.status).toBe(400);
             expect(result2.body.errors).toBe('title should be unique');
         });
@@ -153,8 +176,7 @@ describe('API: category suite', function () {
                         title: test.data,
                     },
                 };
-                const result = await CategoryRoute.postCategory(category);
-
+                const result = await CategoryRoute.postCategory(category, authToken);
                 expect(result.status).toBe(200);
 
                 const categoryId = result.body.id;
@@ -177,6 +199,15 @@ describe('API: category suite', function () {
     });
 
     describe('PUT, change category', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CategoryRoute.putCategory({
+                body: {
+                    id: 1,
+                    title: 'test',
+                },
+            });
+            expect(result.status).toBe(401);
+        });
         it('should return valudation error if required parameters is not passed', async () => {
             const result = await CategoryRoute.putCategory();
             expect(result.status).toBe(400);
@@ -219,12 +250,15 @@ describe('API: category suite', function () {
         });
 
         it('should return error if category is not found', async () => {
-            const result = await CategoryRoute.putCategory({
-                body: {
-                    id: -1,
-                    title: 'test',
+            const result = await CategoryRoute.putCategory(
+                {
+                    body: {
+                        id: -1,
+                        title: 'test',
+                    },
                 },
-            });
+                authToken
+            );
 
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find category record(s)');
@@ -232,7 +266,7 @@ describe('API: category suite', function () {
 
         it('should be possible to change category', async () => {
             const category = TestData.getCategory();
-            const createResult = await CategoryRoute.postCategory(category);
+            const createResult = await CategoryRoute.postCategory(category, authToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
@@ -243,7 +277,7 @@ describe('API: category suite', function () {
             });
             expect(category.body.title).not.toBe(newCategory.body.title);
 
-            const changeResult = await CategoryRoute.putCategory(newCategory);
+            const changeResult = await CategoryRoute.putCategory(newCategory, authToken);
             expect(changeResult.status).toBe(200);
             expect(changeResult.body.id).toBe(newCategory.body.id);
             expect(changeResult.body.title).toBe(newCategory.body.title);
@@ -260,6 +294,11 @@ describe('API: category suite', function () {
     });
 
     describe('DELETE, remove category', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CategoryRoute.deleteCategory(1);
+            expect(result.status).toBe(401);
+        });
+
         it('should return valudation error if id is not number', async () => {
             const result = await CategoryRoute.deleteCategory('test' as any);
 
@@ -272,16 +311,16 @@ describe('API: category suite', function () {
 
         it('should be possible to remove category', async () => {
             const category = TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category);
+            const result = await CategoryRoute.postCategory(category, authToken);
             expect(result.status).toBe(200);
 
             const categoryId = result.body.id;
-            let getResult = await CategoryRoute.getCategory(categoryId);
+            let getResult = await CategoryRoute.getCategory(categoryId, authToken);
             expect(getResult.status).toBe(200);
 
-            const removeResult = await CategoryRoute.deleteCategory(categoryId);
+            const removeResult = await CategoryRoute.deleteCategory(categoryId, authToken);
             expect(removeResult.status).toBe(200);
-            getResult = await CategoryRoute.getCategory(categoryId);
+            getResult = await CategoryRoute.getCategory(categoryId, authToken);
             expect(getResult.status).toBe(404);
 
             const dbRecord = await Category.findOne({
@@ -303,6 +342,18 @@ describe('API: category suite', function () {
                 });
             } catch (err) {
                 console.log(ApiMessages.category.unableRemoveCategory + err);
+            }
+        }
+
+        for (const id of createdUserIds) {
+            try {
+                await User.destroy({
+                    where: {
+                        id,
+                    },
+                });
+            } catch (err) {
+                console.log(ApiMessages.user.unableToRemove + err);
             }
         }
     });

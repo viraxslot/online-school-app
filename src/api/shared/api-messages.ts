@@ -33,7 +33,7 @@ export const ApiMessages = {
         noTeacherRole: 'Unable to find teacher role',
         unableToUpdate: 'Unable to update user: ',
         uniqueFields: 'login and email fields should be unique',
-        unableToRemove: 'Unable to remove teacher record: ',
+        unableToRemove: 'Unable to remove user record: ',
     },
     category: {
         noCategory: 'Unable to find category record(s)',

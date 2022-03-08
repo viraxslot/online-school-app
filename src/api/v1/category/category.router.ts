@@ -45,6 +45,7 @@ categoryRouter.post(
         return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
     }),
     checkValidation,
+    checkJwtAuth,
     handlePostCategory
 );
 
