@@ -11,8 +11,8 @@ module.exports = {
         }
 
         const data = credentials.map((el) => {
-            const salt = await bcrypt.genSalt(10);
-            const passwordHash = await bcrypt.hash(el.password, salt);
+            const salt = bcrypt.genSaltSync(10);
+            const passwordHash = bcrypt.hashSync(el.password, salt);
 
             return {
                 username: el.username,
