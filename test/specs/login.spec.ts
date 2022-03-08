@@ -78,13 +78,83 @@ describe('API: login route suite', function () {
     });
 
     describe('POST, signin', function () {
-        it.todo('should return validation error if user not found');
-        it.todo('should return validation error if wrong credentials passed');
-        it.todo('should return created earlier token if it exists');
-        it.todo('should remove expired token and return a new one');
+        it('should return validation error if user not found', async () => {
+            const user = TestData.getUserData();
+            const signInResponse = await LoginRoute.postSignIn({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password,
+                },
+            });
 
-        it.todo('should return jwt token if credentials are correct (login)');
-        it.todo('should return jwt token if credentials are correct (email)');
+            expect(signInResponse.status).toBe(404);
+            expect(signInResponse.body.errors).toBe('Unable to find user record');
+        });
+
+        it('should return validation error if wrong credentials passed', async () => {
+            const user = TestData.getUserData();
+            const signUpResponse = await LoginRoute.postSignUp(user);
+            expect(signUpResponse.status).toBe(200);
+            createdUsers.push(signUpResponse.body.id);
+
+            const signInResponse = await LoginRoute.postSignIn({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password + '1',
+                },
+            });
+            expect(signInResponse.status).toBe(400);
+            expect(signInResponse.body.errors).toBe('Unable to authenticate user, wrong credentials');
+        });
+
+        it('should return created earlier token if it exists', async () => {
+            const user = TestData.getUserData();
+            const signUpResponse = await LoginRoute.postSignUp(user);
+            expect(signUpResponse.status).toBe(200);
+            createdUsers.push(signUpResponse.body.id);
+
+            const signInResponse1 = await LoginRoute.postSignIn({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password,
+                },
+            });
+            expect(signInResponse1.status).toBe(200);
+            const token1 = signInResponse1.body.accessToken;
+
+            const signInResponse2 = await LoginRoute.postSignIn({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password,
+                },
+            });
+            expect(signInResponse2.status).toBe(200);
+            const token2 = signInResponse2.body.accessToken;
+
+            expect(token1).toBe(token2);
+        });
+
+        const positiveTestCases = [{ title: 'login' }, { title: 'email' }];
+        positiveTestCases.forEach((test) => {
+            it(`should return jwt token if credentials are correct (${test.title})`, async () => {
+                const user = TestData.getUserData();
+                const signUpResponse = await LoginRoute.postSignUp(user);
+                expect(signUpResponse.status).toBe(200);
+                createdUsers.push(signUpResponse.body.id);
+
+                const signInResponse = await LoginRoute.postSignIn({
+                    body: {
+                        username: (user.body as any)[test.title],
+                        password: user.body.password,
+                    },
+                });
+                expect(signInResponse.status).toBe(200);
+                expect(typeof signInResponse.body.accessToken).toBe('string');
+                SchemaValidator.check(signInResponse.body, SchemasV1.SignInResponse);
+            });
+        });
+
+        it.todo('should remove expired token and return a new one');
     });
 
     afterAll(async () => {
