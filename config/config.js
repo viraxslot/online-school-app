@@ -30,4 +30,6 @@ module.exports = {
     apiKeys: process.env.API_KEYS ?? [],
     apiKey: process.env.API_KEY ?? '',
     basicAuth: process.env.BASIC_AUTH ?? [],
+    jwtSecret: process.env.JWT_SECRET ?? '',
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '2h',
 };

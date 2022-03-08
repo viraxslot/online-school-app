@@ -93,6 +93,30 @@ const CategorySchemas = {
     },
 };
 
+const LoginSchemas = {
+    SignInRequest: {
+        type: 'object',
+        properties: {
+            username: {
+                type: 'string'
+            },
+            password: {
+                type: 'string'
+            }
+        },
+        required: ['username', 'password']
+    },
+    SignInResponse: {
+        type: 'object',
+        properties: {
+            accessToken: {
+                type: 'string'
+            }
+        },
+        required: ['accessToken']
+    },
+}
+
 export const SchemasV1 = {
     DefaultResponse: {
         properties: {
@@ -120,6 +144,7 @@ export const SchemasV1 = {
         required: ['result'],
         type: 'object',
     },
+    ...LoginSchemas,
     ...UserSchemas,
     UserListResponse: {
         type: 'array',

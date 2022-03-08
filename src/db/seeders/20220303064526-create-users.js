@@ -7,8 +7,8 @@ module.exports = {
         const users = [];
         for (let i = 0; i < 10; i++) {
             const password = faker.internet.password();
-            const salt = bcrypt.genSaltSync(10);
-            const passwordHash = bcrypt.hashSync(password, salt);
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(password, salt);
 
             const role = i % 2 === 0 ? 1 : 2;
             users.push({

@@ -8,6 +8,8 @@ const config: {
     apiKeys: string;
     apiKey: string;
     basicAuth: string;
+    jwtSecret: string;
+    jwtExpiresIn: string;
 };
 
 export default config;

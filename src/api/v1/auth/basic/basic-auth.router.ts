@@ -18,7 +18,7 @@ passport.use(
 
         let verified = false;
         if (foundUser) {
-            verified = bcrypt.compareSync(password, (foundUser as any).password);
+            verified = await bcrypt.compare(password, (foundUser as any).password);
         }
 
         if (!verified) {

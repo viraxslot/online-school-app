@@ -4,7 +4,7 @@ import sequelize from '../sequelize';
 
 interface JwtAttributes extends DbCommonAttributes {
     jwt: string;
-    ttlSeconds: number;
+    userId: number;
 }
 
 type JwtAttributesCreationAttributes = Optional<JwtAttributes, 'id'>
@@ -20,11 +20,7 @@ export const JwtAuth: ModelDefined<JwtAttributes, JwtAttributesCreationAttribute
         jwt: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        ttlSeconds: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
+        }
     },
     {
         freezeTableName: true,

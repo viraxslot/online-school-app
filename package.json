@@ -32,7 +32,11 @@
             "pre-commit": "lint-staged"
         }
     },
-    "keywords": ["api", "express", "rest api"],
+    "keywords": [
+        "api",
+        "express",
+        "rest api"
+    ],
     "author": "",
     "license": "ISC",
     "devDependencies": {
@@ -43,6 +47,7 @@
         "@types/express-validator": "3.0.0",
         "@types/faker": "6.6.9",
         "@types/jest": "27.4.1",
+        "@types/jsonwebtoken": "8.5.8",
         "@types/lodash": "4.14.178",
         "@types/passport": "1.0.7",
         "@types/passport-http": "0.3.9",
@@ -69,6 +74,7 @@
         "dotenv": "14.3.2",
         "express": "4.17.2",
         "express-validator": "6.14.0",
+        "jsonwebtoken": "8.5.1",
         "lodash": "4.17.21",
         "passport": "0.5.2",
         "passport-headerapikey": "1.2.2",

@@ -2,6 +2,7 @@ import { SchemasV1 } from '../v1/schemas';
 
 export const ApiMessages = {
     common: {
+        unexpectedError: 'Unexpected error',
         unauthorized: 'Unauthorized',
         noSuchRole: 'No such role in the database',
         unableToParseId: 'Unable to parse id, please add id parameter',
@@ -19,8 +20,10 @@ export const ApiMessages = {
         wrongRole: (roles: any) => `Wrong role, please send the right role: ${roles}`,
         userExist: 'User with such credentials already exist',
         unableToCreateUser: 'Unable to create user: ',
+        wrongCredentials: 'Unable to authenticate user, wrong credentials',
     },
     user: {
+        noUser: 'Unable to find user record',
         noTeacher: 'Unable to find teacher record',
         noTeacherRole: 'Unable to find teacher role',
         unableToUpdate: 'Unable to update user: ',
