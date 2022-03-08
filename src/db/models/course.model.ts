@@ -6,6 +6,7 @@ import { Material } from './material.model';
 
 interface CourseAttributes extends DbCommonAttributes {
     title: string;
+    description: string;
     visible: boolean;
 }
 
@@ -20,6 +21,10 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     title: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
     visible: {
         type: DataTypes.BOOLEAN,
