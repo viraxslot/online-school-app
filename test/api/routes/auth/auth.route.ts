@@ -31,4 +31,15 @@ export class AuthRoute extends ApiRoute {
             },
         });
     }
+
+    static async getJwtAuth(jwtToken?: string): Promise<ApiDefaultResponse> {
+        return this.getMethod({
+            path: v1Methods.auth.jwt,
+            options: {
+                headers: {
+                    Authorization: jwtToken ? `Bearer ` + jwtToken : ''
+                },
+            },
+        });
+    }
 }

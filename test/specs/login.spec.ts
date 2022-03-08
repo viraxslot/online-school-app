@@ -82,7 +82,9 @@ describe('API: login route suite', function () {
         it.todo('should return validation error if wrong credentials passed');
         it.todo('should return created earlier token if it exists');
         it.todo('should remove expired token and return a new one');
-        it.todo('should return jwt token if credentials are correct');
+
+        it.todo('should return jwt token if credentials are correct (login)');
+        it.todo('should return jwt token if credentials are correct (email)');
     });
 
     afterAll(async () => {

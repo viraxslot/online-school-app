@@ -1,8 +1,11 @@
+import config from '../../config/config';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
+import { User } from '../../src/db/models';
 import { AuthRoute } from '../api/routes/auth/auth.route';
+import { LoginRoute } from '../api/routes/login/login.route';
 import { SchemaValidator } from '../helpers/schema-validator';
-import config from '../../config/config';
+import { TestData } from '../helpers/test-data';
 
 describe('API: auth route suite', function () {
     describe('no-auth:', function () {
@@ -46,10 +49,49 @@ describe('API: auth route suite', function () {
         });
     });
 
-    describe('jwt:', function() {
-        it.todo('should return 401 error if no jwt passed');
-        it.todo('should return 401 error if jwt is not found');
-        it.todo('should return 401 error if jwt is expired');
-        it.todo('should be possible to authenticate with a valid jwt');
-    })
+    describe('jwt:', function () {
+        const createdUserIds: number[] = [];
+        it('should return 401 error if no jwt passed', async () => {
+            const result = await AuthRoute.getJwtAuth();
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBe('Unauthorized');
+        });
+
+        it('should return 401 error if jwt is not found', async () => {
+            const result = await AuthRoute.getJwtAuth('test');
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBe('Unauthorized');
+        });
+
+        it('should be possible to authenticate with a valid jwt', async () => {
+            const user = TestData.getUserData();
+            const signUpResponse = await LoginRoute.postSignUp(user);
+            expect(signUpResponse.status).toBe(200);
+            createdUserIds.push(signUpResponse.body.id);
+
+            const signInResponse = await LoginRoute.postSignIn({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password,
+                },
+            });
+            expect(signInResponse.status).toBe(200);
+
+            const token = signInResponse.body.accessToken;
+            const jwtResponse = await AuthRoute.getJwtAuth(token);
+            expect(jwtResponse.status).toBe(200);
+            expect(jwtResponse.body.result).toBe('Authentication passed!');
+        });
+
+        afterAll(async () => {
+            for (const userId of createdUserIds) {
+                console.log('Removing', userId);
+                await User.destroy({
+                    where: {
+                        id: userId,
+                    },
+                });
+            }
+        });
+    });
 });
