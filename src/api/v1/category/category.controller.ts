@@ -12,7 +12,7 @@ import { CategoryListResponse, CategoryRequest, CategoryResponse, ChangeCategory
  *     tags:
  *       - Category
  *     summary: Allow to get list of categories
- *     description: Allow to get list of categories
+ *     description: "Allow to get list of categories. Available for roles: ALL"
  *     responses:
  *       200:
  *         content:
@@ -44,7 +44,7 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
  *     tags:
  *       - Category
  *     summary: Allow to get category by id
- *     description: Allow to get category by id
+ *     description: "Allow to get category by id. Available for roles: ALL"
  *     responses:
  *       200:
  *         content:
@@ -81,7 +81,7 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
  *     tags:
  *       - Category
  *     summary: Allow to add category
- *     description: Allow to add category
+ *     description: "Allow to add category. Available for roles: admin"
  *     requestBody:
  *       content:
  *         json:
@@ -120,7 +120,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
  *     tags:
  *       - Category
  *     summary: Allow to change category
- *     description: Allow to change category
+ *     description: "Allow to change category. Available for roles: admin"
  *     requestBody:
  *       content:
  *         json:
@@ -159,7 +159,7 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
  *     tags:
  *       - Category
  *     summary: Allow to remove category by id
- *     description: Allow to remove category by id
+ *     description: "Allow to remove category by id. Available for roles: admin"
  *     responses:
  *       200:
  *         content:
