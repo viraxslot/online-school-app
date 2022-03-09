@@ -1,3 +1,4 @@
+import { DbHelper } from '../../src/api/v1/db-helper';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { User, UserRoles } from '../../src/db/models';
 import { LoginRoute } from '../api/routes/login/login.route';
@@ -45,7 +46,7 @@ describe('API: login route suite', function () {
             expect(result.status).toBe(400);
             const error = (result.body as any).errors[0];
             expect(error.param).toBe('role');
-            expect(error.msg).toBe('Wrong role, please send the right role: student,teacher');
+            expect(error.msg).toBe('Wrong role, please send the right role: student,teacher,admin');
         });
 
         it('should return validation error if email has wrong format', async () => {
@@ -78,8 +79,9 @@ describe('API: login route suite', function () {
         });
 
         const createTestCases = [
-            { title: 'with student role', role: UserRoles.Student, expectedRoleId: 1 },
-            { title: 'with teacher role', role: UserRoles.Teacher, expectedRoleId: 2 },
+            { title: 'with student role', role: UserRoles.Student },
+            { title: 'with teacher role', role: UserRoles.Teacher },
+            { title: 'with admin role', role: UserRoles.Admin },
         ];
 
         createTestCases.forEach((test) => {
@@ -100,7 +102,9 @@ describe('API: login route suite', function () {
                 expect(result.body.password).not.toBe(user.body.password);
                 expect(result.body.firstName).toBe(user.body.firstName);
                 expect(result.body.lastName).toBe(user.body.lastName);
-                expect(result.body.role).toBe(test.expectedRoleId);
+
+                const roleId = await DbHelper.getRoleId(test.role);
+                expect(result.body.role).toBe(roleId);
             });
         });
     });

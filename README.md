@@ -40,3 +40,8 @@ It'll create all data needed for tests.
 
 Dev mode: `npm test`
 CI mode: `npm run test:nowatch`
+
+### How to add new role
+1. Update `UserRoles` enum in [user model](src/db/models/user.model.ts)
+2. Add permissions to user in [this file](src/db/data/permissions-by-role.ts)
+3. Permissions for roles will be updated with `InitialDbSeed` function on app start

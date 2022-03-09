@@ -8,6 +8,7 @@ import { Course, JwtAuth, Like, Role } from './index';
 export enum UserRoles {
     Student = 'student',
     Teacher = 'teacher',
+    Admin = 'admin'
 }
 export interface UserAttributes extends DbCommonAttributes {
     login: string;

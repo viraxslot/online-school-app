@@ -7,6 +7,7 @@ import { RolePermission } from '../db/models/role-permissions.model';
 export async function InitialDbSeed() {
     await createRoles();
     await createPermissions();
+    await removeOldPermissionsForRoles();
     await createPermissionsForRoles();
 }
 
@@ -34,6 +35,13 @@ async function createPermissions() {
             },
         });
     }
+}
+
+async function removeOldPermissionsForRoles() {
+    await RolePermission.destroy({
+        where: {},
+        truncate: true
+    })
 }
 
 async function createPermissionsForRoles() {

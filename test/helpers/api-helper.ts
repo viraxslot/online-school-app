@@ -16,6 +16,10 @@ export class ApiHelper {
         return this.getToken(UserRoles.Teacher);
     }
 
+    static async getAdminToken(): Promise<UserIdAndToken> {
+        return this.getToken(UserRoles.Admin);
+    }
+
     private static async getToken(role: UserRoles): Promise<UserIdAndToken> {
         const user = TestData.getUserData({
             role,

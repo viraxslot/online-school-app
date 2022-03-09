@@ -11,38 +11,64 @@ describe('API: category suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
-    let teacherToken: string;
     let studentToken: string;
+    let teacherToken: string;
+    let adminToken: string;
+
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
         const teacher = await ApiHelper.getTeacherToken();
+        const admin = await ApiHelper.getAdminToken();
+
         studentToken = student.token;
         teacherToken = teacher.token;
+        adminToken = admin.token;
 
-        createdUserIds.push(student.userId, teacher.userId);
+        createdUserIds.push(student.userId, teacher.userId, admin.userId);
     });
 
     describe('GET, category list', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CategoryRoute.getCategoriesList();
+            expect(result.status).toBe(401);
+        });
+
         it('should be possible to get category list with student role', async () => {
             const category: ApiCategoryRequest = TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, teacherToken);
+            const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             createdCategoryIds.push(result.body.id);
 
             const categories = await CategoryRoute.getCategoriesList(studentToken);
             expect(categories.status).toBe(200);
         });
-        it('should return 401 error if no token passed', async () => {
-            const result = await CategoryRoute.getCategoriesList();
-            expect(result.status).toBe(401);
+
+        it('should be possible to get category list with teacher role', async () => {
+            const category: ApiCategoryRequest = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, adminToken);
+            expect(result.status).toBe(200);
+            createdCategoryIds.push(result.body.id);
+
+            const categories = await CategoryRoute.getCategoriesList(teacherToken);
+            expect(categories.status).toBe(200);
+        });
+
+        it('should be possible to get category list with admin role', async () => {
+            const category: ApiCategoryRequest = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, adminToken);
+            expect(result.status).toBe(200);
+            createdCategoryIds.push(result.body.id);
+
+            const categories = await CategoryRoute.getCategoriesList(adminToken);
+            expect(categories.status).toBe(200);
         });
 
         it('should return categories list', async () => {
             const category1: ApiCategoryRequest = TestData.getCategory();
             const category2: ApiCategoryRequest = TestData.getCategory();
 
-            const result1 = await CategoryRoute.postCategory(category1, teacherToken);
-            const result2 = await CategoryRoute.postCategory(category2, teacherToken);
+            const result1 = await CategoryRoute.postCategory(category1, adminToken);
+            const result2 = await CategoryRoute.postCategory(category2, adminToken);
             expect(result1.status).toBe(200);
             expect(result2.status).toBe(200);
             createdCategoryIds.push(result1.body.id, result2.body.id);
@@ -81,7 +107,7 @@ describe('API: category suite', function () {
 
         it('should be possible to get category with student role', async () => {
             const category = TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, teacherToken);
+            const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             const categoryId = result.body.id;
             createdCategoryIds.push(categoryId);
@@ -93,7 +119,7 @@ describe('API: category suite', function () {
         it('should be possible to get category', async () => {
             const category = TestData.getCategory();
 
-            const result = await CategoryRoute.postCategory(category, teacherToken);
+            const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             const categoryId = result.body.id;
             createdCategoryIds.push(categoryId);
@@ -182,14 +208,22 @@ describe('API: category suite', function () {
             expect(result.body.errors).toBe('This action is forbidden for role student');
         });
 
+        it('should return 403 error if trying to create category with teacher role', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, teacherToken);
+
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe('This action is forbidden for role teacher');
+        });
+
         it('should not be possible to create category with the same title', async () => {
             const category = TestData.getCategory();
 
-            const result1 = await CategoryRoute.postCategory(category, teacherToken);
+            const result1 = await CategoryRoute.postCategory(category, adminToken);
             const categoryId1 = result1.body.id;
             createdCategoryIds.push(categoryId1);
 
-            const result2 = await CategoryRoute.postCategory(category, teacherToken);
+            const result2 = await CategoryRoute.postCategory(category, adminToken);
             expect(result2.status).toBe(400);
             expect(result2.body.errors).toBe('title should be unique');
         });
@@ -208,7 +242,7 @@ describe('API: category suite', function () {
                         title: test.data,
                     },
                 };
-                const result = await CategoryRoute.postCategory(category, teacherToken);
+                const result = await CategoryRoute.postCategory(category, adminToken);
                 expect(result.status).toBe(200);
 
                 const categoryId = result.body.id;
@@ -289,18 +323,48 @@ describe('API: category suite', function () {
                         title: 'test',
                     },
                 },
-                teacherToken
+                adminToken
             );
 
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find category record(s)');
         });
 
-        it.todo('should return 403 error if trying to change category with student role');
+        it('should return 403 error if trying to change category with student role', async () => {
+            const category = TestData.getCategory();
+            const createResult = await CategoryRoute.postCategory(category, adminToken);
+            expect(createResult.status).toBe(200);
+
+            const categoryId = createResult.body.id;
+            createdCategoryIds.push(categoryId);
+
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+                categoryId,
+            });
+            const changeResult = await CategoryRoute.putCategory(newCategory, studentToken);
+            expect(changeResult.status).toBe(403);
+            expect(changeResult.body.errors).toBe('This action is forbidden for role student');
+        });
+
+        it('should return 403 error if trying to change category with teacher role', async () => {
+            const category = TestData.getCategory();
+            const createResult = await CategoryRoute.postCategory(category, adminToken);
+            expect(createResult.status).toBe(200);
+
+            const categoryId = createResult.body.id;
+            createdCategoryIds.push(categoryId);
+
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+                categoryId,
+            });
+            const changeResult = await CategoryRoute.putCategory(newCategory, teacherToken);
+            expect(changeResult.status).toBe(403);
+            expect(changeResult.body.errors).toBe('This action is forbidden for role teacher');
+        });
 
         it('should be possible to change category', async () => {
             const category = TestData.getCategory();
-            const createResult = await CategoryRoute.postCategory(category, teacherToken);
+            const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
@@ -311,7 +375,7 @@ describe('API: category suite', function () {
             });
             expect(category.body.title).not.toBe(newCategory.body.title);
 
-            const changeResult = await CategoryRoute.putCategory(newCategory, teacherToken);
+            const changeResult = await CategoryRoute.putCategory(newCategory, adminToken);
             expect(changeResult.status).toBe(200);
             expect(changeResult.body.id).toBe(newCategory.body.id);
             expect(changeResult.body.title).toBe(newCategory.body.title);
@@ -343,20 +407,44 @@ describe('API: category suite', function () {
             expect(error.location).toBe('params');
         });
 
-        it.todo('should return 403 error if trying to delete category with student role');
-
-        it('should be possible to remove category', async () => {
+        it('should return 403 error if trying to delete category with student role', async () => {
             const category = TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, teacherToken);
+            const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 
             const categoryId = result.body.id;
-            let getResult = await CategoryRoute.getCategory(categoryId, teacherToken);
-            expect(getResult.status).toBe(200);
+            createdCategoryIds.push(categoryId);
+
+            const removeResult = await CategoryRoute.deleteCategory(categoryId, studentToken);
+            expect(removeResult.status).toBe(403);
+            expect(removeResult.body.errors).toBe('This action is forbidden for role student');
+        });
+
+        it('should return 403 error if trying to delete category with teacher role', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, adminToken);
+            expect(result.status).toBe(200);
+
+            const categoryId = result.body.id;
+            createdCategoryIds.push(categoryId);
 
             const removeResult = await CategoryRoute.deleteCategory(categoryId, teacherToken);
+            expect(removeResult.status).toBe(403);
+            expect(removeResult.body.errors).toBe('This action is forbidden for role teacher');
+        });
+
+        it('should be possible to remove category', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, adminToken);
+            expect(result.status).toBe(200);
+
+            const categoryId = result.body.id;
+            let getResult = await CategoryRoute.getCategory(categoryId, adminToken);
+            expect(getResult.status).toBe(200);
+
+            const removeResult = await CategoryRoute.deleteCategory(categoryId, adminToken);
             expect(removeResult.status).toBe(200);
-            getResult = await CategoryRoute.getCategory(categoryId, teacherToken);
+            getResult = await CategoryRoute.getCategory(categoryId, adminToken);
             expect(getResult.status).toBe(404);
 
             const dbRecord = await Category.findOne({
