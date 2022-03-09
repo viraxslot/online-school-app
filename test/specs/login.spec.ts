@@ -2,6 +2,7 @@ import { DbHelper } from '../../src/api/v1/db-helper';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { User, UserRoles } from '../../src/db/models';
 import { LoginRoute } from '../api/routes/login/login.route';
+import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 
@@ -25,7 +26,7 @@ describe('API: login route suite', function () {
         passwordValidationTestCases.forEach((test) => {
             it(`should return error if password ${test.title}`, async () => {
                 const user = TestData.getUserData();
-                user.body.password = test.password
+                user.body.password = test.password;
 
                 const result = await LoginRoute.postSignUp(user);
                 expect(result.status).toBe(400);
@@ -81,7 +82,6 @@ describe('API: login route suite', function () {
         const createTestCases = [
             { title: 'with student role', role: UserRoles.Student },
             { title: 'with teacher role', role: UserRoles.Teacher },
-            { title: 'with admin role', role: UserRoles.Admin },
         ];
 
         createTestCases.forEach((test) => {
@@ -106,6 +106,46 @@ describe('API: login route suite', function () {
                 const roleId = await DbHelper.getRoleId(test.role);
                 expect(result.body.role).toBe(roleId);
             });
+        });
+
+        it('should return 403 error when trying to create admin user with student role', async () => {
+            const student = await ApiHelper.getStudentToken();
+            createdUsers.push(student.userId);
+
+            const user = TestData.getUserData({
+                role: UserRoles.Admin,
+            });
+
+            const result = await LoginRoute.postSignUp(user, student.token);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe('This action is forbidden for role student');
+        });
+
+        it('should return 403 error when trying to create admin user with teacher role', async () => {
+            const teacher = await ApiHelper.getTeacherToken();
+            createdUsers.push(teacher.userId);
+
+            const user = TestData.getUserData({
+                role: UserRoles.Admin,
+            });
+
+            const result = await LoginRoute.postSignUp(user, teacher.token);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe('This action is forbidden for role teacher');
+        });
+
+        it('should be possible to create admin user with admin token', async () => {
+            const admin = await ApiHelper.getAdminToken();
+            createdUsers.push(admin.userId);
+
+            const user = TestData.getUserData({
+                role: UserRoles.Admin,
+            });
+
+            const result = await LoginRoute.postSignUp(user, admin.token);
+            expect(result.status).toBe(200);
+            const id = result?.body?.id;
+            createdUsers.push(id);
         });
     });
 

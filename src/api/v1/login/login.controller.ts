@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
 import config from '../../../../config/config';
-import { JwtAuth, User } from '../../../db/models';
+import { JwtAuth, User, UserRoles } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
+import { DbHelper } from '../db-helper';
 import { UserRequest, UserResponse } from '../user/user.interfaces';
 import { SignInRequest, SignInResponse } from './login.interfaces';
 
@@ -30,6 +31,28 @@ import { SignInRequest, SignInResponse } from './login.interfaces';
  */
 export async function handleSignUp(req: UserRequest, res: UserResponse) {
     const body = req.body;
+
+    if (body.role === UserRoles.Admin) {
+        const authHeader = req.headers.authorization?.replace('Bearer ', '') as string;
+        if (isNil(authHeader)) {
+            return res.status(401).json({ errors: ApiMessages.common.unauthorized });
+        }
+
+        try {
+            const decoded: any = jwt.decode(authHeader);
+            if (!decoded) {
+                return res.status(401).json({ errors: ApiMessages.common.unauthorized });
+            }
+
+            const role = await DbHelper.getRoleName(decoded?.roleId);
+            const adminRoleId = await DbHelper.getRoleId(UserRoles.Admin);
+            if (decoded?.roleId !== adminRoleId) {
+                return res.status(403).json({ errors: ApiMessages.common.forbiddenForRole(role) });
+            }
+        } catch (err) {
+            return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
+        }
+    }
 
     const oldUser = await User.findOne({
         where: {

@@ -1,10 +1,11 @@
+import { UserRoles } from '../../../db/models';
 import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces';
 
 export interface UserRequestData {
     login: string;
     email: string;
     password: string
-    role: number;
+    role: UserRoles;
     firstName: string;
     lastName: string;
 }

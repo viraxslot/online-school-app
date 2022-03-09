@@ -85,7 +85,6 @@ describe('API: auth route suite', function () {
 
         afterAll(async () => {
             for (const userId of createdUserIds) {
-                console.log('Removing', userId);
                 await User.destroy({
                     where: {
                         id: userId,

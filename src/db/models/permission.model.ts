@@ -3,6 +3,10 @@ import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
 export enum Permissions {
+    // user permissions
+    GetUserList = 'Get users list',
+    ChangeUser = 'Get users list',
+    RemoveUser = 'Remove user',
     // category permissions
     CreateCategory = 'Create category',
     GetCategory = 'Get category by id',

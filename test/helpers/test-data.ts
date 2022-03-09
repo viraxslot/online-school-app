@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { sample } from 'lodash';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { UserRoles } from '../../src/db/models';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
@@ -11,7 +10,7 @@ export class TestData {
                 login: faker.internet.userName(),
                 email: faker.internet.email(),
                 password: faker.internet.password(),
-                role: options?.role ?? (sample(Object.values(UserRoles)) as any),
+                role: options?.role ?? UserRoles.Student,
                 firstName: faker.name.firstName(),
                 lastName: faker.name.lastName(),
             },
