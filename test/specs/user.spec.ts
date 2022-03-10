@@ -95,7 +95,7 @@ describe('API: user route suite', function () {
                 },
             });
 
-            const newUser = TestData.getUserData({ role: UserRoles.Student });
+            const newUser = await TestData.getUserData({ role: UserRoles.Student });
             // intentionally added "password" parameter
             const result = await UserRoute.putTeacher(
                 {
@@ -126,7 +126,7 @@ describe('API: user route suite', function () {
                 },
             });
 
-            const newUser = TestData.getUserData();
+            const newUser = await TestData.getUserData();
             const result = await UserRoute.putTeacher(
                 {
                     body: { id: teacherId, ...newUser.body } as any,
@@ -149,7 +149,7 @@ describe('API: user route suite', function () {
 
         uniqueFieldsTests.forEach((test) => {
             it(`should not be possible to change user data with existent ${test.field}`, async () => {
-                const studentData = TestData.getUserData({ role: UserRoles.Student });
+                const studentData = await TestData.getUserData({ role: UserRoles.Student });
                 const { studentId, teacherId } = await SeedData.createTwoUsers({ studentData: studentData });
                 createdUserIds.push(studentId, teacherId);
 

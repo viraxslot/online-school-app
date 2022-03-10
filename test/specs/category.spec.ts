@@ -34,7 +34,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to get category list with student role', async () => {
-            const category: ApiCategoryRequest = TestData.getCategory();
+            const category: ApiCategoryRequest = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             createdCategoryIds.push(result.body.id);
@@ -44,7 +44,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to get category list with teacher role', async () => {
-            const category: ApiCategoryRequest = TestData.getCategory();
+            const category: ApiCategoryRequest = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             createdCategoryIds.push(result.body.id);
@@ -54,7 +54,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to get category list with admin role', async () => {
-            const category: ApiCategoryRequest = TestData.getCategory();
+            const category: ApiCategoryRequest = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             createdCategoryIds.push(result.body.id);
@@ -64,8 +64,8 @@ describe('API: category suite', function () {
         });
 
         it('should return categories list', async () => {
-            const category1: ApiCategoryRequest = TestData.getCategory();
-            const category2: ApiCategoryRequest = TestData.getCategory();
+            const category1: ApiCategoryRequest = await TestData.getCategory();
+            const category2: ApiCategoryRequest = await TestData.getCategory();
 
             const result1 = await CategoryRoute.postCategory(category1, adminToken);
             const result2 = await CategoryRoute.postCategory(category2, adminToken);
@@ -106,7 +106,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to get category with student role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
             const categoryId = result.body.id;
@@ -117,7 +117,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to get category', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
 
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
@@ -135,7 +135,7 @@ describe('API: category suite', function () {
 
     describe('POST, add category', function () {
         it('should return 401 error if no token passed', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category);
             expect(result.status).toBe(401);
         });
@@ -175,33 +175,38 @@ describe('API: category suite', function () {
             });
         });
 
-        const allowedLengthTestCases = [
-            {
-                title: 'less than minimum length',
-                data: TestData.getCategory({ titleLength: SchemasV1.CategoryRequest.properties.title.minLength - 1 }),
-                expectedError: `Minimum category length is: ` + SchemasV1.CategoryRequest.properties.title.minLength,
-            },
-            {
-                title: 'greater than maximum length',
-                data: TestData.getCategory({ titleLength: SchemasV1.CategoryRequest.properties.title.maxLength + 1 }),
-                expectedError: `Maximum category length is: ` + SchemasV1.CategoryRequest.properties.title.maxLength,
-            },
-        ];
-
-        allowedLengthTestCases.forEach((test) => {
-            it(`should return validation error if title has ${test.title}`, async () => {
-                const result = await CategoryRoute.postCategory(test.data);
-
-                expect(result.status).toBe(400);
-                const error = result.body.errors[0];
-                expect(error.param).toBe('title');
-                expect(error.location).toBe('body');
-                expect(error.msg).toBe(test.expectedError);
+        it('should return validation error if title has less than minimum length', async () => {
+            const data = await TestData.getCategory({
+                titleLength: SchemasV1.CategoryRequest.properties.title.minLength - 1,
             });
+            const result = await CategoryRoute.postCategory(data);
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.param).toBe('title');
+            expect(error.location).toBe('body');
+            expect(error.msg).toBe(
+                `Minimum category length is: ` + SchemasV1.CategoryRequest.properties.title.minLength
+            );
+        });
+
+        it('should return validation error if title has greater than maximum length', async () => {
+            const data = await TestData.getCategory({
+                titleLength: SchemasV1.CategoryRequest.properties.title.maxLength + 1,
+            });
+            const result = await CategoryRoute.postCategory(data);
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.param).toBe('title');
+            expect(error.location).toBe('body');
+            expect(error.msg).toBe(
+                `Maximum category length is: ` + SchemasV1.CategoryRequest.properties.title.maxLength
+            );
         });
 
         it('should return 403 error if trying to create category with student role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, studentToken);
 
             expect(result.status).toBe(403);
@@ -209,7 +214,7 @@ describe('API: category suite', function () {
         });
 
         it('should return 403 error if trying to create category with teacher role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, teacherToken);
 
             expect(result.status).toBe(403);
@@ -217,7 +222,7 @@ describe('API: category suite', function () {
         });
 
         it('should not be possible to create category with the same title', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
 
             const result1 = await CategoryRoute.postCategory(category, adminToken);
             const categoryId1 = result1.body.id;
@@ -331,14 +336,14 @@ describe('API: category suite', function () {
         });
 
         it('should return 403 error if trying to change category with student role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
                 categoryId,
             });
             const changeResult = await CategoryRoute.putCategory(newCategory, studentToken);
@@ -347,14 +352,14 @@ describe('API: category suite', function () {
         });
 
         it('should return 403 error if trying to change category with teacher role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
                 categoryId,
             });
             const changeResult = await CategoryRoute.putCategory(newCategory, teacherToken);
@@ -363,14 +368,14 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to change category', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
                 categoryId,
             });
             expect(category.body.title).not.toBe(newCategory.body.title);
@@ -408,7 +413,7 @@ describe('API: category suite', function () {
         });
 
         it('should return 403 error if trying to delete category with student role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 
@@ -421,7 +426,7 @@ describe('API: category suite', function () {
         });
 
         it('should return 403 error if trying to delete category with teacher role', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 
@@ -434,7 +439,7 @@ describe('API: category suite', function () {
         });
 
         it('should be possible to remove category', async () => {
-            const category = TestData.getCategory();
+            const category = await TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 

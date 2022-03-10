@@ -25,7 +25,7 @@ describe('API: login route suite', function () {
 
         passwordValidationTestCases.forEach((test) => {
             it(`should return error if password ${test.title}`, async () => {
-                const user = TestData.getUserData();
+                const user = await TestData.getUserData();
                 user.body.password = test.password;
 
                 const result = await LoginRoute.postSignUp(user);
@@ -40,7 +40,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return validation error if role has wrong value', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             user.body.role = 'test' as any;
 
             const result = await LoginRoute.postSignUp(user);
@@ -51,7 +51,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return validation error if email has wrong format', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             user.body.email = 'test@';
 
             const result = await LoginRoute.postSignUp(user);
@@ -63,7 +63,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return validation error if user already exists', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             const createdUser = await User.create({
                 login: user.body.login,
                 email: user.body.email,
@@ -86,7 +86,7 @@ describe('API: login route suite', function () {
 
         createTestCases.forEach((test) => {
             it(`should be possible to create user ${test.title}`, async () => {
-                const user = TestData.getUserData({
+                const user = await TestData.getUserData({
                     role: test.role,
                 });
 
@@ -112,7 +112,7 @@ describe('API: login route suite', function () {
             const student = await ApiHelper.getStudentToken();
             createdUsers.push(student.userId);
 
-            const user = TestData.getUserData({
+            const user = await TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -125,7 +125,7 @@ describe('API: login route suite', function () {
             const teacher = await ApiHelper.getTeacherToken();
             createdUsers.push(teacher.userId);
 
-            const user = TestData.getUserData({
+            const user = await TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -138,7 +138,7 @@ describe('API: login route suite', function () {
             const admin = await ApiHelper.getAdminToken();
             createdUsers.push(admin.userId);
 
-            const user = TestData.getUserData({
+            const user = await TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -183,7 +183,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return validation error if user not found', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             const signInResponse = await LoginRoute.postSignIn({
                 body: {
                     username: user.body.login,
@@ -196,7 +196,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return validation error if wrong credentials passed', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             const signUpResponse = await LoginRoute.postSignUp(user);
             expect(signUpResponse.status).toBe(200);
             createdUsers.push(signUpResponse.body.id);
@@ -212,7 +212,7 @@ describe('API: login route suite', function () {
         });
 
         it('should return created earlier token if it exists', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             const signUpResponse = await LoginRoute.postSignUp(user);
             expect(signUpResponse.status).toBe(200);
             createdUsers.push(signUpResponse.body.id);
@@ -241,7 +241,7 @@ describe('API: login route suite', function () {
         const positiveTestCases = [{ title: 'login' }, { title: 'email' }];
         positiveTestCases.forEach((test) => {
             it(`should return jwt token if credentials are correct (${test.title})`, async () => {
-                const user = TestData.getUserData();
+                const user = await TestData.getUserData();
                 const signUpResponse = await LoginRoute.postSignUp(user);
                 expect(signUpResponse.status).toBe(200);
                 createdUsers.push(signUpResponse.body.id);

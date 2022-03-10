@@ -64,7 +64,7 @@ describe('API: auth route suite', function () {
         });
 
         it('should be possible to authenticate with a valid jwt', async () => {
-            const user = TestData.getUserData();
+            const user = await TestData.getUserData();
             const signUpResponse = await LoginRoute.postSignUp(user);
             expect(signUpResponse.status).toBe(200);
             createdUserIds.push(signUpResponse.body.id);

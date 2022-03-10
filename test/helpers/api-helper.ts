@@ -21,7 +21,7 @@ export class ApiHelper {
     }
 
     private static async getToken(role: UserRoles): Promise<UserIdAndToken> {
-        const user = TestData.getUserData({
+        const user = await TestData.getUserData({
             role,
         });
 
