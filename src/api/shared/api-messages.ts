@@ -5,6 +5,7 @@ export const ApiMessages = {
         unexpectedError: 'Unexpected error',
         unauthorized: 'Unauthorized',
         tokenIsNotSet: 'JWT is not set',
+        forbiddenForUser: 'This action is forbidden for this user',
         forbiddenForRole: (role: string) => `This action is forbidden for role ${role}`,
         noSuchRole: 'No such role in the database',
         unableToParseId: 'Unable to parse id, please add id parameter',

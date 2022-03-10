@@ -1,5 +1,7 @@
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { User, UserRoles } from '../../src/db/models';
+import { LoginRoute } from '../api/routes/login/login.route';
+import { ApiChangeUserRequest } from '../api/routes/user/user.interfaces';
 import { UserRoute } from '../api/routes/user/user.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -10,14 +12,17 @@ describe('API: user route suite', function () {
     const createdUserIds: number[] = [];
 
     let studentToken: string;
+    let teacherToken: string;
     let adminToken: string;
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
+        const teacher = await ApiHelper.getTeacherToken();
         const admin = await ApiHelper.getAdminToken();
         studentToken = student.token;
+        teacherToken = teacher.token;
         adminToken = admin.token;
 
-        createdUserIds.push(student.userId, admin.userId);
+        createdUserIds.push(student.userId, teacher.userId, admin.userId);
     });
 
     describe('GET, list of teachers:', function () {
@@ -76,6 +81,25 @@ describe('API: user route suite', function () {
             expect(result.status).toBe(400);
             const error = result.body.errors.find((el: any) => el.msg === 'Parameter should be numeric');
             expect(error).not.toBeNull();
+        });
+
+        it('should not be possible to change other teacher data', async () => {
+            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const createResponse = await LoginRoute.postSignUp(user);
+            expect(createResponse.status).toBe(200);
+
+            const userId = createResponse.body.id;
+            createdUserIds.push(userId);
+
+            const changeUserData: ApiChangeUserRequest = {
+                body: {
+                    id: userId,
+                    firstName: 'test',
+                },
+            };
+            const changeResponse = await UserRoute.putTeacher(changeUserData, teacherToken);
+            expect(changeResponse.status).toBe(403);
+            expect(changeResponse.body.errors).toBe('This action is forbidden for this user');
         });
 
         it('should return 404 error if teacher record is not found', async () => {
@@ -191,6 +215,19 @@ describe('API: user route suite', function () {
 
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find teacher record');
+        });
+
+        it('should not be possible to remove other teacher data', async () => {
+            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const createResponse = await LoginRoute.postSignUp(user);
+            expect(createResponse.status).toBe(200);
+
+            const userId = createResponse.body.id;
+            createdUserIds.push(userId);
+
+            const changeResponse = await UserRoute.deleteTeacher(userId, teacherToken);
+            expect(changeResponse.status).toBe(403);
+            expect(changeResponse.body.errors).toBe('This action is forbidden for this user');
         });
 
         it('should return an error if trying to remove student record', async () => {

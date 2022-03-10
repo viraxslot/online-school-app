@@ -70,9 +70,14 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
 export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse) {
     const body = req.body;
     const teacherId = body.id;
+    const { payload } = Helper.getJwtAndPayload(req);
+
+    const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
+    if (payload.roleId === teacherRoleId && teacherId !== payload.userId) {
+        return res.status(403).json({ errors: ApiMessages.common.forbiddenForUser });
+    }
 
     try {
-        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
         if (isNil(teacherRoleId)) {
             return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
         }
@@ -113,13 +118,19 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
  *         description: Return removing result or an error
  */
 export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
+    const teacherId = parseInt(req.params?.id);
+    const { payload } = Helper.getJwtAndPayload(req);
+
+    const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
+    if (payload.roleId === teacherRoleId && teacherId !== payload.userId) {
+        return res.status(403).json({ errors: ApiMessages.common.forbiddenForUser });
+    }
+
     try {
-        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
         if (isNil(teacherRoleId)) {
             return res.status(404).json({ errors: ApiMessages.user.noTeacherRole });
         }
 
-        const teacherId = parseInt(req.params?.id);
         const teacher = await searchForUserRecord(teacherId, teacherRoleId);
         if (isNil(teacher)) {
             return res.status(404).json({ errors: ApiMessages.user.noTeacher });

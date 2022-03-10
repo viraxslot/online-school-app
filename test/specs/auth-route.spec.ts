@@ -6,6 +6,7 @@ import { AuthRoute } from '../api/routes/auth/auth.route';
 import { LoginRoute } from '../api/routes/login/login.route';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
+import jwt from 'jsonwebtoken';
 
 describe('API: auth route suite', function () {
     describe('no-auth:', function () {
@@ -57,8 +58,15 @@ describe('API: auth route suite', function () {
             expect(result.body.errors).toBe('Unauthorized');
         });
 
-        it('should return 401 error if jwt is not found', async () => {
+        it('should return 401 error if jwt cannot be decoded', async () => {
             const result = await AuthRoute.getJwtAuth('test');
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBe('Unauthorized');
+        });
+
+        it('should return 401 error if jwt is not found', async () => {
+            const fakeJwt = jwt.sign({ test: 'test' }, config.jwtSecret);
+            const result = await AuthRoute.getJwtAuth(fakeJwt);
             expect(result.status).toBe(401);
             expect(result.body.errors).toBe('Unauthorized');
         });

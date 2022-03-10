@@ -12,7 +12,7 @@ const userRouter = express.Router();
 userRouter.get(
     '/' + v1Methods.user.teachers,
     checkJwtAuth,
-    checkPermission(Permissions.GetUserList),
+    checkPermission(Permissions.GetTeacherList),
     handleGetTeachers
 );
 
@@ -22,7 +22,7 @@ userRouter.put(
     body('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,
-    checkPermission(Permissions.ChangeUser),
+    checkPermission(Permissions.ChangeTeacher),
     handlePutTeacher
 );
 
@@ -32,7 +32,7 @@ userRouter.delete(
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,
-    checkPermission(Permissions.RemoveUser),
+    checkPermission(Permissions.RemoveTeacher),
     handleDeleteTeacher
 );
 

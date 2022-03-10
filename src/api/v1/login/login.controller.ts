@@ -6,6 +6,7 @@ import config from '../../../../config/config';
 import { JwtAuth, User, UserRoles } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { DbHelper } from '../db-helper';
+import { Helper } from '../helper';
 import { UserRequest, UserResponse } from '../user/user.interfaces';
 import { SignInRequest, SignInResponse } from './login.interfaces';
 
@@ -33,20 +34,19 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
     const body = req.body;
 
     if (body.role === UserRoles.Admin) {
-        const authHeader = req.headers.authorization?.replace('Bearer ', '') as string;
-        if (isNil(authHeader)) {
+        const { token, payload } = Helper.getJwtAndPayload(req);
+        if (isNil(token)) {
             return res.status(401).json({ errors: ApiMessages.common.unauthorized });
         }
 
         try {
-            const decoded: any = jwt.decode(authHeader);
-            if (!decoded) {
+            if (!payload) {
                 return res.status(401).json({ errors: ApiMessages.common.unauthorized });
             }
 
-            const role = await DbHelper.getRoleName(decoded?.roleId);
+            const role = await DbHelper.getRoleName(payload?.roleId);
             const adminRoleId = await DbHelper.getRoleId(UserRoles.Admin);
-            if (decoded?.roleId !== adminRoleId) {
+            if (payload?.roleId !== adminRoleId) {
                 return res.status(403).json({ errors: ApiMessages.common.forbiddenForRole(role) });
             }
         } catch (err) {
@@ -160,7 +160,7 @@ export async function handleSignIn(req: SignInRequest, res: SignInResponse) {
 
     let token: string;
     try {
-        token = jwt.sign({ username, roleId: existentUser.role }, config.jwtSecret, {
+        token = jwt.sign({ userId: existentUser.id, roleId: existentUser.role }, config.jwtSecret, {
             expiresIn: config.jwtExpiresIn,
         });
 

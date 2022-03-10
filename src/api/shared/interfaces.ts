@@ -1,4 +1,10 @@
 import { Request, Response } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
+
+export interface TokenPayload extends JwtPayload {
+    userId: number;
+    roleId: number;
+}
 
 export interface ErrorResponseData {
     errors?: any;

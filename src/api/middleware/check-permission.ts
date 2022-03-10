@@ -6,6 +6,7 @@ import { Permissions, RolePermission } from '../../db/models';
 import { ApiMessages } from '../shared/api-messages';
 import { DefaultResponse } from '../shared/interfaces';
 import { DbHelper } from '../v1/db-helper';
+import { Helper } from '../v1/helper';
 
 export function checkPermission(permission: Permissions) {
     return async function (req: Request, res: DefaultResponse, next: NextFunction) {
@@ -19,8 +20,7 @@ export function checkPermission(permission: Permissions) {
             return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
 
-        const token: any = req?.headers?.authorization?.replace('Bearer ', '');
-
+        const { token } = Helper.getJwtAndPayload(req);
         if (isNil(token)) {
             return res.status(400).json({ errors: ApiMessages.common.tokenIsNotSet });
         }

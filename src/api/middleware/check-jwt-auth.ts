@@ -5,11 +5,12 @@ import config from '../../../config/config';
 import { JwtAuth } from '../../db/models';
 import { ApiMessages } from '../shared/api-messages';
 import { DefaultResponse } from '../shared/interfaces';
+import { Helper } from '../v1/helper';
 
 export async function checkJwtAuth(req: Request, res: DefaultResponse, next: NextFunction) {
-    const authHeader = req?.headers?.authorization?.replace('Bearer ', '');
+    const { token, payload } = Helper.getJwtAndPayload(req);
 
-    if (isNil(authHeader)) {
+    if (isNil(token) || !payload) {
         return res.status(401).json({ errors: ApiMessages.common.unauthorized });
     }
 
@@ -19,15 +20,16 @@ export async function checkJwtAuth(req: Request, res: DefaultResponse, next: Nex
         createdToken = await JwtAuth.findOne({
             raw: true,
             where: {
-                jwt: authHeader,
+                jwt: token,
             },
         });
 
         if (isNil(createdToken)) {
+            console.log('jwt not found')
             return res.status(401).json({ errors: ApiMessages.common.unauthorized });
         }
 
-        valid = jwt.verify(authHeader, config.jwtSecret);
+        valid = jwt.verify(token, config.jwtSecret);
     } catch (err: any) {
         if (err.toString().includes('TokenExpiredError')) {
             await JwtAuth.destroy({
