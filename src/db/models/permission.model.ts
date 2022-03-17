@@ -13,6 +13,12 @@ export enum Permissions {
     GetCategoryList = 'Get category list',
     ChangeCategory = 'Change category',
     RemoveCategory = 'Remove category',
+    // course permissions
+    CreateCourse = 'Create course',
+    GetCourse = 'Get course',
+    GetCourseList = 'Get course list',
+    ChangeCourse = 'Change course',
+    RemoveCourse = 'Remove course',
 }
 
 interface PermissionAttributes extends DbCommonAttributes {

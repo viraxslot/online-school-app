@@ -45,3 +45,12 @@ CI mode: `npm run test:nowatch`
 1. Update `UserRoles` enum in [user model](src/db/models/user.model.ts)
 2. Add permissions to user in [this file](src/db/data/permissions-by-role.ts)
 3. Permissions for roles will be updated with `InitialDbSeed` function on app start
+
+
+### Other
+To covert DOCS.md to pdf please do the following:
+1. Install this package globally `npm i -g md-to-pdf`
+2. Run `md-to-pdf DOCS.md`
+3. Upload PDF wherever you want
+
+Please do not add PDF file to git.

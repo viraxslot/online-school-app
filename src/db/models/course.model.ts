@@ -29,6 +29,7 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     visible: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
+        defaultValue: true
     },
 });
 

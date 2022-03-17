@@ -21,5 +21,10 @@ export const v1Methods = {
         category: 'category',
         categoryId: 'category/:id',
         categories: 'categories',
+    },
+    course: {
+        course: 'course',
+        courseId: 'course/:id',
+        courses: 'courses',
     }
 };

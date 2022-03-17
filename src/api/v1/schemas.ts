@@ -25,7 +25,7 @@ const UserSchemas = {
             password: {
                 type: 'string',
                 minLength: 8,
-                maxLength: 20
+                maxLength: 20,
             },
         },
         required: ['login', 'email', 'password', 'role'],
@@ -95,29 +95,97 @@ const CategorySchemas = {
     },
 };
 
+const CourseSchemas = {
+    CourseRequest: {
+        type: 'object',
+        properties: {
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            description: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 500,
+            },
+            visible: {
+                type: 'boolean',
+            },
+        },
+        required: ['title'],
+    },
+
+    ChangeCourseRequest: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            description: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 500,
+            },
+            visible: {
+                type: 'boolean',
+            },
+        },
+        required: ['id'],
+    },
+
+    CourseResponse: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            description: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 500,
+            },
+            visible: {
+                type: 'boolean',
+            },
+        },
+        required: ['id', 'title', 'description', 'visible'],
+    },
+};
+
 const LoginSchemas = {
     SignInRequest: {
         type: 'object',
         properties: {
             username: {
-                type: 'string'
+                type: 'string',
             },
             password: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
-        required: ['username', 'password']
+        required: ['username', 'password'],
     },
     SignInResponse: {
         type: 'object',
         properties: {
             accessToken: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
-        required: ['accessToken']
+        required: ['accessToken'],
     },
-}
+};
 
 export const SchemasV1 = {
     DefaultResponse: {
@@ -135,11 +203,11 @@ export const SchemasV1 = {
                 type: 'object',
                 properties: {
                     status: {
-                        type: 'string'
+                        type: 'string',
                     },
                     currentDate: {
-                        type: 'string'
-                    }
+                        type: 'string',
+                    },
                 },
             },
         },
@@ -156,5 +224,10 @@ export const SchemasV1 = {
     CategoryListResponse: {
         type: 'array',
         items: CategorySchemas.CategoryResponse,
+    },
+    ...CourseSchemas,
+    CourseListResponse: {
+        type: 'array',
+        items: CourseSchemas.CourseResponse,
     },
 };
