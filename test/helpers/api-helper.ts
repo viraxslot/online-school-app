@@ -1,26 +1,62 @@
 import { User, UserRoles } from '../../src/db/models';
+import { CategoryRoute } from '../api/routes/category/category.route';
+import { CourseRoute } from '../api/routes/course/course.route';
 import { LoginRoute } from '../api/routes/login/login.route';
 import { TestData } from './test-data';
 
-interface UserIdAndToken {
+interface CreatedUser {
     userId: number;
     token: string;
 }
 
+interface CreatedCategory {
+    categoryId: number;
+}
+
+interface CreatedCourse extends CreatedCategory {
+    courseId: number;
+}
+
 export class ApiHelper {
-    static async getStudentToken(): Promise<UserIdAndToken> {
+    static async getStudentToken(): Promise<CreatedUser> {
         return await this.getToken(UserRoles.Student);
     }
 
-    static async getTeacherToken(): Promise<UserIdAndToken> {
+    static async getTeacherToken(): Promise<CreatedUser> {
         return await this.getToken(UserRoles.Teacher);
     }
 
-    static async getAdminToken(): Promise<UserIdAndToken> {
+    static async getAdminToken(): Promise<CreatedUser> {
         return await this.getToken(UserRoles.Admin);
     }
 
-    private static async getToken(role: UserRoles): Promise<UserIdAndToken> {
+    static async getCategory(token: string): Promise<CreatedCategory> {
+        const categoryData = await TestData.getCategory();
+        const categoryResponse = await CategoryRoute.postCategory(categoryData, token);
+        expect(categoryResponse.status).toBe(200);
+        const categoryId = categoryResponse.body.id;
+
+        return {
+            categoryId,
+        };
+    }
+
+    static async getCourse(token: string): Promise<CreatedCourse> {
+        const { categoryId } = await this.getCategory(token);
+        const courseData = TestData.getCourse({ categoryId });
+
+        const createdCourse = await CourseRoute.postCourse(courseData, token);
+        expect(createdCourse.status).toBe(200);
+
+        const courseId = createdCourse.body.id;
+
+        return {
+            courseId,
+            categoryId,
+        };
+    }
+
+    private static async getToken(role: UserRoles): Promise<CreatedUser> {
         const user = await TestData.getUserData({
             role,
         });

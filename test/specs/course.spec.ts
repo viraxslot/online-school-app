@@ -30,7 +30,55 @@ describe('API: course suite', function () {
     });
 
     describe('GET: course by id', function () {
-        it.todo('test');
+        it('should return 401 error if no token passed', async () => {
+            const result = await CourseRoute.getCourse(-1);
+            expect(result.status).toBe(401);
+        });
+
+        it('should return 404 error if no course found', async () => {
+            const result = await CourseRoute.getCourse(-1, studentToken);
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to find course record(s)');
+        });
+
+        it('should be possible to get course by id with student role', async () => {
+            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.getCourse(courseId, studentToken);
+            expect(result.status).toBe(200);
+
+            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+            expect(result.body.id).toBe(courseId);
+            expect(result.body.categoryId).toBe(categoryId);
+        });
+
+        it('should be possible to get course by id with teacher role', async () => {
+            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.getCourse(courseId, teacherToken);
+            expect(result.status).toBe(200);
+
+            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+            expect(result.body.id).toBe(courseId);
+            expect(result.body.categoryId).toBe(categoryId);
+        });
+
+        it('should be possible to get course by id with admin role', async () => {
+            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.getCourse(courseId, adminToken);
+            expect(result.status).toBe(200);
+
+            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+            expect(result.body.id).toBe(courseId);
+            expect(result.body.categoryId).toBe(categoryId);
+        });
     });
 
     describe('GET: course list', function () {
@@ -155,10 +203,7 @@ describe('API: course suite', function () {
         });
 
         it('should be possible to create course with admin role', async () => {
-            const categoryData = await TestData.getCategory();
-            const categoryResponse = await CategoryRoute.postCategory(categoryData, adminToken);
-            expect(categoryResponse.status).toBe(200);
-            const categoryId = categoryResponse.body.id;
+            const { categoryId } = await ApiHelper.getCategory(adminToken);
             createdCategoryIds.push(categoryId);
 
             const courseData = TestData.getCourse({ categoryId });

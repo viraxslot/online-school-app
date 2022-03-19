@@ -1,5 +1,5 @@
 import express from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import { Permissions } from '../../../db/models';
 import { checkJwtAuth } from '../../middleware/check-jwt-auth';
 import { checkPermission } from '../../middleware/check-permission';
@@ -16,7 +16,15 @@ import {
 } from './course.controller';
 const courseRouter = express.Router();
 
-courseRouter.get('/' + v1Methods.course.course, checkJwtAuth, checkPermission(Permissions.GetCourse), handleCourseById);
+courseRouter.get(
+    '/' + v1Methods.course.courseId,
+    param('id', ApiMessages.common.unableParseId).exists(),
+    param('id', ApiMessages.common.numericParameter).isNumeric(),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.GetCourse),
+    handleCourseById
+);
 
 courseRouter.get(
     '/' + v1Methods.course.courses,

@@ -42,7 +42,24 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
  *         description:
  */
 export async function handleCourseById(req: Request, res: CourseResponse) {
-    res.status(501).json({});
+    const courseId = req.params.id;
+
+    try {
+        const course: any = await Course.findOne({
+            raw: true,
+            where: {
+                id: courseId,
+            },
+        });
+
+        if (isNil(course)) {
+            return res.status(404).json({ errors: ApiMessages.course.noCourse });
+        }
+
+        return res.status(200).json(course);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.course.noCourse + ': ' + err });
+    }
 }
 
 /**

@@ -47,6 +47,7 @@ export const ApiMessages = {
         uniqueFields: 'title should be unique',
     },
     course: {
+        noCourse: 'Unable to find course record(s)',
         wrongMinCourseTitleLength:
             'Minimum course title length is: ' + SchemasV1.CourseRequest.properties.title.minLength,
         wrongMaxCourseTitleLength:
