@@ -2,6 +2,7 @@ import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces
 
 export interface CourseRequestData {
     title: string;
+    categoryId: number;
     description?: string;
     visible?: boolean;
 }
@@ -10,6 +11,7 @@ export interface CourseResponseData extends ResponseData {
     title: string;
     description: string;
     visible: boolean;
+    categoryId: number;
 }
 
 export interface ChangeCourseRequestData {
@@ -17,6 +19,7 @@ export interface ChangeCourseRequestData {
     title?: string;
     description?: string;
     visible?: boolean;
+    categoryId: number;
 }
 
 export type CourseRequest = RequestBody<CourseRequestData>;

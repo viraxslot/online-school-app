@@ -18,7 +18,7 @@ const categoryRouter = express.Router();
 
 categoryRouter.get(
     '/' + v1Methods.category.categoryId,
-    param('id', ApiMessages.common.unableToParseId).exists(),
+    param('id', ApiMessages.common.unableParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,
@@ -71,7 +71,7 @@ categoryRouter.put(
 
 categoryRouter.delete(
     '/' + v1Methods.category.categoryId,
-    param('id', ApiMessages.common.unableToParseId).exists(),
+    param('id', ApiMessages.common.unableParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,

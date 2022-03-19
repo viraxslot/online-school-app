@@ -5,6 +5,7 @@ import basicRouter from './api/v1/auth/basic/basic-auth.router';
 import jwtRouter from './api/v1/auth/jwt/jwt.router';
 import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
 import categoryRouter from './api/v1/category/category.router';
+import courseRouter from './api/v1/course/course.router';
 import healthRouter from './api/v1/health/health.router';
 import loginRouter from './api/v1/login/login.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
@@ -30,6 +31,7 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, loginRouter);
     app.use(versionPrefix, userRouter);
     app.use(versionPrefix, categoryRouter);
+    app.use(versionPrefix, courseRouter);
 });
 
 const port = process.env.PORT ?? 4000;

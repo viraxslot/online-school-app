@@ -1,4 +1,7 @@
 import { Request } from 'express';
+import { isNil } from 'lodash';
+import { Category, Course } from '../../../db/models';
+import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse } from './course.interfaces';
 
@@ -64,7 +67,35 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
  *         description:
  */
 export async function handlePostCourse(req: CourseRequest, res: CourseResponse) {
-    res.status(501).json({});
+    const body = req.body;
+    try {
+        const foundCategory = await Category.findOne({
+            raw: true,
+            where: {
+                id: body.categoryId,
+            },
+        });
+        if (isNil(foundCategory)) {
+            return res.status(400).json({ errors: ApiMessages.category.noCategory });
+        }
+
+        const createdCourse: any = await Course.create({
+            title: body.title,
+            categoryId: body.categoryId,
+            description: body.description as string,
+            visible: body.visible as boolean,
+        });
+
+        res.status(200).json(createdCourse.toJSON());
+    } catch (err: any) {
+        if (err.toString().includes('SequelizeUniqueConstraintError')) {
+            return res.status(400).json({ errors: ApiMessages.course.uniqueFields });
+        }
+
+        return res.status(500).json({
+            errors: ApiMessages.course.unableCreateCourse + err,
+        });
+    }
 }
 
 /**

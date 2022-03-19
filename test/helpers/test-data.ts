@@ -68,4 +68,15 @@ export class TestData {
 
         return { body };
     }
+
+    static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number }): any {
+        return {
+            body: {
+                title: faker.lorem.words(5),
+                description: faker.lorem.words(10),
+                visible: options?.visible ?? true,
+                categoryId: options?.categoryId ?? 1,
+            },
+        };
+    }
 }

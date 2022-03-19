@@ -18,7 +18,7 @@ userRouter.get(
 
 userRouter.put(
     '/' + v1Methods.user.teacher,
-    body('id', ApiMessages.common.unableToParseId).exists(),
+    body('id', ApiMessages.common.unableParseId).exists(),
     body('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,
@@ -28,7 +28,7 @@ userRouter.put(
 
 userRouter.delete(
     '/' + v1Methods.user.teacherId,
-    param('id', ApiMessages.common.unableToParseId).exists(),
+    param('id', ApiMessages.common.unableParseId).exists(),
     param('id', ApiMessages.common.numericParameter).isNumeric(),
     checkValidation,
     checkJwtAuth,

@@ -482,7 +482,7 @@ describe('API: category suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.user.unableToRemove + err);
+                console.log(ApiMessages.user.unableRemoveUser + err);
             }
         }
     });

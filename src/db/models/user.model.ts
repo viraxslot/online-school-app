@@ -52,7 +52,7 @@ export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequel
 });
 
 User.beforeCreate(async (user: any) => {
-    // change password
+    // hash password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(user.password, salt);
     user.password = passwordHash;

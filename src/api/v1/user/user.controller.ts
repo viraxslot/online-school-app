@@ -95,9 +95,9 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
         return res.status(200).json(result);
     } catch (err: any) {
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
-            return res.status(400).json({ errors: ApiMessages.user.unableToUpdate + ApiMessages.user.uniqueFields });
+            return res.status(400).json({ errors: ApiMessages.user.unableUpdateUser + ApiMessages.user.uniqueFields });
         }
-        return res.status(500).json({ errors: ApiMessages.user.unableToUpdate + err });
+        return res.status(500).json({ errors: ApiMessages.user.unableUpdateUser + err });
     }
 }
 
@@ -142,7 +142,7 @@ export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
             },
         });
     } catch (err) {
-        return res.status(500).json({ errors: ApiMessages.user.unableToRemove + err });
+        return res.status(500).json({ errors: ApiMessages.user.unableRemoveUser + err });
     }
 
     return res.status(200).json({ result: ApiMessages.common.removeSuccess });

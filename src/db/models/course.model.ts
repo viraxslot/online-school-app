@@ -6,8 +6,9 @@ import { Material } from './material.model';
 
 interface CourseAttributes extends DbCommonAttributes {
     title: string;
-    description: string;
-    visible: boolean;
+    description?: string;
+    visible?: boolean;
+    categoryId: number;
 }
 
 type CourseCreationAttributes = Optional<CourseAttributes, 'id'>
@@ -20,6 +21,7 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     },
     title: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
     },
     description: {
@@ -31,6 +33,10 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
         allowNull: false,
         defaultValue: true
     },
+    categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
 });
 
 Course.hasMany(Material, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });

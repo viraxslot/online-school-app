@@ -76,7 +76,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
 
         return res.json(omit(newUser.toJSON(), 'password') as any);
     } catch (err) {
-        return res.status(500).json({ errors: ApiMessages.login.unableToCreateUser + err });
+        return res.status(500).json({ errors: ApiMessages.login.unableCreateUser + err });
     }
 }
 

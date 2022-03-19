@@ -112,8 +112,11 @@ const CourseSchemas = {
             visible: {
                 type: 'boolean',
             },
+            categoryId: {
+                type: 'number',
+            },
         },
-        required: ['title'],
+        required: ['title', 'categoryId'],
     },
 
     ChangeCourseRequest: {
@@ -134,6 +137,9 @@ const CourseSchemas = {
             },
             visible: {
                 type: 'boolean',
+            },
+            categoryId: {
+                type: 'number',
             },
         },
         required: ['id'],
@@ -158,8 +164,11 @@ const CourseSchemas = {
             visible: {
                 type: 'boolean',
             },
+            categoryId: {
+                type: 'number',
+            },
         },
-        required: ['id', 'title', 'description', 'visible'],
+        required: ['id', 'title', 'description', 'visible', 'categoryId'],
     },
 };
 
