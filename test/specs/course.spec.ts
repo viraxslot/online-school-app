@@ -184,7 +184,7 @@ describe('API: course suite', function () {
         it.todo('test');
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         for (const id of createdCategoryIds) {
             try {
                 await Category.destroy({
@@ -208,7 +208,9 @@ describe('API: course suite', function () {
                 console.log(ApiMessages.course.unableRemoveCourse + err);
             }
         }
+    });
 
+    afterAll(async () => {
         for (const id of createdUserIds) {
             try {
                 await User.destroy({
