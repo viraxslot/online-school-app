@@ -453,7 +453,7 @@ describe('API: category suite', function () {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         for (const id of createdCategoryIds) {
             try {
                 await Category.destroy({
@@ -465,7 +465,9 @@ describe('API: category suite', function () {
                 console.log(ApiMessages.category.unableRemoveCategory + err);
             }
         }
+    });
 
+    afterAll(async () => {
         for (const id of createdUserIds) {
             try {
                 await User.destroy({
