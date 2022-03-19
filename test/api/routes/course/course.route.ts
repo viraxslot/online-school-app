@@ -1,18 +1,18 @@
 import { v1Methods } from '../../../../src/api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
-import { ApiCourseRequest, ApiCourseResponse } from './course.interfaces';
+import { ApiCourseListResponse, ApiCourseRequest, ApiCourseResponse } from './course.interfaces';
 
 export class CourseRoute extends ApiRoute {
-    // static async getCategoriesList(jwt?: string): Promise<ApiCategoryListResponse> {
-    //     return this.getMethod({
-    //         path: v1Methods.category.categories,
-    //         options: {
-    //             headers: {
-    //                 Authorization: jwt ?? '',
-    //             },
-    //         },
-    //     });
-    // }
+    static async getCourseList(jwt?: string): Promise<ApiCourseListResponse> {
+        return this.getMethod({
+            path: v1Methods.course.courses,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
 
     static async getCourse(id: number, jwt?: string): Promise<ApiCourseResponse> {
         return this.getMethod({

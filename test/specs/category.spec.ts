@@ -1,6 +1,6 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, User } from '../../src/db/models';
+import { Category, User, UserRoles } from '../../src/db/models';
 import { ApiCategoryRequest, ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { ApiHelper } from '../helpers/api-helper';
@@ -10,6 +10,8 @@ import { TestData } from '../helpers/test-data';
 describe('API: category suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
+
+    const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
 
     let studentToken: string;
     let teacherToken: string;
@@ -33,34 +35,19 @@ describe('API: category suite', function () {
             expect(result.status).toBe(401);
         });
 
-        it('should be possible to get category list with student role', async () => {
-            const category: ApiCategoryRequest = await TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, adminToken);
-            expect(result.status).toBe(200);
-            createdCategoryIds.push(result.body.id);
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get category list with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
 
-            const categories = await CategoryRoute.getCategoriesList(studentToken);
-            expect(categories.status).toBe(200);
-        });
+                const category: ApiCategoryRequest = await TestData.getCategory();
+                const result = await CategoryRoute.postCategory(category, adminToken);
+                expect(result.status).toBe(200);
+                createdCategoryIds.push(result.body.id);
 
-        it('should be possible to get category list with teacher role', async () => {
-            const category: ApiCategoryRequest = await TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, adminToken);
-            expect(result.status).toBe(200);
-            createdCategoryIds.push(result.body.id);
-
-            const categories = await CategoryRoute.getCategoriesList(teacherToken);
-            expect(categories.status).toBe(200);
-        });
-
-        it('should be possible to get category list with admin role', async () => {
-            const category: ApiCategoryRequest = await TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, adminToken);
-            expect(result.status).toBe(200);
-            createdCategoryIds.push(result.body.id);
-
-            const categories = await CategoryRoute.getCategoriesList(adminToken);
-            expect(categories.status).toBe(200);
+                const categories = await CategoryRoute.getCategoriesList(token);
+                expect(categories.status).toBe(200);
+            });
         });
 
         it('should return categories list', async () => {
@@ -105,15 +92,20 @@ describe('API: category suite', function () {
             expect(result.body.errors).toBe('Unable to find category record(s)');
         });
 
-        it('should be possible to get category with student role', async () => {
-            const category = await TestData.getCategory();
-            const result = await CategoryRoute.postCategory(category, adminToken);
-            expect(result.status).toBe(200);
-            const categoryId = result.body.id;
-            createdCategoryIds.push(categoryId);
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get category with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
 
-            const createdCategory = await CategoryRoute.getCategory(categoryId, studentToken);
-            expect(createdCategory.status).toBe(200);
+                const category = await TestData.getCategory();
+                const result = await CategoryRoute.postCategory(category, adminToken);
+                expect(result.status).toBe(200);
+                const categoryId = result.body.id;
+                createdCategoryIds.push(categoryId);
+
+                const createdCategory = await CategoryRoute.getCategory(categoryId, token);
+                expect(createdCategory.status).toBe(200);
+            });
         });
 
         it('should be possible to get category', async () => {

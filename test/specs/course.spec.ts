@@ -1,8 +1,7 @@
 import { omit } from 'lodash';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, Course, User } from '../../src/db/models';
-import { CategoryRoute } from '../api/routes/category/category.route';
+import { Category, Course, User, UserRoles } from '../../src/db/models';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -13,20 +12,20 @@ describe('API: course suite', function () {
     const createdCourseIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
+    const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
+    const teacherAdminTestCases = [{ role: UserRoles.Teacher }, { role: UserRoles.Admin }];
+
     let studentToken: string;
-    let teacherToken: string;
     let adminToken: string;
 
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
-        const teacher = await ApiHelper.getTeacherToken();
         const admin = await ApiHelper.getAdminToken();
 
         studentToken = student.token;
-        teacherToken = teacher.token;
         adminToken = admin.token;
 
-        createdUserIds.push(student.userId, teacher.userId, admin.userId);
+        createdUserIds.push(student.userId, admin.userId);
     });
 
     describe('GET: course by id', function () {
@@ -41,48 +40,48 @@ describe('API: course suite', function () {
             expect(result.body.errors).toBe('Unable to find course record(s)');
         });
 
-        it('should be possible to get course by id with student role', async () => {
-            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
-            createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get course by id with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
 
-            const result = await CourseRoute.getCourse(courseId, studentToken);
-            expect(result.status).toBe(200);
+                const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
+                createdCategoryIds.push(categoryId);
+                createdCourseIds.push(courseId);
 
-            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
-            expect(result.body.id).toBe(courseId);
-            expect(result.body.categoryId).toBe(categoryId);
-        });
+                const result = await CourseRoute.getCourse(courseId, token);
+                expect(result.status).toBe(200);
 
-        it('should be possible to get course by id with teacher role', async () => {
-            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
-            createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
-
-            const result = await CourseRoute.getCourse(courseId, teacherToken);
-            expect(result.status).toBe(200);
-
-            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
-            expect(result.body.id).toBe(courseId);
-            expect(result.body.categoryId).toBe(categoryId);
-        });
-
-        it('should be possible to get course by id with admin role', async () => {
-            const { categoryId, courseId } = await ApiHelper.getCourse(adminToken);
-            createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
-
-            const result = await CourseRoute.getCourse(courseId, adminToken);
-            expect(result.status).toBe(200);
-
-            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
-            expect(result.body.id).toBe(courseId);
-            expect(result.body.categoryId).toBe(categoryId);
+                SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+                expect(result.body.id).toBe(courseId);
+                expect(result.body.categoryId).toBe(categoryId);
+            });
         });
     });
 
     describe('GET: course list', function () {
-        it.todo('test');
+        it('should return 401 error if no token passed', async () => {
+            const result = await CourseRoute.getCourseList();
+            expect(result.status).toBe(401);
+        });
+
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get courses list with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+                createdCategoryIds.push(categoryId);
+                createdCourseIds.push(courseId);
+
+                const result = await CourseRoute.getCourseList(token);
+                expect(result.status).toBe(200);
+
+                SchemaValidator.check(result.body, SchemasV1.CourseListResponse);
+                const foundCourse = result.body.find((el) => el.id === courseId);
+                expect(foundCourse).not.toBeNull();
+            });
+        });
     });
 
     describe('POST: create course', function () {
@@ -181,43 +180,27 @@ describe('API: course suite', function () {
             });
         });
 
-        it('should be possible to create course with teacher role', async () => {
-            const categoryData = await TestData.getCategory();
-            const categoryResponse = await CategoryRoute.postCategory(categoryData, adminToken);
-            expect(categoryResponse.status).toBe(200);
-            const categoryId = categoryResponse.body.id;
-            createdCategoryIds.push(categoryId);
+        teacherAdminTestCases.forEach((test) => {
+            it(`should be possible to create course with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
 
-            const courseData = TestData.getCourse({ categoryId });
-            const result = await CourseRoute.postCourse(courseData, teacherToken);
-            expect(result.status).toBe(200);
-            const courseId = result.body.id;
-            createdCourseIds.push(courseId);
+                const { categoryId } = await ApiHelper.createCategory(adminToken);
+                createdCategoryIds.push(categoryId);
 
-            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+                const courseData = TestData.getCourse({ categoryId });
+                const result = await CourseRoute.postCourse(courseData, token);
+                expect(result.status).toBe(200);
+                const courseId = result.body.id;
+                createdCourseIds.push(courseId);
 
-            expect(result.body.title).toBe(courseData.body.title);
-            expect(result.body.description).toBe(courseData.body.description);
-            expect(result.body.visible).toBe(courseData.body.visible);
-            expect(result.body.categoryId).toBe(courseData.body.categoryId);
-        });
+                SchemaValidator.check(result.body, SchemasV1.CourseResponse);
 
-        it('should be possible to create course with admin role', async () => {
-            const { categoryId } = await ApiHelper.getCategory(adminToken);
-            createdCategoryIds.push(categoryId);
-
-            const courseData = TestData.getCourse({ categoryId });
-            const result = await CourseRoute.postCourse(courseData, adminToken);
-            expect(result.status).toBe(200);
-            const courseId = result.body.id;
-            createdCourseIds.push(courseId);
-
-            SchemaValidator.check(result.body, SchemasV1.CourseResponse);
-
-            expect(result.body.title).toBe(courseData.body.title);
-            expect(result.body.description).toBe(courseData.body.description);
-            expect(result.body.visible).toBe(courseData.body.visible);
-            expect(result.body.categoryId).toBe(courseData.body.categoryId);
+                expect(result.body.title).toBe(courseData.body.title);
+                expect(result.body.description).toBe(courseData.body.description);
+                expect(result.body.visible).toBe(courseData.body.visible);
+                expect(result.body.categoryId).toBe(courseData.body.categoryId);
+            });
         });
     });
 

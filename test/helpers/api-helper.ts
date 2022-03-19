@@ -30,9 +30,14 @@ export class ApiHelper {
         return await this.getToken(UserRoles.Admin);
     }
 
-    static async getCategory(token: string): Promise<CreatedCategory> {
+    /**
+     * Create category
+     * @param adminToken
+     * @returns
+     */
+    static async createCategory(adminToken: string): Promise<CreatedCategory> {
         const categoryData = await TestData.getCategory();
-        const categoryResponse = await CategoryRoute.postCategory(categoryData, token);
+        const categoryResponse = await CategoryRoute.postCategory(categoryData, adminToken);
         expect(categoryResponse.status).toBe(200);
         const categoryId = categoryResponse.body.id;
 
@@ -41,11 +46,16 @@ export class ApiHelper {
         };
     }
 
-    static async getCourse(token: string): Promise<CreatedCourse> {
-        const { categoryId } = await this.getCategory(token);
+    /**
+     * Create category and course inside it
+     * @param adminToken
+     * @returns
+     */
+    static async createCourse(adminToken: string): Promise<CreatedCourse> {
+        const { categoryId } = await this.createCategory(adminToken);
         const courseData = TestData.getCourse({ categoryId });
 
-        const createdCourse = await CourseRoute.postCourse(courseData, token);
+        const createdCourse = await CourseRoute.postCourse(courseData, adminToken);
         expect(createdCourse.status).toBe(200);
 
         const courseId = createdCourse.body.id;
@@ -56,10 +66,12 @@ export class ApiHelper {
         };
     }
 
-    private static async getToken(role: UserRoles): Promise<CreatedUser> {
+    static async getToken(role: UserRoles): Promise<CreatedUser> {
         const user = await TestData.getUserData({
             role,
         });
+
+        expect(user.body.role).toBe(role);
 
         let createdUser;
         try {

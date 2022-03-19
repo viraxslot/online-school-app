@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { isNil } from 'lodash';
+import { isNil, omit } from 'lodash';
 import { Category, Course } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
@@ -22,7 +22,19 @@ import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse 
  *         description:
  */
 export async function handleGetCourseList(req: Request, res: CourseListResponse) {
-    res.status(501).json({});
+    try {
+        const courses: any = await Course.findAll({
+            raw: true,
+        });
+
+        const result = courses.map((el: any) => {
+            return omit(el, ['createdAt', 'updatedAt']);
+        });
+
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.course.noCourse + err });
+    }
 }
 
 /**
