@@ -57,9 +57,10 @@ export const ApiMessages = {
         wrongMaxCourseDescriptionLength:
             'Maximum course description length is: ' + SchemasV1.CourseRequest.properties.description.maxLength,
         unableCreateCourse: 'Unable to create course: ',
-        uniqueFields: 'title should be unique',
+        unableChangeCourse: 'Unable to change course: ',
         unableRemoveCourse: 'Unable to remove course record: ',
-        notOwnerRemoveError: 'You\'re not owner of this course, you can\'t remove it'
+        uniqueFields: 'title should be unique',
+        notOwnerError: 'You\'re not owner of this course, you can\'t change/remove it'
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

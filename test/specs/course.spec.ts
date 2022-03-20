@@ -217,7 +217,72 @@ describe('API: course suite', function () {
     });
 
     describe('PUT: change course', function () {
-        it.todo('test');
+        it('should return 400 error if required input parameters are not set', async () => {
+            const courseData = TestData.getCourse();
+
+            const result = await CourseRoute.putCourse(courseData);
+            expect(result.status).toBe(400);
+
+            const errors = result.body.errors;
+            expect(errors.length).toBe(2);
+            expect(errors[0].param).toBe('id');
+            expect(errors[0].msg).toBe('Please send required fields: id');
+
+            expect(errors[1].param).toBe('id');
+            expect(errors[1].msg).toBe('Parameter should be numeric');
+        });
+
+        it('should return 401 error if token is not passed', async () => {
+            const courseData = TestData.getCourse({ courseId: -1 });
+
+            const result = await CourseRoute.putCourse(courseData);
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBe('Unauthorized');
+        });
+
+        const changeTestCases = [
+            { role: UserRoles.Teacher, field: 'title', newValue: 'test' },
+            { role: UserRoles.Teacher, field: 'description', newValue: 'test description' },
+            { role: UserRoles.Teacher, field: 'visible', newValue: false },
+            { role: UserRoles.Admin, field: 'title', newValue: 'test' },
+            { role: UserRoles.Admin, field: 'description', newValue: 'test description' },
+            { role: UserRoles.Admin, field: 'visible', newValue: false },
+        ];
+        changeTestCases.forEach((test) => {
+            it(`should be possible to change ${test.field} field in course with ${test.role} role`, async () => {
+                const { categoryId } = await ApiHelper.createCategory(adminToken);
+                createdCategoryIds.push(categoryId);
+
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const courseData = TestData.getCourse({ categoryId });
+                const createResponse: any = await CourseRoute.postCourse(courseData, token);
+                expect(createResponse.status).toBe(200);
+
+                const courseId = createResponse.body.id;
+                createdCourseIds.push(courseId);
+
+                const newCourseData = { ...courseData };
+                newCourseData.body[test.field] =
+                    test.field !== 'visible' ? test.newValue + TestData.getRandomPrefix() : test.newValue;
+                newCourseData.body.id = courseId;
+                const changeResponse: any = await CourseRoute.putCourse(newCourseData, token);
+
+                expect(changeResponse.status).toBe(200);
+                SchemaValidator.check(changeResponse.body, SchemasV1.CourseResponse);
+
+                const beforeChange = omit(createResponse.body, [test.field, 'createdAt', 'updatedAt']);
+                const afterChange = omit(changeResponse.body, [test.field, 'createdAt', 'updatedAt']);
+
+                expect(beforeChange).toMatchObject(afterChange);
+                expect(createResponse.body[test.field]).not.toBe(changeResponse.body[test.field]);
+                expect(changeResponse.body[test.field]).toBe(newCourseData.body[test.field]);
+            });
+        });
+
+        it.todo('should return 404 error if new category id is not exist');
+        it.todo('should be possible to change category id');
     });
 
     describe('DELETE: remove course', function () {
@@ -247,7 +312,7 @@ describe('API: course suite', function () {
 
             const result = await CourseRoute.deleteCourse(courseId, token);
             expect(result.status).toBe(403);
-            expect(result.body.errors).toBe("You're not owner of this course, you can't remove it");
+            expect(result.body.errors).toBe("You're not owner of this course, you can't change/remove it");
 
             const course = await Course.findByPk(courseId);
             expect(course).not.toBeNull();
@@ -260,7 +325,7 @@ describe('API: course suite', function () {
 
             const result = await CourseRoute.deleteCourse(courseId, teacherToken);
             expect(result.status).toBe(403);
-            expect(result.body.errors).toBe("You're not owner of this course, you can't remove it");
+            expect(result.body.errors).toBe("You're not owner of this course, you can't change/remove it");
 
             const course = await Course.findByPk(courseId);
             expect(course).not.toBeNull();
@@ -278,24 +343,24 @@ describe('API: course suite', function () {
             const result = await CourseRoute.deleteCourse(courseId, teacherToken);
             expect(result.status).toBe(200);
             expect(result.body.result).toBe('Success: record was removed.');
-            
+
             const course = await Course.findByPk(courseId);
             expect(course).toBeNull();
         });
-        
+
         it('should be possible for admin remove any course record', async () => {
             const { token, userId } = await ApiHelper.getAdminToken();
             createdUserIds.push(userId);
-            
+
             const { categoryId } = await ApiHelper.createCategory(adminToken);
             createdCategoryIds.push(categoryId);
-            
+
             const courseData = TestData.getCourse({ categoryId });
             const courseResponse = await CourseRoute.postCourse(courseData, adminToken);
             expect(courseResponse.status).toBe(200);
             const courseId = courseResponse.body.id;
             createdCourseIds.push(courseId);
-            
+
             const result = await CourseRoute.deleteCourse(courseId, token);
             expect(result.status).toBe(200);
             expect(result.body.result).toBe('Success: record was removed.');

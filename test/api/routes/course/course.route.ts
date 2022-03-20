@@ -1,7 +1,7 @@
 import { v1Methods } from '../../../../src/api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
 import { ApiDefaultResponse } from '../auth/auth.interfaces';
-import { ApiCourseListResponse, ApiCourseRequest, ApiCourseResponse } from './course.interfaces';
+import { ApiChangeCourseRequest, ApiCourseListResponse, ApiCourseRequest, ApiCourseResponse } from './course.interfaces';
 
 export class CourseRoute extends ApiRoute {
     static async getCourseList(jwt?: string): Promise<ApiCourseListResponse> {
@@ -38,17 +38,17 @@ export class CourseRoute extends ApiRoute {
         });
     }
 
-    // static async putCategory(req?: ApiChangeCategoryRequest, jwt?: string): Promise<ApiCategoryResponse> {
-    //     return this.putMethod({
-    //         path: v1Methods.category.category,
-    //         body: req?.body,
-    //         options: {
-    //             headers: {
-    //                 Authorization: jwt ?? '',
-    //             },
-    //         },
-    //     });
-    // }
+    static async putCourse(req?: ApiChangeCourseRequest, jwt?: string): Promise<ApiCourseResponse> {
+        return this.putMethod({
+            path: v1Methods.course.course,
+            body: req?.body,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
 
     static async deleteCourse(id: number, jwt?: string): Promise<ApiDefaultResponse> {
         return this.deleteMethod({

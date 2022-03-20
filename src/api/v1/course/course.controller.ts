@@ -162,7 +162,43 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
  *         description:
  */
 export async function handlePutCourse(req: ChangeCourseRequest, res: CourseResponse) {
-    res.status(501).json({});
+    const courseId = req.body.id;
+    const { payload } = Helper.getJwtAndPayload(req);
+    const userId = payload.userId;
+
+    try {
+        const createdCourse = await CreatedCourses.findOne({
+            where: {
+                userId,
+                courseId,
+            },
+        });
+
+        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
+        if (isNil(createdCourse) && payload.roleId == teacherRoleId) {
+            return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
+        }
+
+        const foundCourse = await Course.findByPk(courseId);
+        if (isNil(foundCourse)) {
+            return res.status(404).json({ errors: ApiMessages.course.noCourse });
+        }
+
+        const categoryId = req?.body?.categoryId;
+        if (!isNil(categoryId)) {
+            const foundCategory = await Category.findByPk(categoryId);
+            if (isNil(foundCategory)) {
+                return res.status(404).json({ errors: ApiMessages.category.noCategory });
+            }
+        }
+
+        await foundCourse.update(req.body);
+        const result: any = foundCourse.toJSON();
+        
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.course.unableChangeCourse + err });
+    }
 }
 
 /**
@@ -197,7 +233,7 @@ export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
 
         const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
         if (isNil(createdCourse) && payload.roleId == teacherRoleId) {
-            return res.status(403).json({ errors: ApiMessages.course.notOwnerRemoveError });
+            return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
         }
 
         await Course.destroy({

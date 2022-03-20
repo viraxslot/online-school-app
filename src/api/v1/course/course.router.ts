@@ -63,6 +63,27 @@ courseRouter.post(
 
 courseRouter.put(
     '/' + v1Methods.course.course,
+    body(
+        SchemasV1.ChangeCourseRequest.required,
+        ApiMessages.common.requiredFields(SchemasV1.ChangeCourseRequest.required.toString())
+    ).exists(),
+    body('id', ApiMessages.common.numericParameter).isNumeric(),
+    body('title', ApiMessages.common.stringParameter).isString(),
+    body('description', ApiMessages.common.stringParameter).isString(),
+    body('visible', ApiMessages.common.booleanParameter).isBoolean(),
+    body('title', ApiMessages.course.wrongMinCourseTitleLength).isLength({
+        min: SchemasV1.CourseRequest.properties.title.minLength,
+    }),
+    body('title', ApiMessages.course.wrongMaxCourseTitleLength).isLength({
+        max: SchemasV1.CourseRequest.properties.title.maxLength,
+    }),
+    body('description', ApiMessages.course.wrongMinCourseDescriptionLength).isLength({
+        min: SchemasV1.CourseRequest.properties.description.minLength,
+    }),
+    body('description', ApiMessages.course.wrongMaxCourseDescriptionLength).isLength({
+        max: SchemasV1.CourseRequest.properties.description.maxLength,
+    }),
+    checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCourse),
     handlePutCourse

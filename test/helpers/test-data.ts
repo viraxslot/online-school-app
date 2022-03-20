@@ -6,6 +6,10 @@ import { Category, User, UserRoles } from '../../src/db/models';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 
 export class TestData {
+    static getRandomPrefix(amount?: number): string {
+        return faker.random.alphaNumeric(amount ?? 5);
+    }
+
     static async getUserData(options?: { role: UserRoles }): Promise<ApiUserRequest> {
         let login: string;
         let email: string;
@@ -70,13 +74,19 @@ export class TestData {
     }
 
     static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number }): any {
+        const body: any = {
+            title: faker.lorem.words(5),
+            description: faker.lorem.words(10),
+            visible: options?.visible ?? true,
+            categoryId: options?.categoryId ?? 1,
+        };
+
+        if (options?.courseId) {
+            body.id = options.courseId;
+        }
+
         return {
-            body: {
-                title: faker.lorem.words(5),
-                description: faker.lorem.words(10),
-                visible: options?.visible ?? true,
-                categoryId: options?.categoryId ?? 1,
-            },
+            body,
         };
     }
 }
