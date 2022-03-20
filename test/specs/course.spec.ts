@@ -1,7 +1,7 @@
 import { omit } from 'lodash';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, Course, User, UserRoles } from '../../src/db/models';
+import { Category, Course, CreatedCourses, User, UserRoles } from '../../src/db/models';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -16,13 +16,16 @@ describe('API: course suite', function () {
     const teacherAdminTestCases = [{ role: UserRoles.Teacher }, { role: UserRoles.Admin }];
 
     let studentToken: string;
+    let teacherToken: string;
     let adminToken: string;
 
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
+        const teacher = await ApiHelper.getTeacherToken();
         const admin = await ApiHelper.getAdminToken();
 
         studentToken = student.token;
+        teacherToken = teacher.token;
         adminToken = admin.token;
 
         createdUserIds.push(student.userId, admin.userId);
@@ -200,6 +203,15 @@ describe('API: course suite', function () {
                 expect(result.body.description).toBe(courseData.body.description);
                 expect(result.body.visible).toBe(courseData.body.visible);
                 expect(result.body.categoryId).toBe(courseData.body.categoryId);
+
+                const createdCourse = await CreatedCourses.findOne({
+                    raw: true,
+                    where: {
+                        userId,
+                        courseId: result.body.id,
+                    },
+                });
+                expect(createdCourse).not.toBeNull();
             });
         });
     });
@@ -209,7 +221,88 @@ describe('API: course suite', function () {
     });
 
     describe('DELETE: remove course', function () {
-        it.todo('test');
+        it('should return 401 error if token is not passed', async () => {
+            const result = await CourseRoute.deleteCourse(-1);
+            expect(result.status).toBe(401);
+        });
+
+        it('should return 403 error if trying to remove course with student token', async () => {
+            const result = await CourseRoute.deleteCourse(-1, studentToken);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe('This action is forbidden for role student');
+        });
+
+        it('should not be possible for teacher to remove course that belongs to another teacher', async () => {
+            const { token, userId } = await ApiHelper.getTeacherToken();
+            createdUserIds.push(userId);
+
+            const { categoryId } = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const courseData = TestData.getCourse({ categoryId });
+            const courseResponse = await CourseRoute.postCourse(courseData, teacherToken);
+            expect(courseResponse.status).toBe(200);
+            const courseId = courseResponse.body.id;
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.deleteCourse(courseId, token);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe("You're not owner of this course, you can't remove it");
+
+            const course = await Course.findByPk(courseId);
+            expect(course).not.toBeNull();
+        });
+
+        it('should not be possible for teacher to remove course that belongs to admin', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.deleteCourse(courseId, teacherToken);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe("You're not owner of this course, you can't remove it");
+
+            const course = await Course.findByPk(courseId);
+            expect(course).not.toBeNull();
+        });
+
+        it('should be possible for teacher to remove its own course', async () => {
+            const { categoryId } = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const courseData = TestData.getCourse({ categoryId });
+            const courseResponse = await CourseRoute.postCourse(courseData, teacherToken);
+            expect(courseResponse.status).toBe(200);
+            const courseId = courseResponse.body.id;
+
+            const result = await CourseRoute.deleteCourse(courseId, teacherToken);
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('Success: record was removed.');
+            
+            const course = await Course.findByPk(courseId);
+            expect(course).toBeNull();
+        });
+        
+        it('should be possible for admin remove any course record', async () => {
+            const { token, userId } = await ApiHelper.getAdminToken();
+            createdUserIds.push(userId);
+            
+            const { categoryId } = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(categoryId);
+            
+            const courseData = TestData.getCourse({ categoryId });
+            const courseResponse = await CourseRoute.postCourse(courseData, adminToken);
+            expect(courseResponse.status).toBe(200);
+            const courseId = courseResponse.body.id;
+            createdCourseIds.push(courseId);
+            
+            const result = await CourseRoute.deleteCourse(courseId, token);
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('Success: record was removed.');
+
+            const course = await Course.findByPk(courseId);
+            expect(course).toBeNull();
+        });
     });
 
     afterEach(async () => {

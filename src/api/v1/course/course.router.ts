@@ -70,6 +70,9 @@ courseRouter.put(
 
 courseRouter.delete(
     '/' + v1Methods.course.courseId,
+    param('id', ApiMessages.common.unableParseId).exists(),
+    param('id', ApiMessages.common.numericParameter).isNumeric(),
+    checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.RemoveCourse),
     handleDeleteCourse

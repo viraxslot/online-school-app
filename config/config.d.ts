@@ -10,6 +10,8 @@ const config: {
     basicAuth: string;
     jwtSecret: string;
     jwtExpiresIn: string;
+    adminLogin: string;
+    adminPassword: string;
 };
 
 export default config;

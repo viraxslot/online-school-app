@@ -4,6 +4,8 @@
  */
 export * from './material.model';
 export * from './like.model';
+export * from './created-courses.model';
+export * from './student-courses.model';
 export * from './course.model';
 export * from './category.model';
 

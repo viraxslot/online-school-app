@@ -59,6 +59,7 @@ export const ApiMessages = {
         unableCreateCourse: 'Unable to create course: ',
         uniqueFields: 'title should be unique',
         unableRemoveCourse: 'Unable to remove course record: ',
+        notOwnerRemoveError: 'You\'re not owner of this course, you can\'t remove it'
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

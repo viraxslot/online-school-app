@@ -32,4 +32,6 @@ module.exports = {
     basicAuth: process.env.BASIC_AUTH ?? [],
     jwtSecret: process.env.JWT_SECRET ?? '',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '2h',
+    adminLogin: process.env.ADMIN_LOGIN,
+    adminPassword: process.env.ADMIN_PASSWORD,
 };

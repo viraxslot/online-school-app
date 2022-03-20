@@ -3,12 +3,14 @@ import { DataTypes, ModelDefined, Optional } from 'sequelize';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 import { BannedUser } from './banned-user.model';
+import { CreatedCourses } from './created-courses.model';
 import { Course, JwtAuth, Like, Role } from './index';
+import { StudentCourses } from './student-courses.model';
 
 export enum UserRoles {
     Student = 'student',
     Teacher = 'teacher',
-    Admin = 'admin'
+    Admin = 'admin',
 }
 export interface UserAttributes extends DbCommonAttributes {
     login: string;
@@ -19,7 +21,7 @@ export interface UserAttributes extends DbCommonAttributes {
     lastName?: string | null;
 }
 
-type UserCreationAttributes = Optional<UserAttributes, 'id'>
+type UserCreationAttributes = Optional<UserAttributes, 'id'>;
 
 export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequelize.define('user', {
     id: {
@@ -79,8 +81,11 @@ BannedUser.belongsTo(User);
 User.hasMany(Like, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
 Like.belongsTo(User);
 
-User.belongsToMany(Course, { through: 'UserCourses' });
-Course.belongsToMany(User, { through: 'UserCourses' });
+User.belongsToMany(Course, { through: StudentCourses });
+Course.belongsToMany(User, { through: StudentCourses });
+
+User.belongsToMany(Course, { through: CreatedCourses });
+Course.belongsToMany(User, { through: CreatedCourses });
 
 User.hasMany(JwtAuth, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });
 JwtAuth.belongsTo(User);

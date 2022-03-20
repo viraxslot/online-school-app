@@ -25,7 +25,7 @@ module.exports = {
         await queryInterface.bulkInsert('users', users, {});
     },
 
-    async down(queryInterface) {
-        return queryInterface.bulkDelete('users', null, {});
+    async down() {
+        //
     },
 };

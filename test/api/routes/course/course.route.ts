@@ -1,5 +1,6 @@
 import { v1Methods } from '../../../../src/api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
+import { ApiDefaultResponse } from '../auth/auth.interfaces';
 import { ApiCourseListResponse, ApiCourseRequest, ApiCourseResponse } from './course.interfaces';
 
 export class CourseRoute extends ApiRoute {
@@ -49,14 +50,14 @@ export class CourseRoute extends ApiRoute {
     //     });
     // }
 
-    // static async deleteCategory(id: number, jwt?: string): Promise<ApiDefaultResponse> {
-    //     return this.deleteMethod({
-    //         path: v1Methods.category.categoryId.replace(':id', id.toString()),
-    //         options: {
-    //             headers: {
-    //                 Authorization: jwt ?? '',
-    //             },
-    //         },
-    //     });
-    // }
+    static async deleteCourse(id: number, jwt?: string): Promise<ApiDefaultResponse> {
+        return this.deleteMethod({
+            path: v1Methods.course.courseId.replace(':id', id.toString()),
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
 }

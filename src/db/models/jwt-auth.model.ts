@@ -7,7 +7,7 @@ interface JwtAttributes extends DbCommonAttributes {
     userId: number;
 }
 
-type JwtAttributesCreationAttributes = Optional<JwtAttributes, 'id'>
+type JwtAttributesCreationAttributes = Optional<JwtAttributes, 'id'>;
 
 export const JwtAuth: ModelDefined<JwtAttributes, JwtAttributesCreationAttributes> = sequelize.define(
     'jwtAuth',
@@ -20,7 +20,7 @@ export const JwtAuth: ModelDefined<JwtAttributes, JwtAttributesCreationAttribute
         jwt: {
             type: DataTypes.STRING,
             allowNull: false,
-        }
+        },
     },
     {
         freezeTableName: true,

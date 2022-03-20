@@ -4,19 +4,23 @@ import sequelize from '../sequelize';
 
 interface BannedUserAttributes extends DbCommonAttributes {
     title: string;
+    userId: number;
     bannedBy: string;
 }
 
-type BannedUserCreationAttributes = Optional<BannedUserAttributes, 'id'>
+type BannedUserCreationAttributes = Optional<BannedUserAttributes, 'id'>;
 
-export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAttributes> = sequelize.define('bannedUser', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    bannedBy: {
-        type: DataTypes.STRING,
-        allowNull: false
+export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAttributes> = sequelize.define(
+    'bannedUser',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        bannedBy: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     }
-});
+);
