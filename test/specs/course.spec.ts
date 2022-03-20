@@ -281,8 +281,38 @@ describe('API: course suite', function () {
             });
         });
 
-        it.todo('should return 404 error if new category id is not exist');
-        it.todo('should be possible to change category id');
+        it('should return 404 error if new category id is not exist', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const courseData = TestData.getCourse();
+            courseData.body.id = courseId;
+            courseData.body.categoryId = -1;
+            const changeResponse = await CourseRoute.putCourse(courseData, adminToken);
+
+            expect(changeResponse.status).toBe(404);
+            expect(changeResponse.body.errors).toBe('Unable to find category record(s)');
+        });
+
+        it('should be possible to change category id', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+            
+            const newCategory = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(newCategory.categoryId);
+
+            const courseData = TestData.getCourse();
+            courseData.body.id = courseId;
+            courseData.body.categoryId = newCategory.categoryId;
+
+            const changeResponse = await CourseRoute.putCourse(courseData, adminToken);
+
+            expect(changeResponse.status).toBe(200);
+            expect(changeResponse.body.id).toBe(courseId);
+            expect(changeResponse.body.categoryId).toBe(newCategory.categoryId);
+        });
     });
 
     describe('DELETE: remove course', function () {
