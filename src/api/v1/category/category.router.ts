@@ -18,8 +18,11 @@ const categoryRouter = express.Router();
 
 categoryRouter.get(
     '/' + v1Methods.category.categoryId,
-    param('id', ApiMessages.common.unableParseId).exists(),
-    param('id', ApiMessages.common.numericParameter).isNumeric(),
+    param('id')
+        .exists()
+        .withMessage(ApiMessages.common.unableParseId)
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.GetCategory),
@@ -35,20 +38,24 @@ categoryRouter.get(
 
 categoryRouter.post(
     '/' + v1Methods.category.category,
-    body(
-        SchemasV1.CategoryRequest.required,
-        ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())
-    ).exists(),
-    body('title', ApiMessages.common.stringParameter).isString(),
-    body('title', ApiMessages.category.wrongMinCategoryLength).isLength({
-        min: SchemasV1.CategoryRequest.properties.title.minLength,
-    }),
-    body('title', ApiMessages.category.wrongMaxCategoryLength).isLength({
-        max: SchemasV1.CategoryRequest.properties.title.maxLength,
-    }),
-    body('title', ApiMessages.common.onlyAlphabetAllowed).custom((value) => {
-        return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
-    }),
+    body(SchemasV1.CategoryRequest.required)
+        .exists()
+        .withMessage(ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())),
+    body('title')
+        .isString()
+        .withMessage(ApiMessages.common.stringParameter)
+        .isLength({
+            min: SchemasV1.CategoryRequest.properties.title.minLength,
+        })
+        .withMessage(ApiMessages.category.wrongMinCategoryLength)
+        .isLength({
+            max: SchemasV1.CategoryRequest.properties.title.maxLength,
+        })
+        .withMessage(ApiMessages.category.wrongMaxCategoryLength)
+        .custom((value) => {
+            return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
+        })
+        .withMessage(ApiMessages.common.onlyAlphabetAllowed),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.CreateCategory),
@@ -57,12 +64,11 @@ categoryRouter.post(
 
 categoryRouter.put(
     '/' + v1Methods.category.category,
-    body(
-        SchemasV1.ChangeCategoryRequest.required,
-        ApiMessages.common.requiredFields(SchemasV1.ChangeCategoryRequest.required.toString())
-    ).exists(),
-    body('id', ApiMessages.common.numericParameter).isNumeric(),
-    body('title', ApiMessages.common.stringParameter).isString(),
+    body(SchemasV1.ChangeCategoryRequest.required)
+        .exists()
+        .withMessage(ApiMessages.common.requiredFields(SchemasV1.ChangeCategoryRequest.required.toString())),
+    body('id').isNumeric().withMessage(ApiMessages.common.numericParameter),
+    body('title').isString().withMessage(ApiMessages.common.stringParameter),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCategory),
@@ -71,8 +77,11 @@ categoryRouter.put(
 
 categoryRouter.delete(
     '/' + v1Methods.category.categoryId,
-    param('id', ApiMessages.common.unableParseId).exists(),
-    param('id', ApiMessages.common.numericParameter).isNumeric(),
+    param('id')
+        .exists()
+        .withMessage(ApiMessages.common.unableParseId)
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.RemoveCategory),
