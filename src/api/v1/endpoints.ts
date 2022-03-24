@@ -26,5 +26,10 @@ export const v1Methods = {
         course: 'course',
         courseId: 'course/:id',
         courses: 'courses',
+    },
+    material: {
+        material: 'material',
+        materialId: 'material/:id',
+        materialsByCourseId: 'materials/:courseId',
     }
 };

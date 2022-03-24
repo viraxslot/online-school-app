@@ -8,6 +8,7 @@ import categoryRouter from './api/v1/category/category.router';
 import courseRouter from './api/v1/course/course.router';
 import healthRouter from './api/v1/health/health.router';
 import loginRouter from './api/v1/login/login.router';
+import materialRouter from './api/v1/material/material.router';
 import swaggerRouter from './api/v1/swagger/swagger.router';
 import userRouter from './api/v1/user/user.router';
 import sequelize from './db/sequelize';
@@ -32,6 +33,7 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, userRouter);
     app.use(versionPrefix, categoryRouter);
     app.use(versionPrefix, courseRouter);
+    app.use(versionPrefix, materialRouter);
 });
 
 const port = process.env.PORT ?? 4000;

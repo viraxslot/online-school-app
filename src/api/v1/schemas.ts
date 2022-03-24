@@ -172,6 +172,83 @@ const CourseSchemas = {
     },
 };
 
+const MaterialSchemas = {
+    MaterialRequest: {
+        type: 'object',
+        properties: {
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            data: {
+                type: 'string',
+                minLength: 10,
+                maxLength: 1000,
+            },
+            order: {
+                type: 'number',
+            },
+            courseId: {
+                type: 'number',
+            },
+        },
+        required: ['title', 'data', 'courseId'],
+    },
+
+    ChangeMaterialRequest: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            data: {
+                type: 'string',
+                minLength: 10,
+                maxLength: 1000,
+            },
+            order: {
+                type: 'number',
+            },
+            courseId: {
+                type: 'number',
+            },
+        },
+        required: ['id'],
+    },
+
+    MaterialResponse: {
+        type: 'object',
+        properties: {
+            id: {
+                type: 'number',
+            },
+            title: {
+                type: 'string',
+                minLength: 3,
+                maxLength: 100,
+            },
+            data: {
+                type: 'string',
+                minLength: 10,
+                maxLength: 1000,
+            },
+            order: {
+                type: 'number',
+            },
+            courseId: {
+                type: 'number',
+            },
+        },
+        required: ['id', 'title', 'data', 'order', 'courseId'],
+    },
+};
+
 const LoginSchemas = {
     SignInRequest: {
         type: 'object',
@@ -239,4 +316,9 @@ export const SchemasV1 = {
         type: 'array',
         items: CourseSchemas.CourseResponse,
     },
+    ...MaterialSchemas,
+    MaterialListResponse: {
+        type: 'array',
+        items: MaterialSchemas.MaterialResponse,
+    }
 };

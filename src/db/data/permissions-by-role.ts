@@ -7,6 +7,8 @@ export const PermissionsByRole = {
         Permissions.GetTeacherList,
         Permissions.GetCourse,
         Permissions.GetCourseList,
+        Permissions.GetMaterial,
+        Permissions.GetMaterialList,
     ],
     [UserRoles.Teacher]: [
         Permissions.GetCategory,
@@ -19,6 +21,11 @@ export const PermissionsByRole = {
         Permissions.CreateCourse,
         Permissions.ChangeCourse,
         Permissions.RemoveCourse,
+        Permissions.GetMaterial,
+        Permissions.GetMaterialList,
+        Permissions.CreateMaterial,
+        Permissions.ChangeMaterial,
+        Permissions.RemoveMaterial,
     ],
     [UserRoles.Admin]: [...Object.values(Permissions)],
 };

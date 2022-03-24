@@ -60,7 +60,18 @@ export const ApiMessages = {
         unableChangeCourse: 'Unable to change course: ',
         unableRemoveCourse: 'Unable to remove course record: ',
         uniqueFields: 'title should be unique',
-        notOwnerError: 'You\'re not owner of this course, you can\'t change/remove it'
+        notOwnerError: "You're not owner of this course, you can't change/remove it",
+    },
+    material: {
+        noMaterial: 'Unable to find material record(s)',
+        wrongMinMaterialTitleLength:
+            'Minimum material title length is: ' + SchemasV1.MaterialRequest.properties.title.minLength,
+        wrongMaxMaterialTitleLength:
+            'Maximum material title length is: ' + SchemasV1.MaterialRequest.properties.title.maxLength,
+        wrongMinMaterialDataLength:
+            'Minimum material data length is: ' + SchemasV1.MaterialRequest.properties.data.minLength,
+        wrongMaxMaterialDataLength:
+            'Maximum material data length is: ' + SchemasV1.MaterialRequest.properties.data.maxLength,
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

@@ -19,6 +19,12 @@ export enum Permissions {
     GetCourseList = 'Get course list',
     ChangeCourse = 'Change course',
     RemoveCourse = 'Remove course',
+    // material permissions
+    CreateMaterial = 'Create material',
+    GetMaterial = 'Get material',
+    GetMaterialList = 'Get material list',
+    ChangeMaterial = 'Change material',
+    RemoveMaterial = 'Remove material',
 }
 
 interface PermissionAttributes extends DbCommonAttributes {

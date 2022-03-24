@@ -4,8 +4,9 @@ import sequelize from '../sequelize';
 
 interface MaterialAttributes extends DbCommonAttributes {
     title: string;
-    description: string;
+    data: string;
     order: number;
+    courseId: number;
 }
 
 type MaterialCreationAttributes = Optional<MaterialAttributes, 'id'>
@@ -18,6 +19,18 @@ export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttribut
     },
     title: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    data: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    order: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    courseId: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 });

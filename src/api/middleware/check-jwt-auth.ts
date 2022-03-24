@@ -25,7 +25,6 @@ export async function checkJwtAuth(req: Request, res: DefaultResponse, next: Nex
         });
 
         if (isNil(createdToken)) {
-            console.log('jwt not found')
             return res.status(401).json({ errors: ApiMessages.common.unauthorized });
         }
 

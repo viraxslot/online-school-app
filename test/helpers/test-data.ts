@@ -89,4 +89,21 @@ export class TestData {
             body,
         };
     }
+
+    static getMaterial(options?: { courseId?: number; materialId?: number }) {
+        const body: any = {
+            title: faker.lorem.words(5),
+            data: faker.lorem.words(10),
+            order: null,
+            courseId: options?.courseId ?? 1,
+        };
+
+        if (options?.materialId) {
+            body.id = options.materialId;
+        }
+
+        return {
+            body,
+        };
+    }
 }
