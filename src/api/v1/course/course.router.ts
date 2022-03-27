@@ -15,7 +15,7 @@ import {
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
-import { handleGetMaterialById, handleGetMaterialsList, handlePostMaterial } from './material.controller';
+import { handleDeleteMaterial, handleGetMaterialById, handleGetMaterialsList, handlePostMaterial } from './material.controller';
 const courseRouter = express.Router();
 
 /**
@@ -237,6 +237,34 @@ courseRouter.post(
     checkJwtAuth,
     checkPermission(Permissions.CreateMaterial),
     handlePostMaterial
+);
+
+courseRouter.delete(
+    '/' + v1Methods.course.materialsById,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    param('materialId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (materialId: number) => {
+            const material = await Material.findByPk(materialId);
+            if (isNil(material)) {
+                throw ApiMessages.material.noMaterial;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.RemoveMaterial),
+    handleDeleteMaterial
 );
 
 export default courseRouter;

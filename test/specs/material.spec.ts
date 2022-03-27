@@ -1,7 +1,7 @@
 import { find } from 'lodash';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, User, UserRoles } from '../../src/db/models';
+import { Category, Material, User, UserRoles } from '../../src/db/models';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -206,6 +206,13 @@ describe('API: material suite', function () {
                 expect(result.body.data).toBe(material.body.data);
                 expect(result.body.order).toBe(material.body.order);
                 expect(result.body.courseId).toBe(courseId);
+
+                const createdMaterial: any = await Material.findByPk(result.body.id, { raw: true });
+                expect(createdMaterial).not.toBeNull();
+                expect(createdMaterial.title).toBe(material.body.title);
+                expect(createdMaterial.data).toBe(material.body.data);
+                expect(createdMaterial.order).toBe(material.body.order);
+                expect(createdMaterial.courseId).toBe(courseId);
             });
         });
 
@@ -236,7 +243,71 @@ describe('API: material suite', function () {
     });
 
     describe('DELETE: remove material', function () {
-        it.todo('test');
+        it('should return 400 error if no course found', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const result = await CourseRoute.deleteMaterial(-1, materialId);
+
+            expect(result.status).toBe(400);
+            expect(result.body.errors.length).toBe(1);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.location).toBe('params');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should return 400 error if no material found', async () => {
+            const result = await CourseRoute.deleteMaterial(courseId, -1);
+            expect(result.status).toBe(400);
+            expect(result.body.errors.length).toBe(1);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('Unable to find material record(s)');
+            expect(error.location).toBe('params');
+            expect(error.param).toBe('materialId');
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const result = await CourseRoute.deleteMaterial(courseId, materialId);
+
+            expect(result.status).toBe(401);
+        });
+
+        it('should return 403 if trying to remove other owner material', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const result = await CourseRoute.deleteMaterial(courseId, materialId, teacherToken);
+
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe("You're not owner of this course, you can't change/remove it");
+        });
+
+        it('should be possible to delete material', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const result = await CourseRoute.deleteMaterial(courseId, materialId, adminToken);
+
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('Success: record was removed.');
+        });
+
+        it('should be possible to delete material with teacher role', async () => {
+            const { categoryId } = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const course = TestData.getCourse({
+                categoryId,
+            });
+            const createdCourse = await CourseRoute.postCourse(course, teacherToken);
+            const teacherCourseId = createdCourse.body.id;
+
+            const material = TestData.getMaterial();
+            const createdMaterial = await CourseRoute.postMaterial(teacherCourseId, material, teacherToken);
+            const materialId = createdMaterial.body.id;
+
+            const result = await CourseRoute.deleteMaterial(teacherCourseId, materialId, teacherToken);
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('Success: record was removed.');
+        });
     });
 
     afterAll(async () => {

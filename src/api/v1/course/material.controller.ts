@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { isNil } from 'lodash';
 import { CreatedCourses, Material } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
+import { DefaultResponse } from '../../shared/interfaces';
 import { Helper } from '../helper';
 import { GetMaterialRequest, MaterialListResponse, MaterialRequest, MaterialResponse } from './material.interfaces';
 // import { MaterialRequest, MaterialResponse } from './material.interfaces';
@@ -167,6 +168,31 @@ export async function handlePutMaterial(req: Request, res: Response) {
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Return operation result or an error
  */
-export async function handleDeleteMaterial(req: Request, res: Response) {
-    res.status(501).json({});
+export async function handleDeleteMaterial(req: Request, res: DefaultResponse) {
+    const { courseId, materialId } = req.params;
+    const { payload } = Helper.getJwtAndPayload(req);
+    const userId = payload.userId;
+
+    try {
+        const createdCourse = await CreatedCourses.findOne({
+            where: {
+                userId,
+                courseId,
+            },
+        });
+
+        if (isNil(createdCourse)) {
+            return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
+        }
+        
+        await Material.destroy({
+            where: {
+                id: materialId,
+            },
+        });
+
+        return res.status(200).json({ result: ApiMessages.common.removeSuccess });
+    } catch (err) {
+        return res.json({ errors: ApiMessages.material.unableRemoveMaterial + err });
+    }
 }

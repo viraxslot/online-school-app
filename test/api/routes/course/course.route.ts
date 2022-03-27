@@ -5,7 +5,7 @@ import {
     ApiChangeCourseRequest,
     ApiCourseListResponse,
     ApiCourseRequest,
-    ApiCourseResponse,
+    ApiCourseResponse
 } from './course.interfaces';
 import { ApiMaterialRequest, ApiMaterialResponse } from './material.interfaces';
 
@@ -69,7 +69,7 @@ export class CourseRoute extends ApiRoute {
 
     static async getMaterialsList(courseId: number, jwt?: string): Promise<ApiMaterialResponse> {
         const path = v1Methods.course.materials.replace(':courseId', courseId.toString());
-        
+
         return this.getMethod({
             path,
             options: {
@@ -83,7 +83,7 @@ export class CourseRoute extends ApiRoute {
     static async getMaterial(courseId: number, materialId: number, jwt?: string): Promise<ApiMaterialResponse> {
         let path = v1Methods.course.materialsById.replace(':courseId', courseId.toString());
         path = path.replace(':materialId', materialId.toString());
-        
+
         return this.getMethod({
             path,
             options: {
@@ -98,6 +98,20 @@ export class CourseRoute extends ApiRoute {
         return this.postMethod({
             path: v1Methods.course.materials.replace(':courseId', courseId.toString()),
             body: req.body,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
+    static async deleteMaterial(courseId: number, materialId: number, jwt?: string): Promise<ApiDefaultResponse> {
+        let path = v1Methods.course.materialsById.replace(':courseId', courseId.toString());
+        path = path.replace(':materialId', materialId.toString());
+
+        return this.deleteMethod({
+            path,
             options: {
                 headers: {
                     Authorization: jwt ?? '',
