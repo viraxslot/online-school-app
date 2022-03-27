@@ -1,6 +1,6 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, User } from '../../src/db/models';
+import { Category, User, UserRoles } from '../../src/db/models';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -9,6 +9,8 @@ import { TestData } from '../helpers/test-data';
 describe('API: material suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
+
+    const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
 
     // let studentToken: string;
     let teacherToken: string;
@@ -36,7 +38,50 @@ describe('API: material suite', function () {
     });
 
     describe('GET: material by id', function () {
-        it.todo('test');
+        it('should return 400 error if no course found', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const result = await CourseRoute.getMaterial(-1, materialId);
+            expect(result.status).toBe(400);
+            expect(result.body.errors.length).toBe(1);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.location).toBe('params');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should return 400 error if no material found', async () => {
+            const result = await CourseRoute.getMaterial(courseId, -1);
+            expect(result.status).toBe(400);
+            expect(result.body.errors.length).toBe(1);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('Unable to find material record(s)');
+            expect(error.location).toBe('params');
+            expect(error.param).toBe('materialId');
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+
+            const result = await CourseRoute.getMaterial(courseId, materialId);
+            expect(result.status).toBe(401);
+        });
+
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get material by id with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+
+                const result = await CourseRoute.getMaterial(courseId, materialId, token);
+                expect(result.status).toBe(200);
+                SchemaValidator.check(result.body, SchemasV1.MaterialResponse);
+                expect(result.body.id).toBe(materialId);
+                expect(result.body.courseId).toBe(courseId);
+            });
+        });
     });
 
     describe('POST: create material', function () {

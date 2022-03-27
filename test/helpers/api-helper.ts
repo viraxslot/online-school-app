@@ -17,19 +17,11 @@ interface CreatedCourse extends CreatedCategory {
     courseId: number;
 }
 
+interface CreatedMaterial {
+    materialId: number;
+}
+
 export class ApiHelper {
-    static async getStudentToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Student);
-    }
-
-    static async getTeacherToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Teacher);
-    }
-
-    static async getAdminToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Admin);
-    }
-
     /**
      * Create category
      * @param adminToken
@@ -64,6 +56,34 @@ export class ApiHelper {
             courseId,
             categoryId,
         };
+    }
+
+    /**
+     * Create course material
+     * @param adminToken should be the same token as for course creation
+     * @returns
+     */
+    static async createMaterial(courseId: number, adminToken: string): Promise<CreatedMaterial> {
+        const material = TestData.getMaterial();
+
+        const result = await CourseRoute.postMaterial(courseId, material, adminToken);
+        const materialId = result.body.id;
+
+        return {
+            materialId,
+        };
+    }
+
+    static async getStudentToken(): Promise<CreatedUser> {
+        return await this.getToken(UserRoles.Student);
+    }
+
+    static async getTeacherToken(): Promise<CreatedUser> {
+        return await this.getToken(UserRoles.Teacher);
+    }
+
+    static async getAdminToken(): Promise<CreatedUser> {
+        return await this.getToken(UserRoles.Admin);
     }
 
     static async getToken(role: UserRoles): Promise<CreatedUser> {

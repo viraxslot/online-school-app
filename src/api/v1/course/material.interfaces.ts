@@ -24,6 +24,11 @@ interface MaterialParameters extends ParamsDictionary {
     courseId: string;
 }
 
+interface GetMaterialParameters extends MaterialParameters {
+    materialId: string;
+}
+
+export type GetMaterialRequest = RequestBody<GetMaterialParameters, {}>;
 export type MaterialRequest = RequestBody<MaterialParameters, MaterialRequestData>;
 export type ChangeMaterialRequest = RequestBody<{}, ChangeMaterialRequestData>;
 export type MaterialResponse = ResponseBody<MaterialResponseData>;

@@ -67,6 +67,20 @@ export class CourseRoute extends ApiRoute {
         });
     }
 
+    static async getMaterial(courseId: number, materialId: number, jwt?: string): Promise<ApiMaterialResponse> {
+        let path = v1Methods.course.materialsById.replace(':courseId', courseId.toString());
+        path = path.replace(':materialId', materialId.toString());
+        
+        return this.getMethod({
+            path,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
     static async postMaterial(courseId: number, req: ApiMaterialRequest, jwt?: string): Promise<ApiMaterialResponse> {
         return this.postMethod({
             path: v1Methods.course.materials.replace(':courseId', courseId.toString()),

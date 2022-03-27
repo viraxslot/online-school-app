@@ -1,7 +1,7 @@
 import express from 'express';
 import { body, param } from 'express-validator';
 import { isNil } from 'lodash';
-import { Category, Course, Permissions } from '../../../db/models';
+import { Category, Course, Material, Permissions } from '../../../db/models';
 import { checkJwtAuth } from '../../middleware/check-jwt-auth';
 import { checkPermission } from '../../middleware/check-permission';
 import { checkValidation } from '../../middleware/check-validation';
@@ -15,7 +15,7 @@ import {
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
-import { handlePostMaterial } from './material.controller';
+import { handleGetMaterialById, handlePostMaterial } from './material.controller';
 const courseRouter = express.Router();
 
 /**
@@ -156,6 +156,34 @@ courseRouter.delete(
 /**
  * Materials endpoint
  */
+
+courseRouter.get(
+    '/' + v1Methods.course.materialsById,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    param('materialId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (materialId: number) => {
+            const material = await Material.findByPk(materialId);
+            if (isNil(material)) {
+                throw ApiMessages.material.noMaterial;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.GetMaterial),
+    handleGetMaterialById
+);
 
 courseRouter.post(
     '/' + v1Methods.course.materials,

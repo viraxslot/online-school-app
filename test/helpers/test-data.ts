@@ -90,7 +90,7 @@ export class TestData {
         };
     }
 
-    static getMaterial(options?: { courseId?: number; materialId?: number }) {
+    static getMaterial(options?: { materialId?: number }) {
         const body: any = {
             title: faker.lorem.words(5),
             data: faker.lorem.words(10),

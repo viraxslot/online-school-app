@@ -3,7 +3,7 @@ import { isNil } from 'lodash';
 import { CreatedCourses, Material } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { Helper } from '../helper';
-import { MaterialRequest, MaterialResponse } from './material.interfaces';
+import { GetMaterialRequest, MaterialRequest, MaterialResponse } from './material.interfaces';
 // import { MaterialRequest, MaterialResponse } from './material.interfaces';
 
 /**
@@ -42,8 +42,22 @@ export async function handleGetMaterialsList(req: Request, res: Response) {
  *               $ref: '#/components/schemas/DefaultResponse'
  *         description: Return requested material information
  */
-export async function handleGetMaterialById(req: Request, res: Response) {
-    res.status(501).json({});
+export async function handleGetMaterialById(req: GetMaterialRequest, res: MaterialResponse) {
+    const { courseId, materialId } = req.params;
+
+    try {
+        const material: any = await Material.findOne({
+            raw: true,
+            where: {
+                id: materialId,
+                courseId: courseId,
+            },
+        });
+
+        return res.json(material);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.material.noMaterial + err });
+    }
 }
 
 /**
