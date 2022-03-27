@@ -17,7 +17,7 @@ export class UserRoute extends ApiRoute {
 
     static async putTeacher(req?: ApiChangeUserRequest, jwt?: string): Promise<ApiUserResponse> {
         return this.putMethod({
-            path: v1Methods.user.teacher,
+            path: v1Methods.user.teachers,
             body: req?.body,
             options: {
                 headers: {
@@ -29,7 +29,7 @@ export class UserRoute extends ApiRoute {
 
     static async deleteTeacher(id?: number, jwt?: string): Promise<ApiDefaultResponse> {
         return this.deleteMethod({
-            path: v1Methods.user.teacherId.replace(':id', id ? id.toString() : ''),
+            path: v1Methods.user.teachersById.replace(':id', id ? id.toString() : ''),
             options: {
                 headers: {
                     Authorization: jwt ? `Bearer ${jwt}` : ''

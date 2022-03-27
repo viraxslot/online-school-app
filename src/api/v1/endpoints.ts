@@ -1,21 +1,21 @@
 export const v1Methods = {
     health: {
-        health: 'health'
+        health: 'health',
     },
     auth: {
         noAuth: 'no-auth',
         apiKey: 'api-key',
         basic: 'basic',
-        jwt: 'jwt'
+        jwt: 'jwt',
     },
     login: {
         signup: 'signup',
-        signin: 'signin'
+        signin: 'signin',
     },
     user: {
-        teacher: 'teacher',
-        teacherId: 'teacher/:id',
-        teachers: 'teachers'
+        users: 'users', // unused
+        teachers: 'teachers',
+        teachersById: 'teachers/:id',
     },
     category: {
         categories: 'categories',
@@ -26,5 +26,5 @@ export const v1Methods = {
         coursesById: 'courses/:id',
         materials: 'courses/:courseId/materials',
         materialsById: 'courses/:courseId/materials/:materialId',
-    }
+    },
 };

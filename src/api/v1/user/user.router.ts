@@ -17,9 +17,12 @@ userRouter.get(
 );
 
 userRouter.put(
-    '/' + v1Methods.user.teacher,
-    body('id', ApiMessages.common.unableParseId).exists(),
-    body('id', ApiMessages.common.numericParameter).isNumeric(),
+    '/' + v1Methods.user.teachers,
+    body('id')
+        .exists()
+        .withMessage(ApiMessages.common.unableParseId)
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeTeacher),
@@ -27,9 +30,12 @@ userRouter.put(
 );
 
 userRouter.delete(
-    '/' + v1Methods.user.teacherId,
-    param('id', ApiMessages.common.unableParseId).exists(),
-    param('id', ApiMessages.common.numericParameter).isNumeric(),
+    '/' + v1Methods.user.teachersById,
+    param('id')
+        .exists()
+        .withMessage(ApiMessages.common.unableParseId)
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.RemoveTeacher),
