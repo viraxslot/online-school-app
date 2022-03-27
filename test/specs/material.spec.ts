@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category, User, UserRoles } from '../../src/db/models';
@@ -34,7 +35,41 @@ describe('API: material suite', function () {
     });
 
     describe('GET: materials by course id', function () {
-        it.todo('test');
+        it('should return 400 error if no course found', async () => {
+            const result = await CourseRoute.getMaterialsList(-1);
+            expect(result.status).toBe(400);
+            expect(result.body.errors.length).toBe(1);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.location).toBe('params');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const result = await CourseRoute.getMaterialsList(courseId);
+            expect(result.status).toBe(401);
+        });
+
+        allRolesTestCases.forEach((test) => {
+            it(`should be possible to get materials list by id with ${test.role} role`, async () => {
+                const { token, userId } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const material1 = await ApiHelper.createMaterial(courseId, adminToken);
+                const material2 = await ApiHelper.createMaterial(courseId, adminToken);
+
+                const result = await CourseRoute.getMaterialsList(courseId, token);
+                expect(result.status).toBe(200);
+                SchemaValidator.check(result.body, SchemasV1.MaterialListResponse);
+
+                const foundMaterial1 = find(result.body, (el) => el.id === material1.materialId);
+                const foundMaterial2 = find(result.body, (el) => el.id === material2.materialId);
+
+                expect(foundMaterial1).not.toBeUndefined();
+                expect(foundMaterial2).not.toBeUndefined();
+            });
+        });
     });
 
     describe('GET: material by id', function () {

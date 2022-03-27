@@ -15,7 +15,7 @@ import {
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
-import { handleGetMaterialById, handlePostMaterial } from './material.controller';
+import { handleGetMaterialById, handleGetMaterialsList, handlePostMaterial } from './material.controller';
 const courseRouter = express.Router();
 
 /**
@@ -156,6 +156,24 @@ courseRouter.delete(
 /**
  * Materials endpoint
  */
+
+courseRouter.get(
+    '/' + v1Methods.course.materials,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.GetMaterialList),
+    handleGetMaterialsList
+);
 
 courseRouter.get(
     '/' + v1Methods.course.materialsById,
