@@ -41,7 +41,7 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
 
 /**
  * @swagger
- * /api/v1/course/{id}:
+ * /api/v1/courses/{courseId}:
  *   get:
  *     tags:
  *       - Course
@@ -78,7 +78,7 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
 
 /**
  * @swagger
- * /api/v1/course:
+ * /api/v1/courses:
  *   post:
  *     tags:
  *       - Course
@@ -142,7 +142,7 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
 
 /**
  * @swagger
- * /api/v1/course:
+ * /api/v1/courses:
  *   put:
  *     tags:
  *       - Course
@@ -195,7 +195,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
 
 /**
  * @swagger
- * /api/v1/course/{id}:
+ * /api/v1/courses/{courseId}:
  *   delete:
  *     tags:
  *       - Course

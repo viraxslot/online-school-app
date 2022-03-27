@@ -4,10 +4,10 @@ import { MaterialRequest, MaterialResponse } from './material.interfaces';
 
 /**
  * @swagger
- * /api/v1/materials/{courseId}:
+ * /api/v1/courses/{courseId}/materials:
  *   get:
  *     tags:
- *       - Material
+ *       - Course
  *     summary: Allow to get list of materials by course id
  *     description: "Allow to get list of materials by course id. Available for roles: ALL"
  *     responses:
@@ -24,10 +24,10 @@ export async function handleGetMaterialsList(req: Request, res: Response) {
 
 /**
  * @swagger
- * /api/v1/material/{id}:
+ * /api/v1/courses/{courseId}/materials/{materialId}:
  *   get:
  *     tags:
- *       - Material
+ *       - Course
  *     summary: Allow to get material by id
  *     description: "Allow to get material by id. Available for roles: ALL"
  *     responses:
@@ -44,10 +44,10 @@ export async function handleGetMaterialById(req: Request, res: Response) {
 
 /**
  * @swagger
- * /api/v1/material:
+ * /api/v1/courses/{courseId}/materials:
  *   post:
  *     tags:
- *       - Material
+ *       - Course
  *     summary: Allow to add material
  *     description: "Allow to add material. Available for roles: teacher, admin"
  *     requestBody:
@@ -72,10 +72,10 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
 
 /**
  * @swagger
- * /api/v1/material:
+ * /api/v1/courses/{courseId}/materials:
  *   put:
  *     tags:
- *       - Material
+ *       - Course
  *     summary: Allow to change material
  *     description: "Allow to change material. Available for roles: teacher, admin"
  *     requestBody:
@@ -97,10 +97,10 @@ export async function handlePutMaterial(req: Request, res: Response) {
 
 /**
  * @swagger
- * /api/v1/material/{id}:
+ * /api/v1/courses/{courseId}/materials/{materialId}:
  *   delete:
  *     tags:
- *       - Material
+ *       - Course
  *     summary: Allow to remove material by id
  *     description: "Allow to remove material by id. Available for roles: teacher, admin"
  *     responses:

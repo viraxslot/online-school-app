@@ -34,6 +34,10 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, courseRouter);
 });
 
+app.get('*', function(req, res) {
+    res.redirect('/api/v1/api-docs/');
+});
+
 const port = process.env.PORT ?? 4000;
 
 (async () => {
