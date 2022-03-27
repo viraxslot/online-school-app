@@ -188,12 +188,9 @@ const MaterialSchemas = {
             },
             order: {
                 type: 'number',
-            },
-            courseId: {
-                type: 'number',
-            },
+            }
         },
-        required: ['title', 'data', 'courseId'],
+        required: ['title', 'data'],
     },
 
     ChangeMaterialRequest: {
@@ -214,10 +211,7 @@ const MaterialSchemas = {
             },
             order: {
                 type: 'number',
-            },
-            courseId: {
-                type: 'number',
-            },
+            }
         },
         required: ['id'],
     },
@@ -240,12 +234,9 @@ const MaterialSchemas = {
             },
             order: {
                 type: 'number',
-            },
-            courseId: {
-                type: 'number',
-            },
+            }
         },
-        required: ['id', 'title', 'data', 'order', 'courseId'],
+        required: ['id', 'title', 'data', 'order'],
     },
 };
 

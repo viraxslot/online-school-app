@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { MaterialRequest, MaterialResponse } from './material.interfaces';
+// import { MaterialRequest, MaterialResponse } from './material.interfaces';
 
 /**
  * @swagger
@@ -63,7 +64,9 @@ export async function handleGetMaterialById(req: Request, res: Response) {
  *         description: Return created material information
  */
 export async function handlePostMaterial(req: MaterialRequest, res: MaterialResponse) {
-    
+    const { courseId } = req.query;
+    console.log(courseId);
+
     res.status(501).json({});
 }
 

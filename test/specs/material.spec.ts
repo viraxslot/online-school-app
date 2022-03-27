@@ -1,8 +1,35 @@
+import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { MaterialRoute } from '../api/routes/material/material.route';
+import { Course, User } from '../../src/db/models';
+import { CourseRoute } from '../api/routes/course/course.route';
+import { ApiHelper } from '../helpers/api-helper';
 import { TestData } from '../helpers/test-data';
 
 describe('API: material suite', function () {
+    const createdUserIds: number[] = [];
+    const createdCourseIds: number[] = [];
+
+    // let studentToken: string;
+    // let teacherToken: string;
+    let adminToken: string;
+    let courseId: number;
+
+    beforeAll(async () => {
+        // const student = await ApiHelper.getStudentToken();
+        // const teacher = await ApiHelper.getTeacherToken();
+        const admin = await ApiHelper.getAdminToken();
+
+        // studentToken = student.token;
+        // teacherToken = teacher.token;
+        adminToken = admin.token;
+        
+        const course = await ApiHelper.createCourse(adminToken);
+        courseId = course.courseId;
+
+        createdUserIds.push(admin.userId);
+        createdCourseIds.push(courseId);
+    });
+
     describe('GET: materials by course id', function () {
         it.todo('test');
     });
@@ -49,12 +76,6 @@ describe('API: material suite', function () {
                 value: 'a'.repeat(SchemasV1.MaterialRequest.properties.data.maxLength + 1),
                 expectedMessage: 'Maximum material data length is: 1000',
             },
-            {
-                title: 'correct course id',
-                field: 'courseId',
-                value: -1,
-                expectedMessage: 'Unable to find course record(s)',
-            },
         ];
 
         validationTestCases.forEach((test) => {
@@ -62,11 +83,10 @@ describe('API: material suite', function () {
                 const material = TestData.getMaterial();
                 material.body[test.field] = test.value;
 
-                const result = await MaterialRoute.postMaterial(material);
+                const result = await CourseRoute.postMaterial(courseId, material);
                 expect(result.status).toBe(400);
 
                 const error = result.body.errors[0];
-                expect(error.location).toBe('body');
                 expect(error.msg).toBe(test.expectedMessage);
                 expect(error.param).toBe(test.field);
                 expect(error.value).toBe(test.value);
@@ -80,5 +100,31 @@ describe('API: material suite', function () {
 
     describe('DELETE: remove material', function () {
         it.todo('test');
+    });
+
+    afterAll(async () => {
+        for (const id of createdCourseIds) {
+            try {
+                await Course.destroy({
+                    where: {
+                        id,
+                    },
+                });
+            } catch (err) {
+                console.log(ApiMessages.category.unableRemoveCategory + err);
+            }
+        }
+
+        for (const id of createdUserIds) {
+            try {
+                await User.destroy({
+                    where: {
+                        id,
+                    },
+                });
+            } catch (err) {
+                console.log(ApiMessages.user.unableRemoveUser + err);
+            }
+        }
     });
 });

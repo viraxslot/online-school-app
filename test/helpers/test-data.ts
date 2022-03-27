@@ -95,7 +95,6 @@ export class TestData {
             title: faker.lorem.words(5),
             data: faker.lorem.words(10),
             order: null,
-            courseId: options?.courseId ?? 1,
         };
 
         if (options?.materialId) {

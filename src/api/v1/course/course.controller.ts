@@ -184,14 +184,6 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
             return res.status(404).json({ errors: ApiMessages.course.noCourse });
         }
 
-        const categoryId = req?.body?.categoryId;
-        if (!isNil(categoryId)) {
-            const foundCategory = await Category.findByPk(categoryId);
-            if (isNil(foundCategory)) {
-                return res.status(404).json({ errors: ApiMessages.category.noCategory });
-            }
-        }
-
         await foundCourse.update(req.body);
         const result: any = foundCourse.toJSON();
         

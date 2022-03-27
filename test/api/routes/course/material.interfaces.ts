@@ -3,7 +3,7 @@ import {
     ChangeMaterialRequestData,
     MaterialRequestData,
     MaterialResponseData,
-} from '../../../../src/api/v1/material/material.interfaces';
+} from '../../../../src/api/v1/course/material.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiMaterialRequest extends ApiRequest {

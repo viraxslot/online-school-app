@@ -23,13 +23,9 @@ export const v1Methods = {
         categories: 'categories',
     },
     course: {
-        course: 'course',
-        courseId: 'course/:id',
         courses: 'courses',
-    },
-    material: {
-        material: 'material',
-        materialId: 'material/:id',
-        materialsByCourseId: 'materials/:courseId',
+        coursesById: 'courses/:id',
+        materials: 'courses/:courseId/materials',
+        materialsById: 'courses/:courseId/materials/:materialId',
     }
 };

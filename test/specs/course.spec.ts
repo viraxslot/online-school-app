@@ -28,7 +28,7 @@ describe('API: course suite', function () {
         teacherToken = teacher.token;
         adminToken = admin.token;
 
-        createdUserIds.push(student.userId, admin.userId);
+        createdUserIds.push(student.userId, teacher.userId, admin.userId);
     });
 
     describe('GET: course by id', function () {
@@ -183,6 +183,18 @@ describe('API: course suite', function () {
             });
         });
 
+        it('should return 400 error if category id is not exist', async () => {
+            const courseData = TestData.getCourse();
+            courseData.body.categoryId = -1;
+            const changeResponse = await CourseRoute.postCourse(courseData, adminToken);
+
+            expect(changeResponse.status).toBe(400);
+            const error = changeResponse.body.errors[0];
+            expect(error.msg).toBe('Unable to find category record(s)');
+            expect(error.param).toBe('categoryId');
+            expect(error.location).toBe('body');
+        });
+
         teacherAdminTestCases.forEach((test) => {
             it(`should be possible to create course with ${test.role} role`, async () => {
                 const { token, userId } = await ApiHelper.getToken(test.role);
@@ -281,7 +293,7 @@ describe('API: course suite', function () {
             });
         });
 
-        it('should return 404 error if new category id is not exist', async () => {
+        it('should return 400 error if new category id is not exist', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
             createdCourseIds.push(courseId);
@@ -291,15 +303,18 @@ describe('API: course suite', function () {
             courseData.body.categoryId = -1;
             const changeResponse = await CourseRoute.putCourse(courseData, adminToken);
 
-            expect(changeResponse.status).toBe(404);
-            expect(changeResponse.body.errors).toBe('Unable to find category record(s)');
+            expect(changeResponse.status).toBe(400);
+            const error = changeResponse.body.errors[0];
+            expect(error.msg).toBe('Unable to find category record(s)');
+            expect(error.param).toBe('categoryId');
+            expect(error.location).toBe('body');
         });
 
         it('should be possible to change category id', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
             createdCourseIds.push(courseId);
-            
+
             const newCategory = await ApiHelper.createCategory(adminToken);
             createdCategoryIds.push(newCategory.categoryId);
 
@@ -317,12 +332,20 @@ describe('API: course suite', function () {
 
     describe('DELETE: remove course', function () {
         it('should return 401 error if token is not passed', async () => {
-            const result = await CourseRoute.deleteCourse(-1);
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.deleteCourse(courseId);
             expect(result.status).toBe(401);
         });
 
         it('should return 403 error if trying to remove course with student token', async () => {
-            const result = await CourseRoute.deleteCourse(-1, studentToken);
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+            createdCourseIds.push(courseId);
+
+            const result = await CourseRoute.deleteCourse(courseId, studentToken);
             expect(result.status).toBe(403);
             expect(result.body.errors).toBe('This action is forbidden for role student');
         });

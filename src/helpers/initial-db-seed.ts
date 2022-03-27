@@ -4,7 +4,7 @@ import { PermissionsByRole } from '../db/data/permissions-by-role';
 import { Permission, Permissions, Role, UserRoles } from '../db/models';
 import { RolePermission } from '../db/models/role-permissions.model';
 
-export async function InitialDbSeed() {
+export async function initialDbSeed() {
     await createRoles();
     await createPermissions();
     await removeOldPermissionsForRoles();

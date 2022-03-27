@@ -7,10 +7,7 @@ let env = 'dev';
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
     env = process.env.NODE_ENV;
 }
-
-console.log('Current environment: ', env);
 const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
-console.log('Path to env variables: ', envPath);
 
 const isDocker = process.env.DOCKER_RUN ?? false;
 if (!isDocker) {

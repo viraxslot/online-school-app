@@ -1,8 +1,7 @@
-import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces';
+import { RequestBody, ResponseBody, ResponseData } from "../../shared/interfaces";
 
 export interface MaterialRequestData {
     title: string;
-    courseId: number;
     data: string;
     order?: number | null;
 }
@@ -18,7 +17,6 @@ export interface ChangeMaterialRequestData {
     title?: string;
     data?: string;
     order?: number | null;
-    courseId?: number;
 }
 
 export type MaterialRequest = RequestBody<MaterialRequestData>;
