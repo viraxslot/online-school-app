@@ -12,7 +12,7 @@ export const v1Methods = {
         session: 'session',
     },
     user: {
-        users: 'users', // unused
+        users: 'users',
         teachers: 'teachers',
         teachersById: 'teachers/:id',
     },

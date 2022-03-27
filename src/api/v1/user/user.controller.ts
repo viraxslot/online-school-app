@@ -10,7 +10,7 @@ import { ChangeUserRequest, UserListResponse, UserRequest, UserResponse } from '
 
 /**
  * @swagger
- * /api/v1/user:
+ * /api/v1/users:
  *   post:
  *     tags:
  *       - User
@@ -117,7 +117,7 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
 
 /**
  * @swagger
- * /api/v1/teacher:
+ * /api/v1/teachers:
  *   put:
  *     tags:
  *       - User
@@ -173,7 +173,7 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
 
 /**
  * @swagger
- * /api/v1/teacher/{id}:
+ * /api/v1/teachers/{userId}:
  *   delete:
  *     tags:
  *       - User
