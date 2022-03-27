@@ -17,7 +17,7 @@ import {
 const categoryRouter = express.Router();
 
 categoryRouter.get(
-    '/' + v1Methods.category.categoryId,
+    '/' + v1Methods.category.categoriesById,
     param('id')
         .exists()
         .withMessage(ApiMessages.common.unableParseId)
@@ -37,7 +37,7 @@ categoryRouter.get(
 );
 
 categoryRouter.post(
-    '/' + v1Methods.category.category,
+    '/' + v1Methods.category.categories,
     body(SchemasV1.CategoryRequest.required)
         .exists()
         .withMessage(ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())),
@@ -63,7 +63,7 @@ categoryRouter.post(
 );
 
 categoryRouter.put(
-    '/' + v1Methods.category.category,
+    '/' + v1Methods.category.categories,
     body(SchemasV1.ChangeCategoryRequest.required)
         .exists()
         .withMessage(ApiMessages.common.requiredFields(SchemasV1.ChangeCategoryRequest.required.toString())),
@@ -76,7 +76,7 @@ categoryRouter.put(
 );
 
 categoryRouter.delete(
-    '/' + v1Methods.category.categoryId,
+    '/' + v1Methods.category.categoriesById,
     param('id')
         .exists()
         .withMessage(ApiMessages.common.unableParseId)

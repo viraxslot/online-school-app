@@ -39,7 +39,7 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
 
 /**
  * @swagger
- * /api/v1/category/{id}:
+ * /api/v1/categories/{categoryId}:
  *   get:
  *     tags:
  *       - Category
@@ -76,7 +76,7 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
 
 /**
  * @swagger
- * /api/v1/category:
+ * /api/v1/categories:
  *   post:
  *     tags:
  *       - Category
@@ -115,7 +115,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
 
 /**
  * @swagger
- * /api/v1/category:
+ * /api/v1/categories:
  *   put:
  *     tags:
  *       - Category
@@ -154,7 +154,7 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
 
 /**
  * @swagger
- * /api/v1/category/{id}:
+ * /api/v1/categories/{categoryId}:
  *   delete:
  *     tags:
  *       - Category

@@ -22,7 +22,7 @@ export class CategoryRoute extends ApiRoute {
 
     static async getCategory(id: number, jwt?: string): Promise<ApiCategoryResponse> {
         return this.getMethod({
-            path: v1Methods.category.categoryId.replace(':id', id.toString()),
+            path: v1Methods.category.categoriesById.replace(':id', id.toString()),
             options: {
                 headers: {
                     Authorization: jwt ?? '',
@@ -33,7 +33,7 @@ export class CategoryRoute extends ApiRoute {
 
     static async postCategory(req: ApiCategoryRequest, jwt?: string): Promise<ApiCategoryResponse> {
         return this.postMethod({
-            path: v1Methods.category.category,
+            path: v1Methods.category.categories,
             body: req.body,
             options: {
                 headers: {
@@ -45,7 +45,7 @@ export class CategoryRoute extends ApiRoute {
 
     static async putCategory(req?: ApiChangeCategoryRequest, jwt?: string): Promise<ApiCategoryResponse> {
         return this.putMethod({
-            path: v1Methods.category.category,
+            path: v1Methods.category.categories,
             body: req?.body,
             options: {
                 headers: {
@@ -57,7 +57,7 @@ export class CategoryRoute extends ApiRoute {
 
     static async deleteCategory(id: number, jwt?: string): Promise<ApiDefaultResponse> {
         return this.deleteMethod({
-            path: v1Methods.category.categoryId.replace(':id', id.toString()),
+            path: v1Methods.category.categoriesById.replace(':id', id.toString()),
             options: {
                 headers: {
                     Authorization: jwt ?? '',

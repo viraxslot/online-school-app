@@ -18,9 +18,8 @@ export const v1Methods = {
         teachers: 'teachers'
     },
     category: {
-        category: 'category',
-        categoryId: 'category/:id',
         categories: 'categories',
+        categoriesById: 'categories/:id',
     },
     course: {
         courses: 'courses',
