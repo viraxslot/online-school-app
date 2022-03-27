@@ -10,7 +10,7 @@ module.exports = {
 
         const user = {
             login: config.adminLogin,
-            email: faker.internet.email(),
+            email: 'admin@online-school.com',
             password: passwordHash,
             // admin role
             role: 3,
