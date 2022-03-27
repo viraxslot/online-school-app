@@ -1,12 +1,24 @@
 import { v1Methods } from '../../../../src/api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
 import { ApiDefaultResponse } from '../auth/auth.interfaces';
-import { ApiChangeUserRequest, ApiUserListResponse, ApiUserResponse } from './user.interfaces';
+import { ApiChangeUserRequest, ApiUserListResponse, ApiUserRequest, ApiUserResponse } from './user.interfaces';
 
 export class UserRoute extends ApiRoute {
     static async getTeachersList(jwt?: string ): Promise<ApiUserListResponse> {
         return this.getMethod({
             path: v1Methods.user.teachers,
+            options: {
+                headers: {
+                    Authorization: jwt ? `Bearer ${jwt}` : ''
+                }
+            }
+        });
+    }
+
+    static async postUser(reqBody: ApiUserRequest, jwt?: string): Promise<ApiUserResponse> {
+        return this.postMethod({
+            path: v1Methods.user.users,
+            body: reqBody.body,
             options: {
                 headers: {
                     Authorization: jwt ? `Bearer ${jwt}` : ''

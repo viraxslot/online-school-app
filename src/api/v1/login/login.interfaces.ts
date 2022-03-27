@@ -1,12 +1,12 @@
 import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces';
 
-export interface SignInRequestData {
+export interface SessionRequestData {
     username: string;
-    password: string
+    password: string;
 }
-export interface SignInResponseData extends ResponseData {
+export interface SessionResponseData extends ResponseData {
     accessToken: string;
 }
 
-export type SignInRequest = RequestBody<SignInRequestData>;
-export type SignInResponse = ResponseBody<SignInResponseData>;
+export type SessionRequest = RequestBody<SessionRequestData>;
+export type SessionResponse = ResponseBody<SessionResponseData>;

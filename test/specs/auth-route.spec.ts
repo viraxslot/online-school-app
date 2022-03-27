@@ -7,6 +7,7 @@ import { LoginRoute } from '../api/routes/login/login.route';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 import jwt from 'jsonwebtoken';
+import { UserRoute } from '../api/routes/user/user.route';
 
 describe('API: auth route suite', function () {
     describe('no-auth:', function () {
@@ -73,11 +74,11 @@ describe('API: auth route suite', function () {
 
         it('should be possible to authenticate with a valid jwt', async () => {
             const user = await TestData.getUserData();
-            const signUpResponse = await LoginRoute.postSignUp(user);
+            const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
             createdUserIds.push(signUpResponse.body.id);
 
-            const signInResponse = await LoginRoute.postSignIn({
+            const signInResponse = await LoginRoute.postSession({
                 body: {
                     username: user.body.login,
                     password: user.body.password,

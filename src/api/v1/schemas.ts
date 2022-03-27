@@ -241,7 +241,7 @@ const MaterialSchemas = {
 };
 
 const LoginSchemas = {
-    SignInRequest: {
+    SessionRequest: {
         type: 'object',
         properties: {
             username: {
@@ -253,7 +253,7 @@ const LoginSchemas = {
         },
         required: ['username', 'password'],
     },
-    SignInResponse: {
+    SessionResponse: {
         type: 'object',
         properties: {
             accessToken: {

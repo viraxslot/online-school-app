@@ -1,88 +1,15 @@
 import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { isNil, omit } from 'lodash';
+import { isNil } from 'lodash';
 import { Op } from 'sequelize';
 import config from '../../../../config/config';
-import { JwtAuth, User, UserRoles } from '../../../db/models';
+import { JwtAuth, User } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
-import { DbHelper } from '../db-helper';
-import { Helper } from '../helper';
-import { UserRequest, UserResponse } from '../user/user.interfaces';
-import { SignInRequest, SignInResponse } from './login.interfaces';
+import { SessionRequest, SessionResponse } from './login.interfaces';
 
 /**
  * @swagger
- * /api/v1/signup:
- *   post:
- *     tags:
- *       - Login
- *     summary: 'Allow to register a user. User types: student, teacher'
- *     description: 'Allow to register a user. User types: student, teacher'
- *     requestBody:
- *       content:
- *         json:
- *           schema:
- *             $ref: '#/components/schemas/UserRequest'
- *     responses:
- *       200:
- *         content:
- *           json:
- *             schema:
- *               $ref: '#/components/schemas/UserResponse'
- */
-export async function handleSignUp(req: UserRequest, res: UserResponse) {
-    const body = req.body;
-
-    if (body.role === UserRoles.Admin) {
-        const { token, payload } = Helper.getJwtAndPayload(req);
-        if (isNil(token)) {
-            return res.status(401).json({ errors: ApiMessages.common.unauthorized });
-        }
-
-        try {
-            if (!payload) {
-                return res.status(401).json({ errors: ApiMessages.common.unauthorized });
-            }
-
-            const role = await DbHelper.getRoleName(payload?.roleId);
-            const adminRoleId = await DbHelper.getRoleId(UserRoles.Admin);
-            if (payload?.roleId !== adminRoleId) {
-                return res.status(403).json({ errors: ApiMessages.common.forbiddenForRole(role) });
-            }
-        } catch (err) {
-            return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
-        }
-    }
-
-    const oldUser = await User.findOne({
-        where: {
-            [Op.or]: [{ login: body?.login }, { email: body?.email }],
-        },
-    });
-
-    if (!isNil(oldUser)) {
-        return res.status(400).json({ errors: ApiMessages.login.userExist });
-    }
-
-    try {
-        const newUser = await User.create({
-            login: body.login,
-            email: body.email,
-            firstName: body?.firstName ?? null,
-            lastName: body?.lastName ?? null,
-            password: body.password,
-            role: body.role,
-        });
-
-        return res.json(omit(newUser.toJSON(), 'password') as any);
-    } catch (err) {
-        return res.status(500).json({ errors: ApiMessages.login.unableCreateUser + err });
-    }
-}
-
-/**
- * @swagger
- * /api/v1/signin:
+ * /api/v1/session:
  *   post:
  *     tags:
  *       - Login
@@ -100,7 +27,7 @@ export async function handleSignUp(req: UserRequest, res: UserResponse) {
  *               $ref: '#/components/schemas/SignInResponse'
  *         description: return jwt token if credentials are correct
  */
-export async function handleSignIn(req: SignInRequest, res: SignInResponse) {
+export async function handlePostSession(req: SessionRequest, res: SessionResponse) {
     const { username, password } = req.body;
 
     let existentUser: any;

@@ -6,7 +6,77 @@ import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
-import { ChangeUserRequest, UserListResponse, UserResponse } from './user.interfaces';
+import { ChangeUserRequest, UserListResponse, UserRequest, UserResponse } from './user.interfaces';
+
+/**
+ * @swagger
+ * /api/v1/user:
+ *   post:
+ *     tags:
+ *       - User
+ *     summary: 'Allow to register a user. User types: student, teacher'
+ *     description: 'Allow to register a user. User types: student, teacher'
+ *     requestBody:
+ *       content:
+ *         json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserRequest'
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
+ */
+export async function handlePostUser(req: UserRequest, res: UserResponse) {
+    const body = req.body;
+
+    if (body.role === UserRoles.Admin) {
+        const { token, payload } = Helper.getJwtAndPayload(req);
+        if (isNil(token)) {
+            return res.status(401).json({ errors: ApiMessages.common.unauthorized });
+        }
+
+        try {
+            if (!payload) {
+                return res.status(401).json({ errors: ApiMessages.common.unauthorized });
+            }
+
+            const role = await DbHelper.getRoleName(payload?.roleId);
+            const adminRoleId = await DbHelper.getRoleId(UserRoles.Admin);
+            if (payload?.roleId !== adminRoleId) {
+                return res.status(403).json({ errors: ApiMessages.common.forbiddenForRole(role) });
+            }
+        } catch (err) {
+            return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
+        }
+    }
+
+    const oldUser = await User.findOne({
+        where: {
+            [Op.or]: [{ login: body?.login }, { email: body?.email }],
+        },
+    });
+
+    if (!isNil(oldUser)) {
+        return res.status(400).json({ errors: ApiMessages.login.userExist });
+    }
+
+    try {
+        const newUser = await User.create({
+            login: body.login,
+            email: body.email,
+            firstName: body?.firstName ?? null,
+            lastName: body?.lastName ?? null,
+            password: body.password,
+            role: body.role,
+        });
+
+        return res.json(omit(newUser.toJSON(), 'password') as any);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.login.unableCreateUser + err });
+    }
+}
 
 /**
  * @swagger

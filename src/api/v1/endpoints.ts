@@ -9,8 +9,7 @@ export const v1Methods = {
         jwt: 'jwt',
     },
     login: {
-        signup: 'signup',
-        signin: 'signin',
+        session: 'session',
     },
     user: {
         users: 'users', // unused

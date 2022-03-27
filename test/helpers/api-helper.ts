@@ -88,7 +88,7 @@ export class ApiHelper {
             expect(err).toBeNull();
         }
 
-        const signInResponse = await LoginRoute.postSignIn({
+        const signInResponse = await LoginRoute.postSession({
             body: {
                 username: user.body.login,
                 password: user.body.password,
