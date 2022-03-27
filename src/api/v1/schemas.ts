@@ -188,7 +188,7 @@ const MaterialSchemas = {
             },
             order: {
                 type: 'number',
-            }
+            },
         },
         required: ['title', 'data'],
     },
@@ -211,7 +211,7 @@ const MaterialSchemas = {
             },
             order: {
                 type: 'number',
-            }
+            },
         },
         required: ['id'],
     },
@@ -233,8 +233,11 @@ const MaterialSchemas = {
                 maxLength: 1000,
             },
             order: {
+                type: ['number', 'null'],
+            },
+            courseId: {
                 type: 'number',
-            }
+            },
         },
         required: ['id', 'title', 'data', 'order'],
     },
@@ -311,5 +314,5 @@ export const SchemasV1 = {
     MaterialListResponse: {
         type: 'array',
         items: MaterialSchemas.MaterialResponse,
-    }
+    },
 };

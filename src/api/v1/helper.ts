@@ -1,6 +1,5 @@
-import { Request } from 'express';
 import jwt from 'jsonwebtoken';
-import { TokenPayload } from '../shared/interfaces';
+import { RequestBody, TokenPayload } from '../shared/interfaces';
 
 export class Helper {
     /**
@@ -19,7 +18,7 @@ export class Helper {
      * @param req 
      * @returns 
      */
-    static getJwtAndPayload(req: Request): { token: string; payload: TokenPayload } {
+    static getJwtAndPayload(req: RequestBody<any, any>): { token: string; payload: TokenPayload } {
         const authHeader = req.headers.authorization?.replace('Bearer ', '') as string;
         const decoded = jwt.decode(authHeader) as TokenPayload;
 

@@ -1,4 +1,8 @@
 import { Request, Response } from 'express';
+import { isNil } from 'lodash';
+import { CreatedCourses, Material } from '../../../db/models';
+import { ApiMessages } from '../../shared/api-messages';
+import { Helper } from '../helper';
 import { MaterialRequest, MaterialResponse } from './material.interfaces';
 // import { MaterialRequest, MaterialResponse } from './material.interfaces';
 
@@ -54,20 +58,45 @@ export async function handleGetMaterialById(req: Request, res: Response) {
  *       content:
  *         json:
  *           schema:
- *             $ref: '#/components/schemas/DefaultRequest'
+ *             $ref: '#/components/schemas/MaterialRequest'
  *     responses:
  *       200:
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/DefaultResponse'
+ *               $ref: '#/components/schemas/MaterialResponse'
  *         description: Return created material information
  */
 export async function handlePostMaterial(req: MaterialRequest, res: MaterialResponse) {
-    const { courseId } = req.query;
-    console.log(courseId);
+    const courseId = req.params.courseId;
+    const { payload } = Helper.getJwtAndPayload(req);
+    const userId = payload.userId;
 
-    res.status(501).json({});
+    const body = req.body;
+    try {
+        const createdCourse = await CreatedCourses.findOne({
+            where: {
+                userId,
+                courseId,
+            },
+        });
+
+        if (isNil(createdCourse)) {
+            return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
+        }
+
+        const material = await Material.create({
+            title: body.title,
+            data: body.data,
+            order: body.order ?? null,
+            courseId: parseInt(courseId),
+        });
+
+        const result = material.toJSON();
+        return res.json(result as any);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.material.unableCreateMaterial + err });
+    }
 }
 
 /**

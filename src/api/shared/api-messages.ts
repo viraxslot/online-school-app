@@ -72,6 +72,9 @@ export const ApiMessages = {
             'Minimum material data length is: ' + SchemasV1.MaterialRequest.properties.data.minLength,
         wrongMaxMaterialDataLength:
             'Maximum material data length is: ' + SchemasV1.MaterialRequest.properties.data.maxLength,
+        unableCreateMaterial: 'Unable to create material: ',
+        unableChangeMaterial: 'Unable to change material: ',
+        unableRemoveMaterial: 'Unable to remove material: ',
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

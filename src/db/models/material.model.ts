@@ -5,7 +5,7 @@ import sequelize from '../sequelize';
 interface MaterialAttributes extends DbCommonAttributes {
     title: string;
     data: string;
-    order: number;
+    order: number | null;
     courseId: number;
 }
 

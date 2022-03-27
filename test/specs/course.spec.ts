@@ -9,7 +9,6 @@ import { TestData } from '../helpers/test-data';
 
 describe('API: course suite', function () {
     const createdUserIds: number[] = [];
-    const createdCourseIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
     const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
@@ -50,7 +49,6 @@ describe('API: course suite', function () {
 
                 const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
                 createdCategoryIds.push(categoryId);
-                createdCourseIds.push(courseId);
 
                 const result = await CourseRoute.getCourse(courseId, token);
                 expect(result.status).toBe(200);
@@ -75,7 +73,6 @@ describe('API: course suite', function () {
 
                 const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
                 createdCategoryIds.push(categoryId);
-                createdCourseIds.push(courseId);
 
                 const result = await CourseRoute.getCourseList(token);
                 expect(result.status).toBe(200);
@@ -206,9 +203,6 @@ describe('API: course suite', function () {
                 const courseData = TestData.getCourse({ categoryId });
                 const result = await CourseRoute.postCourse(courseData, token);
                 expect(result.status).toBe(200);
-                const courseId = result.body.id;
-                createdCourseIds.push(courseId);
-
                 SchemaValidator.check(result.body, SchemasV1.CourseResponse);
 
                 expect(result.body.title).toBe(courseData.body.title);
@@ -271,9 +265,7 @@ describe('API: course suite', function () {
                 const courseData = TestData.getCourse({ categoryId });
                 const createResponse: any = await CourseRoute.postCourse(courseData, token);
                 expect(createResponse.status).toBe(200);
-
                 const courseId = createResponse.body.id;
-                createdCourseIds.push(courseId);
 
                 const newCourseData = { ...courseData };
                 newCourseData.body[test.field] =
@@ -296,7 +288,6 @@ describe('API: course suite', function () {
         it('should return 400 error if new category id is not exist', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
 
             const courseData = TestData.getCourse();
             courseData.body.id = courseId;
@@ -313,7 +304,6 @@ describe('API: course suite', function () {
         it('should be possible to change category id', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
 
             const newCategory = await ApiHelper.createCategory(adminToken);
             createdCategoryIds.push(newCategory.categoryId);
@@ -334,7 +324,6 @@ describe('API: course suite', function () {
         it('should return 401 error if token is not passed', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
 
             const result = await CourseRoute.deleteCourse(courseId);
             expect(result.status).toBe(401);
@@ -343,7 +332,6 @@ describe('API: course suite', function () {
         it('should return 403 error if trying to remove course with student token', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
 
             const result = await CourseRoute.deleteCourse(courseId, studentToken);
             expect(result.status).toBe(403);
@@ -361,7 +349,6 @@ describe('API: course suite', function () {
             const courseResponse = await CourseRoute.postCourse(courseData, teacherToken);
             expect(courseResponse.status).toBe(200);
             const courseId = courseResponse.body.id;
-            createdCourseIds.push(courseId);
 
             const result = await CourseRoute.deleteCourse(courseId, token);
             expect(result.status).toBe(403);
@@ -374,7 +361,6 @@ describe('API: course suite', function () {
         it('should not be possible for teacher to remove course that belongs to admin', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
-            createdCourseIds.push(courseId);
 
             const result = await CourseRoute.deleteCourse(courseId, teacherToken);
             expect(result.status).toBe(403);
@@ -412,7 +398,6 @@ describe('API: course suite', function () {
             const courseResponse = await CourseRoute.postCourse(courseData, adminToken);
             expect(courseResponse.status).toBe(200);
             const courseId = courseResponse.body.id;
-            createdCourseIds.push(courseId);
 
             const result = await CourseRoute.deleteCourse(courseId, token);
             expect(result.status).toBe(200);
@@ -433,18 +418,6 @@ describe('API: course suite', function () {
                 });
             } catch (err) {
                 console.log(ApiMessages.category.unableRemoveCategory + err);
-            }
-        }
-
-        for (const id of createdCourseIds) {
-            try {
-                await Course.destroy({
-                    where: {
-                        id,
-                    },
-                });
-            } catch (err) {
-                console.log(ApiMessages.course.unableRemoveCourse + err);
             }
         }
     });

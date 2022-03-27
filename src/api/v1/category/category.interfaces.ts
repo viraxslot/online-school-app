@@ -13,7 +13,7 @@ export interface ChangeCategoryRequestData {
     title: string;
 }
 
-export type CategoryRequest = RequestBody<CategoryRequestData>;
-export type ChangeCategoryRequest = RequestBody<ChangeCategoryRequestData>;
+export type CategoryRequest = RequestBody<{}, CategoryRequestData>;
+export type ChangeCategoryRequest = RequestBody<{}, ChangeCategoryRequestData>;
 export type CategoryResponse = ResponseBody<CategoryResponseData>;
 export type CategoryListResponse = ResponseBody<CategoryResponseData[]>;

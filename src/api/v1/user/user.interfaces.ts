@@ -27,7 +27,7 @@ export interface ChangeUserRequestData {
     lastName?: string;
 }
 
-export type UserRequest = RequestBody<UserRequestData>;
-export type ChangeUserRequest = RequestBody<ChangeUserRequestData>;
+export type UserRequest = RequestBody<{}, UserRequestData>;
+export type ChangeUserRequest = RequestBody<{}, ChangeUserRequestData>;
 export type UserResponse = ResponseBody<UserResponseData>;
 export type UserListResponse = ResponseBody<UserResponseData[]>;

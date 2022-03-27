@@ -23,7 +23,7 @@ export interface ChangeCourseRequestData {
 }
 
 
-export type CourseRequest = RequestBody<CourseRequestData>;
-export type ChangeCourseRequest = RequestBody<ChangeCourseRequestData>;
+export type CourseRequest = RequestBody<{}, CourseRequestData>;
+export type ChangeCourseRequest = RequestBody<{}, ChangeCourseRequestData>;
 export type CourseResponse = ResponseBody<CourseResponseData>;
 export type CourseListResponse = ResponseBody<CourseResponseData[]>;

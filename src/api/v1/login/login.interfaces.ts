@@ -8,5 +8,5 @@ export interface SessionResponseData extends ResponseData {
     accessToken: string;
 }
 
-export type SessionRequest = RequestBody<SessionRequestData>;
+export type SessionRequest = RequestBody<{}, SessionRequestData>;
 export type SessionResponse = ResponseBody<SessionResponseData>;

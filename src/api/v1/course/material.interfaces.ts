@@ -1,5 +1,5 @@
-import { RequestBody, ResponseBody, ResponseData } from "../../shared/interfaces";
-
+import { ParamsDictionary } from 'express-serve-static-core';
+import { RequestBody, ResponseBody, ResponseData } from '../../shared/interfaces';
 export interface MaterialRequestData {
     title: string;
     data: string;
@@ -10,6 +10,7 @@ export interface MaterialResponseData extends ResponseData {
     title: string;
     data: string;
     order: number;
+    courseId: number;
 }
 
 export interface ChangeMaterialRequestData {
@@ -19,7 +20,11 @@ export interface ChangeMaterialRequestData {
     order?: number | null;
 }
 
-export type MaterialRequest = RequestBody<MaterialRequestData>;
-export type ChangeMaterialRequest = RequestBody<ChangeMaterialRequestData>;
+interface MaterialParameters extends ParamsDictionary {
+    courseId: string;
+}
+
+export type MaterialRequest = RequestBody<MaterialParameters, MaterialRequestData>;
+export type ChangeMaterialRequest = RequestBody<{}, ChangeMaterialRequestData>;
 export type MaterialResponse = ResponseBody<MaterialResponseData>;
 export type MaterialListResponse = ResponseBody<MaterialResponseData[]>;
