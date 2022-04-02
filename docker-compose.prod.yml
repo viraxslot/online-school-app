@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     depends_on:
       - database
-    command: npm run prod
+    command: NODE_ENV=production node /app/build/src/app.js
 
   database:
     image: postgres:14.1-alpine
