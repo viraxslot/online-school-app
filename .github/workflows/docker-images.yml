@@ -34,14 +34,18 @@ jobs:
     - name: Install Docker Compose CLI
       run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
 
+    - name: Create env file from github secrets
+      run: |
+        touch .env
+        echo "POSTGRES_DB=online-school-db-prod" >> .env
+        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+        echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+
     - name: Start application
       run: |
         docker context create ecs ecs_context --from-env
         docker context use ecs_context
-        docker compose -f docker-compose.prod.yml \
-          -e POSTGRES_DB=online-school-db-prod \
-          -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
-          -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-          -e PGADMIN_DEFAULT_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-        up
+        docker compose -f docker-compose.prod.yml --env-file .env up
+        rm -f .env
