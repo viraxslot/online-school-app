@@ -15,7 +15,6 @@ services:
 
   database:
     image: postgres:14.1-alpine
-    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -27,7 +26,6 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    restart: unless-stopped
     environment:
       PGADMIN_PORT: ${PGADMIN_PORT:-5050}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
