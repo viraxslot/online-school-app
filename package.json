@@ -10,7 +10,7 @@
         "test": "jest --watch",
         "test:nowatch": "jest --silent --forceExit",
         "dev": "NODE_ENV=dev nodemon src/app.ts --ignore \"test/specs/**\"",
-        "prod": "NODE_ENV=production node build/app.js",
+        "prod": "NODE_ENV=production node /app/build/app.js",
         "dc:dev": "docker-compose --env-file ./env/.env.dev up",
         "dc:prod": "docker-compose -f docker-compose.prod.yml --env-file ./env/.env.production up",
         "dc:down": "docker-compose down",

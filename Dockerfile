@@ -10,5 +10,5 @@ ENV PORT 4000
 EXPOSE $PORT
 
 FROM base as production
-ENV NODE_PATH=./build
+ENV NODE_PATH=/app/build
 RUN npm run build
