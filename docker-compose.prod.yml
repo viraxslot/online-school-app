@@ -4,6 +4,7 @@ services:
     image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-backend:latest
     environment:
       DOCKER_RUN: ${DOCKER_RUN:-true}
+      POSTGRES_HOST: ${POSTGRES_HOST:-host.docker.internal}
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
