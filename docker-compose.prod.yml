@@ -1,10 +1,7 @@
 version: "3.8"
 services:
   backend:
-    build:
-      target: production
-      context: .
-      dockerfile: Dockerfile
+    image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-backend:latest
     environment:
       DOCKER_RUN: ${DOCKER_RUN:-true}
       POSTGRES_DB: ${POSTGRES_DB:-postgres}

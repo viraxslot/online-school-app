@@ -5,8 +5,8 @@ on:
 
 jobs:
   build:
-    name: Build backend image
-    runs-on: ubuntu-latest   
+    name: Build backend image (prod)
+    runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v2
@@ -28,5 +28,16 @@ jobs:
         ECR_REPOSITORY: online-school-backend
         IMAGE_TAG: latest
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target production .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+    - name: Start application
+      run: |
+        docker context use ecr_context
+        docker compose -f docker-compose.prod.yml \
+          -e POSTGRES_DB=online-school-db-prod \
+          -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+          -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+          -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+          -e PGADMIN_DEFAULT_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+        up
