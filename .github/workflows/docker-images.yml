@@ -1,4 +1,4 @@
-name: Build backend image and push to ECR
+name: Build backend image and start the app
 on:
   push:
     branches: [ test ]
@@ -33,7 +33,9 @@ jobs:
 
     - name: Start application
       run: |
-        docker context use ecr_context
+        docker_context=ecs_context
+        docker context create ecs $docker_context
+        docker context use $docker_context
         docker compose -f docker-compose.prod.yml \
           -e POSTGRES_DB=online-school-db-prod \
           -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
