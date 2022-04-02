@@ -36,7 +36,7 @@ jobs:
 
     - name: Start application
       run: |
-        docker context create ecs ecs_context
+        docker context create ecs ecs_context --from-env
         docker context use ecs_context
         docker compose -f docker-compose.prod.yml \
           -e POSTGRES_DB=online-school-db-prod \
