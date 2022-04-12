@@ -174,19 +174,18 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
             },
         });
 
-        const teacherRoleId = await DbHelper.getRoleId(UserRoles.Teacher);
-        if (isNil(createdCourse) && payload.roleId == teacherRoleId) {
-            return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
-        }
-
-        const foundCourse = await Course.findByPk(courseId);
-        if (isNil(foundCourse)) {
+        if (isNil(createdCourse)) {
             return res.status(404).json({ errors: ApiMessages.course.noCourse });
         }
 
+        const foundCourse = await Course.findByPk(courseId);
+
+        if (isNil(foundCourse)) {
+            return res.status(404).json({ errors: ApiMessages.course.noCourse });
+        }
         await foundCourse.update(req.body);
+
         const result: any = foundCourse.toJSON();
-        
         return res.status(200).json(result);
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.course.unableChangeCourse + err });

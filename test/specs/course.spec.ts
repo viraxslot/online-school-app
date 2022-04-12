@@ -18,6 +18,8 @@ describe('API: course suite', function () {
     let teacherToken: string;
     let adminToken: string;
 
+    let categoryId: number;
+
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
         const teacher = await ApiHelper.getTeacherToken();
@@ -28,6 +30,10 @@ describe('API: course suite', function () {
         adminToken = admin.token;
 
         createdUserIds.push(student.userId, teacher.userId, admin.userId);
+
+        const result = await ApiHelper.createCategory(adminToken);
+        categoryId = result.categoryId;
+        createdCategoryIds.push(categoryId);
     });
 
     describe('GET: course by id', function () {
@@ -86,15 +92,16 @@ describe('API: course suite', function () {
 
     describe('POST: create course', function () {
         it('should return 401 error if no token passed', async () => {
-            const courseData = TestData.getCourse();
+            const courseData = TestData.getCourse({ categoryId });
             const result = await CourseRoute.postCourse(courseData);
 
             expect(result.status).toBe(401);
         });
 
         it('should not be possible to create course with student token', async () => {
-            const courseData = TestData.getCourse();
+            const courseData = TestData.getCourse({ categoryId });
             const result = await CourseRoute.postCourse(courseData, studentToken);
+
             expect(result.status).toBe(403);
             expect(result.body.errors).toBe('This action is forbidden for role student');
         });
@@ -224,7 +231,7 @@ describe('API: course suite', function () {
 
     describe('PUT: change course', function () {
         it('should return 400 error if required input parameters are not set', async () => {
-            const courseData = TestData.getCourse();
+            const courseData = TestData.getCourse({ categoryId });
 
             const result = await CourseRoute.putCourse(courseData);
             expect(result.status).toBe(400);
@@ -239,7 +246,7 @@ describe('API: course suite', function () {
         });
 
         it('should return 401 error if token is not passed', async () => {
-            const courseData = TestData.getCourse({ courseId: -1 });
+            const courseData = TestData.getCourse({ courseId: -1, categoryId });
 
             const result = await CourseRoute.putCourse(courseData);
             expect(result.status).toBe(401);
@@ -408,7 +415,7 @@ describe('API: course suite', function () {
         });
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         for (const id of createdCategoryIds) {
             try {
                 await Category.destroy({
@@ -420,9 +427,7 @@ describe('API: course suite', function () {
                 console.log(ApiMessages.category.unableRemoveCategory + err);
             }
         }
-    });
 
-    afterAll(async () => {
         for (const id of createdUserIds) {
             try {
                 await User.destroy({

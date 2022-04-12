@@ -12,7 +12,7 @@ export const ApiMessages = {
         numericParameter: 'Parameter should be numeric',
         stringParameter: 'Parameter should be a string',
         booleanParameter: 'Parameter should be boolean',
-        onlyAlphabetAllowed: 'Only RU/EN alphabet symbols allowed, please change your request',
+        onlyAlphabetAndDigitsAllowed: 'Only RU/EN alphabet and digits allowed, please change your request',
         removeSuccess: 'Success: record was removed.',
         requiredFields: (fields: string) => `Please send required fields: ` + fields,
     },
@@ -75,6 +75,7 @@ export const ApiMessages = {
         unableCreateMaterial: 'Unable to create material: ',
         unableChangeMaterial: 'Unable to change material: ',
         unableRemoveMaterial: 'Unable to remove material: ',
+        notOwnerError: "You're not owner of this material and course, you can't change/remove it",
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

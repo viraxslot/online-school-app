@@ -53,9 +53,9 @@ categoryRouter.post(
         })
         .withMessage(ApiMessages.category.wrongMaxCategoryLength)
         .custom((value) => {
-            return value.match(/^[A-Za-z\u0410-\u044F ]+$/);
+            return value.match(/^[A-Za-z0-9\u0410-\u044F ]+$/);
         })
-        .withMessage(ApiMessages.common.onlyAlphabetAllowed),
+        .withMessage(ApiMessages.common.onlyAlphabetAndDigitsAllowed),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.CreateCategory),

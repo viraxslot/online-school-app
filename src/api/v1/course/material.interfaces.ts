@@ -30,6 +30,6 @@ interface GetMaterialParameters extends MaterialParameters {
 
 export type GetMaterialRequest = RequestBody<GetMaterialParameters, {}>;
 export type MaterialRequest = RequestBody<MaterialParameters, MaterialRequestData>;
-export type ChangeMaterialRequest = RequestBody<{}, ChangeMaterialRequestData>;
+export type ChangeMaterialRequest = RequestBody<MaterialParameters, ChangeMaterialRequestData>;
 export type MaterialResponse = ResponseBody<MaterialResponseData>;
 export type MaterialListResponse = ResponseBody<MaterialResponseData[]>;

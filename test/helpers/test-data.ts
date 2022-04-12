@@ -1,8 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { isNil } from 'lodash';
-import { Op } from 'sequelize';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, User, UserRoles } from '../../src/db/models';
+import { UserRoles } from '../../src/db/models';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 
 export class TestData {
@@ -11,60 +9,32 @@ export class TestData {
     }
 
     static async getUserData(options?: { role: UserRoles }): Promise<ApiUserRequest> {
-        let login: string;
-        let email: string;
-        let body: any;
+        const login = faker.internet.userName() + Date.now();
+        const email = faker.internet.email(login);
 
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-            login = faker.internet.userName();
-            email = faker.internet.email();
-            const user = await User.findOne({
-                raw: true,
-                where: {
-                    [Op.or]: [{ login }, { email }],
-                },
-            });
-
-            if (isNil(user)) {
-                body = {
-                    login,
-                    email,
-                    password: faker.internet.password(),
-                    role: options?.role ?? UserRoles.Student,
-                    firstName: faker.name.firstName(),
-                    lastName: faker.name.lastName(),
-                };
-                break;
-            }
-        }
+        const body = {
+            login,
+            email,
+            password: faker.internet.password(),
+            role: options?.role ?? UserRoles.Student,
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+        };
 
         return { body };
     }
 
     static async getCategory(options?: { titleLength?: number; categoryId?: number }): Promise<any> {
-        const randomCount = faker.datatype.number({
-            min: SchemasV1.CategoryRequest.properties.title.minLength,
-            max: SchemasV1.CategoryRequest.properties.title.maxLength,
-        });
-
         let title: string;
-        let body: any;
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-            title = faker.random.alpha(options?.titleLength ?? randomCount);
-            const category = await Category.findOne({
-                raw: true,
-                where: {
-                    title,
-                },
-            });
 
-            if (isNil(category)) {
-                body = { title };
-                break;
-            }
+        if (options?.titleLength) {
+            title = faker.random.alpha(options.titleLength);
+        } else {
+            const now = Date.now().toString();
+            title = faker.random.alpha(SchemasV1.CategoryRequest.properties.title.maxLength / 2) + now;
         }
+
+        const body = { title } as any;
 
         if (options?.categoryId) {
             body.id = options?.categoryId;
@@ -75,8 +45,8 @@ export class TestData {
 
     static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number }): any {
         const body: any = {
-            title: faker.lorem.words(5),
-            description: faker.lorem.words(10),
+            title: faker.lorem.words(5) + Date.now(),
+            description: faker.lorem.words(10) + Date.now(),
             visible: options?.visible ?? true,
             categoryId: options?.categoryId ?? 1,
         };
@@ -92,8 +62,8 @@ export class TestData {
 
     static getMaterial(options?: { materialId?: number }) {
         const body: any = {
-            title: faker.lorem.words(5),
-            data: faker.lorem.words(10),
+            title: faker.lorem.words(5) + Date.now(),
+            data: faker.lorem.words(10) + Date.now(),
             order: null,
         };
 
