@@ -10,9 +10,11 @@ const consoleFormat = format.printf(({ level, message }) => {
     return `[${level.toUpperCase()}]: ${message}`;
 });
 
-logger.add(new winston.transports.Console({
-    format: consoleFormat
-}));
+if (config.env === 'development') {
+    logger.add(new winston.transports.Console({
+        format: consoleFormat
+    }));
+}
 
 if (config.env === 'production') {
     const cloudwatchConfig = {
