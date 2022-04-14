@@ -13,6 +13,7 @@ import userRouter from './api/v1/user/user.router';
 import sequelize from './db/sequelize';
 import { initialDbSeed } from './helpers/initial-db-seed';
 import { logger } from './helpers/winston-logger';
+import './helpers/jobs';
 
 const app = express();
 app.use(bodyParser.json());
