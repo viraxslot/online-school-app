@@ -12,6 +12,7 @@ import swaggerRouter from './api/v1/swagger/swagger.router';
 import userRouter from './api/v1/user/user.router';
 import sequelize from './db/sequelize';
 import { initialDbSeed } from './helpers/initial-db-seed';
+import { logger } from './helpers/winston-logger';
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,7 +35,7 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, courseRouter);
 });
 
-app.get('*', function(req, res) {
+app.get('*', function (req, res) {
     res.redirect('/api/v1/api-docs/');
 });
 
@@ -47,12 +48,12 @@ const port = process.env.PORT ?? 4000;
             await initialDbSeed();
         })
         .then(() => {
-            console.log('Database is synchronized');
+            logger.info('Database is synchronized');
             app.listen(port, () => {
-                console.log(`Server running on port ${port}`);
+                logger.info(`Server running on port ${port}`);
             });
         })
         .catch((err) => {
-            console.error(JSON.stringify(err));
+            logger.error(JSON.stringify(err));
         });
 })();

@@ -1,6 +1,7 @@
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category, User, UserRoles } from '../../src/db/models';
+import { logger } from '../../src/helpers/winston-logger';
 import { ApiCategoryRequest, ApiChangeCategoryRequest } from '../api/routes/category/category.interfaces';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { ApiHelper } from '../helpers/api-helper';
@@ -56,6 +57,7 @@ describe('API: category suite', function () {
 
             const result1 = await CategoryRoute.postCategory(category1, adminToken);
             const result2 = await CategoryRoute.postCategory(category2, adminToken);
+
             expect(result1.status).toBe(200);
             expect(result2.status).toBe(200);
             createdCategoryIds.push(result1.body.id, result2.body.id);
@@ -151,17 +153,14 @@ describe('API: category suite', function () {
             expect(error.location).toBe('body');
         });
 
-        const allowedTitleTestCases = [
-            { title: 'special characters', data: 'test!@#$' },
-            { title: 'number', data: '123test' },
-        ];
+        const allowedTitleTestCases = [{ title: 'special characters', data: 'test!@#$' }];
         allowedTitleTestCases.forEach((test) => {
             it(`should return validation error if title has ${test.title}`, async () => {
                 const result = await CategoryRoute.postCategory({ body: { title: test.data } });
 
                 expect(result.status).toBe(400);
                 const error = result.body.errors[0];
-                expect(error.msg).toBe('Only RU/EN alphabet symbols allowed, please change your request');
+                expect(error.msg).toBe('Only RU/EN alphabet and digits allowed, please change your request');
                 expect(error.param).toBe('title');
                 expect(error.location).toBe('body');
             });
@@ -171,6 +170,7 @@ describe('API: category suite', function () {
             const data = await TestData.getCategory({
                 titleLength: SchemasV1.CategoryRequest.properties.title.minLength - 1,
             });
+
             const result = await CategoryRoute.postCategory(data);
 
             expect(result.status).toBe(400);
@@ -462,7 +462,7 @@ describe('API: category suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.category.unableRemoveCategory + err);
+                logger.error(ApiMessages.category.unableRemoveCategory + err);
             }
         }
     });
@@ -476,7 +476,7 @@ describe('API: category suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.user.unableRemoveUser + err);
+                logger.error(ApiMessages.user.unableRemoveUser + err);
             }
         }
     });

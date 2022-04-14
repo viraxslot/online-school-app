@@ -15,7 +15,13 @@ import {
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
-import { handleDeleteMaterial, handleGetMaterialById, handleGetMaterialsList, handlePostMaterial } from './material.controller';
+import {
+    handleDeleteMaterial,
+    handleGetMaterialById,
+    handleGetMaterialsList,
+    handlePostMaterial,
+    handlePutMaterial,
+} from './material.controller';
 const courseRouter = express.Router();
 
 /**
@@ -237,6 +243,53 @@ courseRouter.post(
     checkJwtAuth,
     checkPermission(Permissions.CreateMaterial),
     handlePostMaterial
+);
+
+courseRouter.put(
+    '/' + v1Methods.course.materials,
+    body(
+        SchemasV1.ChangeMaterialRequest.required,
+        ApiMessages.common.requiredFields(SchemasV1.ChangeMaterialRequest.required.toString())
+    ).exists(),
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+
+            return true;
+        }),
+    body('id')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (materialId: number) => {
+            const material = await Material.findByPk(materialId);
+            if (isNil(material)) {
+                throw ApiMessages.material.noMaterial;
+            }
+            return true;
+        }),
+    body('title')
+        .isString()
+        .withMessage(ApiMessages.common.stringParameter)
+        .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.title.minLength })
+        .withMessage(ApiMessages.material.wrongMinMaterialTitleLength)
+        .isLength({ max: SchemasV1.ChangeMaterialRequest.properties.title.maxLength })
+        .withMessage(ApiMessages.material.wrongMaxMaterialTitleLength),
+    body('data')
+        .isString()
+        .withMessage(ApiMessages.common.stringParameter)
+        .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.data.minLength })
+        .withMessage(ApiMessages.material.wrongMinMaterialDataLength)
+        .isLength({ max: SchemasV1.ChangeMaterialRequest.properties.data.maxLength })
+        .withMessage(ApiMessages.material.wrongMaxMaterialDataLength),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.ChangeMaterial),
+    handlePutMaterial
 );
 
 courseRouter.delete(

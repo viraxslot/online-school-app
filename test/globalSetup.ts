@@ -1,16 +1,17 @@
 import config from '../config/config';
 import axios from 'axios';
 import sequelize from '../src/db/sequelize';
+import { logger } from '../src/helpers/winston-logger';
 
 module.exports = async () => {
-    console.log('Jest global setup');
+    logger.info('Jest global setup');
     await checkServerIsUp();
-    
+
     try {
         await sequelize.authenticate();
-        console.log('Connection has been established successfully.');
+        logger.info('Connection has been established successfully.');
     } catch (error) {
-        console.error('Unable to connect to the database');
+        logger.error('Unable to connect to the database');
     }
 };
 
@@ -21,9 +22,9 @@ async function checkServerIsUp() {
 
     for (let i = 0; i <= MAX_REQUESTS; i++) {
         try {
-            console.log('Checking server is up, try ' + (i + 1));
+            logger.info('Checking server is up, try ' + (i + 1));
             const result = await axios(config.apiUrl + '/health');
-            console.log('Server is up, status code', result.status);
+            logger.info('Server is up, status code', result.status);
             serverReady = true;
             break;
         } catch (err) {

@@ -4,4 +4,5 @@ module.exports = {
     testEnvironment: 'node',
     globalSetup: '<rootDir>/test/globalSetup.ts',
     globalTeardown: '<rootDir>/test/globalTeardown.ts',
+    testMatch: ['<rootDir>/test/specs/**'],
 };

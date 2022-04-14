@@ -6,6 +6,8 @@ import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
+import { cloneDeep } from 'lodash';
+import { logger } from '../../src/helpers/winston-logger';
 
 describe('API: material suite', function () {
     const createdUserIds: number[] = [];
@@ -13,17 +15,17 @@ describe('API: material suite', function () {
 
     const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
 
-    // let studentToken: string;
+    let studentToken: string;
     let teacherToken: string;
     let adminToken: string;
     let courseId: number;
 
     beforeAll(async () => {
-        // const student = await ApiHelper.getStudentToken();
+        const student = await ApiHelper.getStudentToken();
         const teacher = await ApiHelper.getTeacherToken();
         const admin = await ApiHelper.getAdminToken();
 
-        // studentToken = student.token;
+        studentToken = student.token;
         teacherToken = teacher.token;
         adminToken = admin.token;
 
@@ -239,7 +241,129 @@ describe('API: material suite', function () {
     });
 
     describe('PUT: change material', function () {
-        it.todo('test');
+        it('should validate required fields in the request body', async () => {
+            const result = await CourseRoute.putMaterial(-1, { body: {} as any });
+
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('body');
+            expect(error.msg).toBe('Please send required fields: id');
+            expect(error.param).toBe('id');
+        });
+
+        it('should validate courseId in the query parameters', async () => {
+            const result = await CourseRoute.putMaterial(-1, { body: { id: -1 } });
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should validate material id in body', async () => {
+            const result = await CourseRoute.putMaterial(courseId, { body: { id: -1 } });
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.location).toBe('body');
+            expect(error.msg).toBe('Unable to find material record(s)');
+            expect(error.param).toBe('id');
+        });
+
+        const negativateTestCases = [
+            {
+                title: 'minimum title length',
+                field: 'title',
+                data: 'a'.repeat(SchemasV1.ChangeMaterialRequest.properties.title.minLength - 1),
+                expectedMessage: 'Minimum material title length is: 3',
+            },
+            {
+                title: 'maximum title length',
+                field: 'title',
+                data: 'a'.repeat(SchemasV1.ChangeMaterialRequest.properties.title.maxLength + 1),
+                expectedMessage: 'Maximum material title length is: 100',
+            },
+            {
+                title: 'minimum data length',
+                field: 'data',
+                data: 'a'.repeat(SchemasV1.ChangeMaterialRequest.properties.data.minLength - 1),
+                expectedMessage: 'Minimum material data length is: 10',
+            },
+            {
+                title: 'maximum data length',
+                field: 'data',
+                data: 'a'.repeat(SchemasV1.ChangeMaterialRequest.properties.data.maxLength + 1),
+                expectedMessage: 'Maximum material data length is: 1000',
+            },
+        ];
+
+        negativateTestCases.forEach((test) => {
+            it(`should validate ${test.title}`, async () => {
+                const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+
+                const materialData = { body: { id: materialId, title: 'test', data: 'test' } as any };
+                materialData.body[test.field] = test.data;
+                const result = await CourseRoute.putMaterial(courseId, materialData);
+
+                expect(result.status).toBe(400);
+
+                const error = result.body.errors[0];
+                expect(error.location).toBe('body');
+                expect(error.msg).toBe(test.expectedMessage);
+                expect(error.param).toBe(test.field);
+            });
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const materialData = { body: { id: materialId, title: 'test', data: 'a'.repeat(10) } };
+
+            const result = await CourseRoute.putMaterial(courseId, materialData);
+            expect(result.status).toBe(401);
+        });
+
+        it('should not be possible to change material with student token', async () => {
+            const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
+            const materialData = { body: { id: materialId, title: 'test', data: 'a'.repeat(10) } };
+
+            const result = await CourseRoute.putMaterial(courseId, materialData, studentToken);
+            expect(result.status).toBe(403);
+            expect(result.body.errors).toBe('This action is forbidden for role student');
+        });
+
+        it('should be possible to change material', async () => {
+            const { categoryId } = await ApiHelper.createCategory(adminToken);
+            createdCategoryIds.push(categoryId);
+            const course = TestData.getCourse({
+                categoryId,
+            });
+
+            const createdCourse = await CourseRoute.postCourse(course, teacherToken);
+            const courseId = createdCourse.body.id;
+
+            const material = TestData.getMaterial();
+            const createdMaterial = await CourseRoute.postMaterial(courseId, material, teacherToken);
+            const materialId = createdMaterial.body.id;
+            expect(createdMaterial.status).toBe(200);
+
+            const newMaterial = cloneDeep(material);
+            newMaterial.body.id = materialId;
+            newMaterial.body.title = 'new awesome title';
+            newMaterial.body.order = 10;
+
+            const result = await CourseRoute.putMaterial(courseId, newMaterial, teacherToken);
+            expect(result.status).toBe(200);
+            SchemaValidator.check(result.body, SchemasV1.ChangeMaterialRequest);
+
+            const body = result.body;
+            expect(body.id).toBe(materialId);
+            expect(body.title).toBe(newMaterial.body.title);
+            expect(body.data).toBe(material.body.data);
+            expect(body.order).toBe(newMaterial.body.order);
+            expect(body.courseId).toBe(courseId);
+        });
     });
 
     describe('DELETE: remove material', function () {
@@ -319,7 +443,7 @@ describe('API: material suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.category.unableRemoveCategory + err);
+                logger.error(ApiMessages.category.unableRemoveCategory + err);
             }
         }
 
@@ -331,7 +455,7 @@ describe('API: material suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.user.unableRemoveUser + err);
+                logger.error(ApiMessages.user.unableRemoveUser + err);
             }
         }
     });

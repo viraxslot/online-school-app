@@ -1,6 +1,7 @@
 import swaggerJsdoc, { OAS3Options } from 'swagger-jsdoc';
 import path from 'path';
 import { SchemasV1 } from '../api/v1/schemas';
+import { logger } from './winston-logger';
 
 /**
  * Analyzes contoller files in api folder and returns swagger information
@@ -12,8 +13,7 @@ export function getSwaggerData(currentVersion: string, versionFolders: string[])
     const apiFilesList = versionFolders.map((version) =>
         path.resolve(process.cwd(), 'src', 'api', `${version}`, '**', '*controller.ts')
     );
-
-    console.log('Controllers list', JSON.stringify(apiFilesList));
+    logger.log('info', 'Controllers list' + JSON.stringify(apiFilesList));
 
     const options: OAS3Options = {
         definition: {

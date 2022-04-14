@@ -1,4 +1,5 @@
 const config: {
+    env: string;
     host: string;
     database: string;
     username: string;
@@ -12,6 +13,12 @@ const config: {
     jwtExpiresIn: string;
     adminLogin: string;
     adminPassword: string;
+    aws: {
+        accessKeyId: string;
+        secretKeyId: string;
+        region: string;
+        cloudWatchLogGroup: string;
+    };
 };
 
 export default config;

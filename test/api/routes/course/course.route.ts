@@ -5,9 +5,9 @@ import {
     ApiChangeCourseRequest,
     ApiCourseListResponse,
     ApiCourseRequest,
-    ApiCourseResponse
+    ApiCourseResponse,
 } from './course.interfaces';
-import { ApiMaterialRequest, ApiMaterialResponse } from './material.interfaces';
+import { ApiChangeMaterialRequest, ApiMaterialRequest, ApiMaterialResponse } from './material.interfaces';
 
 export class CourseRoute extends ApiRoute {
     static async getCourseList(jwt?: string): Promise<ApiCourseListResponse> {
@@ -96,6 +96,22 @@ export class CourseRoute extends ApiRoute {
 
     static async postMaterial(courseId: number, req: ApiMaterialRequest, jwt?: string): Promise<ApiMaterialResponse> {
         return this.postMethod({
+            path: v1Methods.course.materials.replace(':courseId', courseId.toString()),
+            body: req.body,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
+    static async putMaterial(
+        courseId: number,
+        req: ApiChangeMaterialRequest,
+        jwt?: string
+    ): Promise<ApiMaterialResponse> {
+        return this.putMethod({
             path: v1Methods.course.materials.replace(':courseId', courseId.toString()),
             body: req.body,
             options: {

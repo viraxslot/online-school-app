@@ -1,6 +1,7 @@
 import sequelize from '../src/db/sequelize';
+import { logger } from '../src/helpers/winston-logger';
 
 module.exports = async () => {
-    console.log('Jest global teardown');
+    logger.info('Jest global teardown');
     await sequelize.close();
 };

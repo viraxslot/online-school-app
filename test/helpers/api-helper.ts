@@ -1,4 +1,5 @@
 import { User, UserRoles } from '../../src/db/models';
+import { logger } from '../../src/helpers/winston-logger';
 import { CategoryRoute } from '../api/routes/category/category.route';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { LoginRoute } from '../api/routes/login/login.route';
@@ -104,7 +105,7 @@ export class ApiHelper {
                 role: user.body.role,
             });
         } catch (err) {
-            console.log(err);
+            logger.error(err);
             expect(err).toBeNull();
         }
 

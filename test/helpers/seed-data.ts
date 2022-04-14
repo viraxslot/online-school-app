@@ -1,4 +1,5 @@
 import { User, UserRoles } from '../../src/db/models';
+import { logger } from '../../src/helpers/winston-logger';
 import { ApiUserRequest } from '../api/routes/user/user.interfaces';
 import { TestData } from './test-data';
 
@@ -10,7 +11,7 @@ export class SeedData {
     static createTwoUsers = async (options?: {
         studentData?: ApiUserRequest;
         teacherData?: ApiUserRequest;
-    }): Promise<{ studentId: number; teacherId: number }> => {
+    }): Promise<{ studentId: number; teacherId: number; }> => {
         const student = options?.studentData ?? await TestData.getUserData({ role: UserRoles.Student });
         const teacher = options?.teacherData ?? await TestData.getUserData({ role: UserRoles.Teacher });
 
@@ -20,7 +21,7 @@ export class SeedData {
             createdStudent = await User.create(student.body);
             createdTeacher = await User.create(teacher.body);
         } catch (err) {
-            console.log('Unable to create user data: ' + err);
+            logger.error('Unable to create user data: ' + err);
         }
 
         const studentId = createdStudent.id;
