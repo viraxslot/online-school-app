@@ -61,6 +61,9 @@ export const ApiMessages = {
         unableRemoveCourse: 'Unable to remove course record: ',
         uniqueFields: 'title should be unique',
         notOwnerError: "You're not owner of this course, you can't change/remove it",
+        alreadyEnrolled: "You've already enrolled to this course",
+        unableEnrollCourse: "Error, unable to enroll the course: ",
+        successEnroll: "You've successfully enrolled the course",
     },
     material: {
         noMaterial: 'Unable to find material record(s)',

@@ -1,6 +1,6 @@
-import { UserRoles, Permissions } from '../models';
+import { Permissions, UserRoles } from '../models';
 
-export const PermissionsByRole = {
+const PermissionsByRole = {
     [UserRoles.Student]: [
         Permissions.GetCategory,
         Permissions.GetCategoryList,
@@ -31,3 +31,10 @@ export const PermissionsByRole = {
     ],
     [UserRoles.Admin]: [...Object.values(Permissions)],
 };
+
+// remove roles
+PermissionsByRole[UserRoles.Admin] = PermissionsByRole[UserRoles.Admin].filter(p => {
+    return ![Permissions.EnrollCourse, Permissions.LeaveCourse].includes(p);
+});
+
+export { PermissionsByRole };

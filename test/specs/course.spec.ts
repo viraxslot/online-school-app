@@ -1,12 +1,14 @@
 import { omit } from 'lodash';
+import jwt from 'jsonwebtoken';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, Course, CreatedCourses, User, UserRoles } from '../../src/db/models';
+import { Category, Course, CreatedCourses, StudentCourses, User, UserRoles } from '../../src/db/models';
 import { logger } from '../../src/helpers/winston-logger';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
+import { TokenPayload } from '../../src/api/shared/interfaces';
 
 describe('API: course suite', function () {
     const createdUserIds: number[] = [];
@@ -20,6 +22,7 @@ describe('API: course suite', function () {
     let adminToken: string;
 
     let categoryId: number;
+    let courseId: number;
 
     beforeAll(async () => {
         const student = await ApiHelper.getStudentToken();
@@ -32,8 +35,9 @@ describe('API: course suite', function () {
 
         createdUserIds.push(student.userId, teacher.userId, admin.userId);
 
-        const result = await ApiHelper.createCategory(adminToken);
-        categoryId = result.categoryId;
+        const createdCourse = await ApiHelper.createCourse(adminToken);
+        categoryId = createdCourse.categoryId;
+        courseId = createdCourse.courseId;
         createdCategoryIds.push(categoryId);
     });
 
@@ -91,6 +95,11 @@ describe('API: course suite', function () {
         });
     });
 
+    const negativeRoleTestCases = [
+        { title: 'admin role', role: UserRoles.Admin, expectedMessage: 'This action is forbidden for role admin' },
+        { title: 'teacher role', role: UserRoles.Teacher, expectedMessage: 'This action is forbidden for role teacher' },
+    ];
+
     describe('GET: enroll the course', function () {
         it('should check type of courseId query parameter', async () => {
             const result = await CourseRoute.enrollCourse('test' as any);
@@ -113,11 +122,65 @@ describe('API: course suite', function () {
         });
 
         it('should return 401 error if no token passed', async () => {
-            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
-            createdCategoryIds.push(categoryId);
-
             const result = await CourseRoute.enrollCourse(courseId);
             expect(result.status).toBe(401);
+        });
+
+        negativeRoleTestCases.forEach(test => {
+            it(`should not be possible to enroll course for ${test.title}`, async () => {
+                const { userId, token } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const result = await CourseRoute.enrollCourse(courseId, token);
+                expect(result.status).toBe(403);
+                expect(result.body.errors).toBe(test.expectedMessage);
+            });
+        });
+
+        it('should be possible for student to enroll the course', async () => {
+            const payload = jwt.decode(studentToken) as TokenPayload;
+            let enrolledCourse = await StudentCourses.findOne({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                    courseId
+                }
+            });
+
+            expect(enrolledCourse).toBeNull();
+            const result = await CourseRoute.enrollCourse(courseId, studentToken);
+
+            expect(result.status).toBe(200);
+            expect(result.body.result).toBe('You\'ve successfully enrolled the course');
+
+            enrolledCourse = await StudentCourses.findOne({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                    courseId
+                }
+            });
+            expect(enrolledCourse).not.toBeNull();
+        });
+
+        it('should show info message if student already enrolled the course', async () => {
+            const payload = jwt.decode(studentToken) as TokenPayload;
+
+            const firstEnroll = await CourseRoute.enrollCourse(courseId, studentToken);
+            expect(firstEnroll.status).toBe(200);
+
+            const enrolledCourse = await StudentCourses.findOne({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                    courseId
+                }
+            });
+            expect(enrolledCourse).not.toBeNull();
+
+            const secondEnroll = await CourseRoute.enrollCourse(courseId, studentToken);
+            expect(secondEnroll.status).toBe(200);
+            expect(secondEnroll.body.result).toBe('You\'ve already enrolled to this course');
         });
     });
 
@@ -143,11 +206,19 @@ describe('API: course suite', function () {
         });
 
         it('should return 401 error if no token passed', async () => {
-            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
-            createdCategoryIds.push(categoryId);
-
             const result = await CourseRoute.leaveCourse(courseId);
             expect(result.status).toBe(401);
+        });
+
+        negativeRoleTestCases.forEach(test => {
+            it(`should not be possible to enroll course for ${test.title}`, async () => {
+                const { userId, token } = await ApiHelper.getToken(test.role);
+                createdUserIds.push(userId);
+
+                const result = await CourseRoute.leaveCourse(courseId, token);
+                expect(result.status).toBe(403);
+                expect(result.body.errors).toBe(test.expectedMessage);
+            });
         });
     });
 

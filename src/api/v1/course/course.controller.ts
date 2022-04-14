@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { isNil, omit } from 'lodash';
-import { Category, Course, CreatedCourses, UserRoles } from '../../../db/models';
+import { Category, Course, CreatedCourses, StudentCourses, UserRoles } from '../../../db/models';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
@@ -255,7 +255,35 @@ export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
  *         description: 
  */
 export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
-    return res.status(501).json({});
+    const { payload } = Helper.getJwtAndPayload(req);
+    const courseId = req.params.courseId;
+
+    const enrollRecord = await StudentCourses.findOne({
+        raw: true,
+        where: {
+            userId: payload.userId,
+            courseId
+        }
+    });
+
+    if (!isNil(enrollRecord)) {
+        return res.status(200).json({ result: ApiMessages.course.alreadyEnrolled });
+    }
+
+    try {
+        await StudentCourses.create({
+            userId: payload.userId,
+            courseId: parseInt(courseId),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+
+        return res.status(200).json({ result: ApiMessages.course.successEnroll });
+    }
+    catch (err: any) {
+        logger.error(err);
+        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
+    }
 }
 
 /**
