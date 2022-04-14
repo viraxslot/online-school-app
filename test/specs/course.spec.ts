@@ -272,6 +272,15 @@ describe('API: course suite', function () {
             });
         });
 
+        it('should return 404 error if user did not enroll the course', async () => {
+            const { userId, token } = await ApiHelper.getStudentToken();
+            createdUserIds.push(userId);
+
+            const leaveResponse = await CourseRoute.leaveCourse(courseId, token);
+            expect(leaveResponse.status).toBe(404);
+            expect(leaveResponse.body.errors).toBe('You didn\'t enroll this course');
+        });
+
         it('should be possible to leave the course', async () => {
             const payload = jwt.decode(studentToken) as TokenPayload;
 

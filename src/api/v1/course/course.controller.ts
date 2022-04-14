@@ -192,6 +192,18 @@ export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
     const courseId = req.params.courseId;
 
     try {
+        const enrolledCourse = await StudentCourses.findOne({
+            raw: true,
+            where: {
+                userId: payload.userId,
+                courseId
+            }
+        });
+
+        if (isNil(enrolledCourse)) {
+            return res.status(404).json({ errors: ApiMessages.course.noCourseForUser });
+        }
+
         await StudentCourses.destroy({
             where: {
                 userId: payload.userId,

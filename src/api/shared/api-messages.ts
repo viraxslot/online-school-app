@@ -48,6 +48,7 @@ export const ApiMessages = {
     },
     course: {
         noCourse: 'Unable to find course record(s)',
+        noCourseForUser: "You didn't enroll this course",
         wrongMinCourseTitleLength:
             'Minimum course title length is: ' + SchemasV1.CourseRequest.properties.title.minLength,
         wrongMaxCourseTitleLength:
