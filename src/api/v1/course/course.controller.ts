@@ -303,5 +303,21 @@ export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
  *         description: 
  */
 export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
-    return res.status(501).json({});
+    const { payload } = Helper.getJwtAndPayload(req);
+    const courseId = req.params.courseId;
+
+    try {
+        await StudentCourses.destroy({
+            where: {
+                userId: payload.userId,
+                courseId: parseInt(courseId)
+            }
+        });
+
+        return res.status(200).json({ result: ApiMessages.course.successLeave });
+    }
+    catch (err: any) {
+        logger.error(err);
+        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
+    }
 }

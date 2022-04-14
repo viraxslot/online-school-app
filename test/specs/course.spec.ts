@@ -220,6 +220,34 @@ describe('API: course suite', function () {
                 expect(result.body.errors).toBe(test.expectedMessage);
             });
         });
+
+        it('should show info message if student already enrolled the course', async () => {
+            const payload = jwt.decode(studentToken) as TokenPayload;
+
+            const enrollResponse = await CourseRoute.enrollCourse(courseId, studentToken);
+            expect(enrollResponse.status).toBe(200);
+
+            let enrolledCourse = await StudentCourses.findOne({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                    courseId
+                }
+            });
+            expect(enrolledCourse).not.toBeNull();
+            const leaveResponse = await CourseRoute.leaveCourse(courseId, studentToken);
+            expect(leaveResponse.status).toBe(200);
+            expect(leaveResponse.body.result).toBe('You\'ve successfully left the course');
+
+            enrolledCourse = await StudentCourses.findOne({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                    courseId
+                }
+            });
+            expect(enrolledCourse).toBeNull();
+        });
     });
 
     describe('POST: create course', function () {

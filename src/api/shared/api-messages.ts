@@ -64,6 +64,7 @@ export const ApiMessages = {
         alreadyEnrolled: "You've already enrolled to this course",
         unableEnrollCourse: "Error, unable to enroll the course: ",
         successEnroll: "You've successfully enrolled the course",
+        successLeave: "You've successfully left the course",
     },
     material: {
         noMaterial: 'Unable to find material record(s)',
