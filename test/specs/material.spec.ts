@@ -7,6 +7,7 @@ import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
 import { TestData } from '../helpers/test-data';
 import { cloneDeep } from 'lodash';
+import { logger } from '../../src/helpers/winston-logger';
 
 describe('API: material suite', function () {
     const createdUserIds: number[] = [];
@@ -442,7 +443,7 @@ describe('API: material suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.category.unableRemoveCategory + err);
+                logger.error(ApiMessages.category.unableRemoveCategory + err);
             }
         }
 
@@ -454,7 +455,7 @@ describe('API: material suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.user.unableRemoveUser + err);
+                logger.error(ApiMessages.user.unableRemoveUser + err);
             }
         }
     });

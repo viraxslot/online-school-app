@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { isNil, omit } from 'lodash';
 import { Category, Course, CreatedCourses, UserRoles } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
@@ -131,8 +132,7 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
             return res.status(400).json({ errors: ApiMessages.course.uniqueFields });
         }
-
-        console.log(err);
+        logger.error(err);
 
         return res.status(500).json({
             errors: ApiMessages.course.unableCreateCourse + err,

@@ -1,5 +1,5 @@
 FROM node:16.13.2 as base
-ENV NODE_ENV=dev
+ENV NODE_ENV=development
 
 WORKDIR /app
 COPY package.json /app/

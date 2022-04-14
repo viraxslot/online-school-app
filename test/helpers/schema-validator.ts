@@ -1,4 +1,5 @@
 import Ajv from 'ajv';
+import { logger } from '../../src/helpers/winston-logger';
 export class SchemaValidator {
     static check(data: any, schema: any) {
         const ajv = new Ajv();
@@ -7,7 +8,7 @@ export class SchemaValidator {
         const valid = validate(data);
 
         if (!valid) {
-            console.log(data);
+            logger.error(data);
         }
 
         expect(validate?.errors).toBeNull();

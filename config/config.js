@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const path = require('path');
 
-let env = 'dev';
+let env = 'development';
 
 // workaround for jest default NODE_ENV value
 if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
@@ -17,6 +17,7 @@ if (!isDocker) {
 dotenv.config({ path: envPath });
 
 module.exports = {
+    env,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_USER,
@@ -31,4 +32,10 @@ module.exports = {
     jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '2h',
     adminLogin: process.env.ADMIN_LOGIN,
     adminPassword: process.env.ADMIN_PASSWORD,
+    aws: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretKeyId: process.env.AWS_SECRET_ACCESS_KEY,
+        region: process.env.AWS_REGION ?? 'us-east-2',
+        cloudWatchLogGroup: process.env.AWS_CLOUD_WATCH_LOG_GROUP ?? '/docker-compose/online-school-app'
+    }
 };

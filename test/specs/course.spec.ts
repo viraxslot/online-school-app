@@ -2,6 +2,7 @@ import { omit } from 'lodash';
 import { ApiMessages } from '../../src/api/shared/api-messages';
 import { SchemasV1 } from '../../src/api/v1/schemas';
 import { Category, Course, CreatedCourses, User, UserRoles } from '../../src/db/models';
+import { logger } from '../../src/helpers/winston-logger';
 import { CourseRoute } from '../api/routes/course/course.route';
 import { ApiHelper } from '../helpers/api-helper';
 import { SchemaValidator } from '../helpers/schema-validator';
@@ -424,7 +425,7 @@ describe('API: course suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.category.unableRemoveCategory + err);
+                logger.error(ApiMessages.category.unableRemoveCategory + err);
             }
         }
 
@@ -436,7 +437,7 @@ describe('API: course suite', function () {
                     },
                 });
             } catch (err) {
-                console.log(ApiMessages.user.unableRemoveUser + err);
+                logger.error(ApiMessages.user.unableRemoveUser + err);
             }
         }
     });
