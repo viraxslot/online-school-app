@@ -111,7 +111,7 @@ describe('API: course suite', function () {
             expect(error.param).toBe('courseId');
         });
 
-        it('should check course with such id exists', async () => {
+        it('should check that course with such id exists', async () => {
             const result = await CourseRoute.enrollCourse(-1);
             expect(result.status).toBe(400);
 
@@ -195,7 +195,7 @@ describe('API: course suite', function () {
             expect(error.param).toBe('courseId');
         });
 
-        it('should check course with such id exists', async () => {
+        it('should check that course with such id exists', async () => {
             const result = await CourseRoute.leaveCourse(-1);
             expect(result.status).toBe(400);
 
@@ -211,7 +211,7 @@ describe('API: course suite', function () {
         });
 
         negativeRoleTestCases.forEach(test => {
-            it(`should not be possible to enroll course for ${test.title}`, async () => {
+            it(`should not be possible to leave the course for ${test.title}`, async () => {
                 const { userId, token } = await ApiHelper.getToken(test.role);
                 createdUserIds.push(userId);
 
@@ -221,7 +221,7 @@ describe('API: course suite', function () {
             });
         });
 
-        it('should show info message if student already enrolled the course', async () => {
+        it('should be possible to leave the course', async () => {
             const payload = jwt.decode(studentToken) as TokenPayload;
 
             const enrollResponse = await CourseRoute.enrollCourse(courseId, studentToken);
