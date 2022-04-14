@@ -13,6 +13,7 @@ import {
     handleDeleteCourse,
     handleEnrollCourse,
     handleGetCourseList,
+    handleGetMineCourses,
     handleLeaveCourse,
     handlePostCourse,
     handlePutCourse,
@@ -44,46 +45,17 @@ courseRouter.get(
 );
 
 courseRouter.get(
-    '/' + v1Methods.course.enroll,
-    param('courseId')
-        .isNumeric()
-        .withMessage(ApiMessages.common.numericParameter)
-        .custom(async (courseId: number) => {
-            const course = await Course.findByPk(courseId);
-            if (isNil(course)) {
-                throw ApiMessages.course.noCourse;
-            }
-            return true;
-        }),
-    checkValidation,
-    checkJwtAuth,
-    checkPermission(Permissions.EnrollCourse),
-    handleEnrollCourse
-);
-
-courseRouter.get(
-    '/' + v1Methods.course.leave,
-    param('courseId')
-        .isNumeric()
-        .withMessage(ApiMessages.common.numericParameter)
-        .custom(async (courseId: number) => {
-            const course = await Course.findByPk(courseId);
-            if (isNil(course)) {
-                throw ApiMessages.course.noCourse;
-            }
-            return true;
-        }),
-    checkValidation,
-    checkJwtAuth,
-    checkPermission(Permissions.LeaveCourse),
-    handleLeaveCourse
-);
-
-courseRouter.get(
     '/' + v1Methods.course.courses,
     checkJwtAuth,
     checkPermission(Permissions.GetCourseList),
     handleGetCourseList
+);
+
+courseRouter.get(
+    '/' + v1Methods.course.mine,
+    checkJwtAuth,
+    checkPermission(Permissions.GetMineCourseList),
+    handleGetMineCourses
 );
 
 courseRouter.post(
@@ -129,6 +101,42 @@ courseRouter.post(
     checkJwtAuth,
     checkPermission(Permissions.CreateCourse),
     handlePostCourse
+);
+
+courseRouter.post(
+    '/' + v1Methods.course.enroll,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.EnrollCourse),
+    handleEnrollCourse
+);
+
+courseRouter.post(
+    '/' + v1Methods.course.leave,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.LeaveCourse),
+    handleLeaveCourse
 );
 
 courseRouter.put(

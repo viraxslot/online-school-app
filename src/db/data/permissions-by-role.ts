@@ -11,6 +11,7 @@ const PermissionsByRole = {
         Permissions.GetMaterialList,
         Permissions.EnrollCourse,
         Permissions.LeaveCourse,
+        Permissions.GetMineCourseList
     ],
     [UserRoles.Teacher]: [
         Permissions.GetCategory,
@@ -28,6 +29,7 @@ const PermissionsByRole = {
         Permissions.CreateMaterial,
         Permissions.ChangeMaterial,
         Permissions.RemoveMaterial,
+        Permissions.GetMineCourseList
     ],
     [UserRoles.Admin]: [...Object.values(Permissions)],
 };

@@ -4,7 +4,7 @@ import config from '../../config/config';
 import { JwtAuth } from '../db/models';
 import { logger } from './winston-logger';
 
-const removeOldTokens = new cron.CronJob('0 */5 * * * *', async function () {
+const removeOldTokens = new cron.CronJob('0 */30 * * * *', async function () {
     const jobName = 'Remove outdated tokens';
     logger.info(`${jobName}: start`);
 

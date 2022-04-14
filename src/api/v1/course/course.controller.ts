@@ -10,38 +10,6 @@ import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse 
 
 /**
  * @swagger
- * /api/v1/courses:
- *   get:
- *     tags:
- *       - Course
- *     summary: Allow to get courses list
- *     description: "Allow to get courses list. Available for roles: ALL"
- *     responses:
- *       200:
- *         content:
- *           json:
- *             schema:
- *               $ref: '#/components/schemas/CourseListResponse'
- *         description:
- */
-export async function handleGetCourseList(req: Request, res: CourseListResponse) {
-    try {
-        const courses: any = await Course.findAll({
-            raw: true,
-        });
-
-        const result = courses.map((el: any) => {
-            return omit(el, ['createdAt', 'updatedAt']);
-        });
-
-        return res.status(200).json(result);
-    } catch (err) {
-        return res.status(500).json({ errors: ApiMessages.course.noCourse + err });
-    }
-}
-
-/**
- * @swagger
  * /api/v1/courses/{courseId}:
  *   get:
  *     tags:
@@ -74,6 +42,168 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
         return res.status(200).json(course);
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.course.noCourse + ': ' + err });
+    }
+}
+
+/**
+ * @swagger
+ * /api/v1/courses:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Allow to get courses list
+ *     description: "Allow to get courses list. Available for roles: ALL"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseListResponse'
+ *         description:
+ */
+export async function handleGetCourseList(req: Request, res: CourseListResponse) {
+    try {
+        const courses: any = await Course.findAll({
+            raw: true,
+        });
+
+        const result = courses.map((el: any) => {
+            return omit(el, ['createdAt', 'updatedAt']);
+        });
+
+        return res.status(200).json(result);
+    } catch (err) {
+        return res.status(500).json({ errors: ApiMessages.course.noCourse + err });
+    }
+}
+
+/**
+ * @swagger
+ * /api/v1/courses/mine:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Allow to get created courses for teacher/admin and enrolled courses for student
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/CourseListResponse'
+ */
+export async function handleGetMineCourses(req: Request, res: CourseListResponse) {
+    const { payload } = Helper.getJwtAndPayload(req);
+    const studentRoleId = await DbHelper.getRoleId(UserRoles.Student);
+
+    if (payload.roleId === studentRoleId) {
+        try {
+            const result: any = await StudentCourses.findAll({
+                raw: true,
+                where: {
+                    userId: payload.userId,
+                }
+            });
+            return res.json(result);
+        }
+        catch (err) {
+            return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
+        }
+    }
+
+    try {
+        const result: any = await CreatedCourses.findAll({
+            raw: true,
+            where: {
+                userId: payload.userId,
+            }
+        });
+        return res.json(result);
+    }
+    catch (err) {
+        return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
+    }
+
+}
+
+/**
+ * @swagger
+ * /api/v1/courses/{courseId}/enroll:
+ *   post:
+ *     tags:
+ *       - Course
+ *     summary: Allow student to enroll the course
+ *     description: "Allow to enroll to a course. Available for roles: student"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/DefaultResponse'
+ */
+export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
+    const { payload } = Helper.getJwtAndPayload(req);
+    const courseId = req.params.courseId;
+
+    const enrollRecord = await StudentCourses.findOne({
+        raw: true,
+        where: {
+            userId: payload.userId,
+            courseId
+        }
+    });
+
+    if (!isNil(enrollRecord)) {
+        return res.status(200).json({ result: ApiMessages.course.alreadyEnrolled });
+    }
+
+    try {
+        await StudentCourses.create({
+            userId: payload.userId,
+            courseId: parseInt(courseId),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        });
+
+        return res.status(200).json({ result: ApiMessages.course.successEnroll });
+    }
+    catch (err: any) {
+        logger.error(err);
+        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
+    }
+}
+
+/**
+ * @swagger
+ * /api/v1/courses/{courseId}/leave:
+ *   post:
+ *     tags:
+ *       - Course
+ *     summary: Allow to leave the course that student previously joined
+ *     description: "Allow to leave the course. Available for roles: student"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/DefaultResponse'
+ */
+export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
+    const { payload } = Helper.getJwtAndPayload(req);
+    const courseId = req.params.courseId;
+
+    try {
+        await StudentCourses.destroy({
+            where: {
+                userId: payload.userId,
+                courseId: parseInt(courseId)
+            }
+        });
+
+        return res.status(200).json({ result: ApiMessages.course.successLeave });
+    }
+    catch (err: any) {
+        logger.error(err);
+        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
     }
 }
 
@@ -235,89 +365,5 @@ export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
         return res.status(200).json({ result: ApiMessages.common.removeSuccess });
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.course.unableRemoveCourse + err });
-    }
-}
-
-/**
- * @swagger
- * /api/v1/courses/{courseId}/enroll:
- *   get:
- *     tags:
- *       - Course
- *     summary: Allow student to enroll the course
- *     description: "Allow to enroll to a course. Available for roles: student"
- *     responses:
- *       200:
- *         content:
- *           json:
- *             schema:
- *               $ref: '#/components/schemas/DefaultResponse'
- *         description: 
- */
-export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
-    const { payload } = Helper.getJwtAndPayload(req);
-    const courseId = req.params.courseId;
-
-    const enrollRecord = await StudentCourses.findOne({
-        raw: true,
-        where: {
-            userId: payload.userId,
-            courseId
-        }
-    });
-
-    if (!isNil(enrollRecord)) {
-        return res.status(200).json({ result: ApiMessages.course.alreadyEnrolled });
-    }
-
-    try {
-        await StudentCourses.create({
-            userId: payload.userId,
-            courseId: parseInt(courseId),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
-
-        return res.status(200).json({ result: ApiMessages.course.successEnroll });
-    }
-    catch (err: any) {
-        logger.error(err);
-        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
-    }
-}
-
-/**
- * @swagger
- * /api/v1/courses/{courseId}/leave:
- *   get:
- *     tags:
- *       - Course
- *     summary: Allow to leave the course that student previously joined
- *     description: "Allow to leave the course. Available for roles: student"
- *     responses:
- *       200:
- *         content:
- *           json:
- *             schema:
- *               $ref: '#/components/schemas/DefaultResponse'
- *         description: 
- */
-export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
-    const { payload } = Helper.getJwtAndPayload(req);
-    const courseId = req.params.courseId;
-
-    try {
-        await StudentCourses.destroy({
-            where: {
-                userId: payload.userId,
-                courseId: parseInt(courseId)
-            }
-        });
-
-        return res.status(200).json({ result: ApiMessages.course.successLeave });
-    }
-    catch (err: any) {
-        logger.error(err);
-        return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
     }
 }

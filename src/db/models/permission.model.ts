@@ -17,6 +17,7 @@ export enum Permissions {
     CreateCourse = 'Create course',
     GetCourse = 'Get course',
     GetCourseList = 'Get course list',
+    GetMineCourseList = 'Get mine course list',
     ChangeCourse = 'Change course',
     RemoveCourse = 'Remove course',
     EnrollCourse = 'Enroll course',

@@ -14,8 +14,8 @@ import { ChangeUserRequest, UserListResponse, UserRequest, UserResponse } from '
  *   post:
  *     tags:
  *       - User
- *     summary: 'Allow to register a user. User types: student, teacher'
- *     description: 'Allow to register a user. User types: student, teacher'
+ *     summary: 'Allow to register new user. User types: student, teacher'
+ *     description: 'Allow to register new user. User types: student, teacher'
  *     requestBody:
  *       content:
  *         json:

@@ -37,7 +37,7 @@ supportedVersions.forEach((version) => {
 });
 
 app.get('*', function (req, res) {
-    res.redirect('/api/v1/api-docs/');
+    res.status(400).json({ error: 'There is no such endpoint, please check request URL' });
 });
 
 const port = process.env.PORT ?? 4000;

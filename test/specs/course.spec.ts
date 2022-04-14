@@ -43,12 +43,16 @@ describe('API: course suite', function () {
 
     describe('GET: course by id', function () {
         it('should return 401 error if no token passed', async () => {
-            const result = await CourseRoute.getCourse(-1);
+            const maxId: number = await Course.max('id');
+
+            const result = await CourseRoute.getCourse(maxId + 1);
             expect(result.status).toBe(401);
         });
 
         it('should return 404 error if no course found', async () => {
-            const result = await CourseRoute.getCourse(-1, studentToken);
+            const maxId: number = await Course.max('id');
+
+            const result = await CourseRoute.getCourse(maxId + 1, studentToken);
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find course record(s)');
         });
