@@ -26,7 +26,7 @@ import {
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/DefaultResponse'
+ *               $ref: '#/components/schemas/MaterialListResponse'
  *         description: Return list of materials
  */
 export async function handleGetMaterialsList(req: Request, res: MaterialListResponse) {
@@ -59,7 +59,7 @@ export async function handleGetMaterialsList(req: Request, res: MaterialListResp
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/DefaultResponse'
+ *               $ref: '#/components/schemas/MaterialResponse'
  *         description: Return requested material information
  */
 export async function handleGetMaterialById(req: GetMaterialRequest, res: MaterialResponse) {

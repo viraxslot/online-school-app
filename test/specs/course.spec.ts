@@ -91,6 +91,66 @@ describe('API: course suite', function () {
         });
     });
 
+    describe('GET: enroll the course', function () {
+        it('should check type of courseId query parameter', async () => {
+            const result = await CourseRoute.enrollCourse('test' as any);
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Parameter should be numeric');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should check course with such id exists', async () => {
+            const result = await CourseRoute.enrollCourse(-1);
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const result = await CourseRoute.enrollCourse(courseId);
+            expect(result.status).toBe(401);
+        });
+    });
+
+    describe('GET: leave the course', function () {
+        it('should check type of courseId query parameter', async () => {
+            const result = await CourseRoute.leaveCourse('test' as any);
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Parameter should be numeric');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should check course with such id exists', async () => {
+            const result = await CourseRoute.leaveCourse(-1);
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Unable to find course record(s)');
+            expect(error.param).toBe('courseId');
+        });
+
+        it('should return 401 error if no token passed', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const result = await CourseRoute.leaveCourse(courseId);
+            expect(result.status).toBe(401);
+        });
+    });
+
     describe('POST: create course', function () {
         it('should return 401 error if no token passed', async () => {
             const courseData = TestData.getCourse({ categoryId });

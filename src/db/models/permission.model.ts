@@ -19,6 +19,8 @@ export enum Permissions {
     GetCourseList = 'Get course list',
     ChangeCourse = 'Change course',
     RemoveCourse = 'Remove course',
+    EnrollCourse = 'Enroll course',
+    LeaveCourse = 'Leave course',
     // material permissions
     CreateMaterial = 'Create material',
     GetMaterial = 'Get material',

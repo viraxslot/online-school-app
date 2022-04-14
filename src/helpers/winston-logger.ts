@@ -7,7 +7,7 @@ export const logger = winston.createLogger({
 });
 
 const consoleFormat = format.printf(({ level, message }) => {
-    return `[${level.toUpperCase()}]: ${message}`;
+    return `[DEV, ${level.toUpperCase()}]: ${message}`;
 });
 
 if (config.env === 'development') {
@@ -23,7 +23,7 @@ if (config.env === 'production') {
         awsAccessKeyId: config.aws.accessKeyId,
         awsSecretKey: config.aws.secretKeyId,
         awsRegion: config.aws.region,
-        messageFormatter: (log: any) => `[${log.level.toUpperCase()}]: ${log.message}`
+        messageFormatter: (log: any) => `[PROD, ${log.level.toUpperCase()}]: ${log.message}`
     };
     logger.add(new WinstonCloudWatch(cloudwatchConfig));
 }

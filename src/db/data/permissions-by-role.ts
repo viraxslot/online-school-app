@@ -9,6 +9,8 @@ export const PermissionsByRole = {
         Permissions.GetCourseList,
         Permissions.GetMaterial,
         Permissions.GetMaterialList,
+        Permissions.EnrollCourse,
+        Permissions.LeaveCourse,
     ],
     [UserRoles.Teacher]: [
         Permissions.GetCategory,

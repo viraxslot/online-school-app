@@ -57,7 +57,7 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
  *         description:
  */
 export async function handleCourseById(req: Request, res: CourseResponse) {
-    const courseId = req.params.id;
+    const courseId = req.params.courseId;
 
     try {
         const course: any = await Course.findOne({
@@ -209,7 +209,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
  *         description:
  */
 export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
-    const courseId = req.params.id;
+    const courseId = req.params.courseId;
 
     const { payload } = Helper.getJwtAndPayload(req);
     const userId = payload.userId;
@@ -236,4 +236,44 @@ export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.course.unableRemoveCourse + err });
     }
+}
+
+/**
+ * @swagger
+ * /api/v1/courses/{courseId}/enroll:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Allow student to enroll the course
+ *     description: "Allow to enroll to a course. Available for roles: student"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/DefaultResponse'
+ *         description: 
+ */
+export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
+    return res.status(501).json({});
+}
+
+/**
+ * @swagger
+ * /api/v1/courses/{courseId}/leave:
+ *   get:
+ *     tags:
+ *       - Course
+ *     summary: Allow to leave the course that student previously joined
+ *     description: "Allow to leave the course. Available for roles: student"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/DefaultResponse'
+ *         description: 
+ */
+export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
+    return res.status(501).json({});
 }

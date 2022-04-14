@@ -11,7 +11,9 @@ import { SchemasV1 } from '../schemas';
 import {
     handleCourseById,
     handleDeleteCourse,
+    handleEnrollCourse,
     handleGetCourseList,
+    handleLeaveCourse,
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
@@ -30,7 +32,7 @@ const courseRouter = express.Router();
 
 courseRouter.get(
     '/' + v1Methods.course.coursesById,
-    param('id')
+    param('courseId')
         .exists()
         .withMessage(ApiMessages.common.unableParseId)
         .isNumeric()
@@ -39,6 +41,42 @@ courseRouter.get(
     checkJwtAuth,
     checkPermission(Permissions.GetCourse),
     handleCourseById
+);
+
+courseRouter.get(
+    '/' + v1Methods.course.enroll,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.EnrollCourse),
+    handleEnrollCourse
+);
+
+courseRouter.get(
+    '/' + v1Methods.course.leave,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw ApiMessages.course.noCourse;
+            }
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.LeaveCourse),
+    handleLeaveCourse
 );
 
 courseRouter.get(
@@ -141,7 +179,7 @@ courseRouter.put(
 
 courseRouter.delete(
     '/' + v1Methods.course.coursesById,
-    param('id')
+    param('courseId')
         .exists()
         .withMessage(ApiMessages.common.unableParseId)
         .isNumeric()

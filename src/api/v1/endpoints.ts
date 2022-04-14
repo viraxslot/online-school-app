@@ -22,7 +22,9 @@ export const v1Methods = {
     },
     course: {
         courses: 'courses',
-        coursesById: 'courses/:id',
+        coursesById: 'courses/:courseId',
+        enroll: 'courses/:courseId/enroll',
+        leave: 'courses/:courseId/leave',
         materials: 'courses/:courseId/materials',
         materialsById: 'courses/:courseId/materials/:materialId',
     },
