@@ -14,6 +14,13 @@ export interface CourseResponseData extends ResponseData {
     categoryId: number;
 }
 
+export interface UserCourseResponseData extends ResponseData {
+    userId: number;
+    courseId: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface ChangeCourseRequestData {
     id: number;
     title?: string;
@@ -27,3 +34,4 @@ export type CourseRequest = RequestBody<{}, CourseRequestData>;
 export type ChangeCourseRequest = RequestBody<{}, ChangeCourseRequestData>;
 export type CourseResponse = ResponseBody<CourseResponseData>;
 export type CourseListResponse = ResponseBody<CourseResponseData[]>;
+export type UserCourseListResponse = ResponseBody<UserCourseResponseData[]>;

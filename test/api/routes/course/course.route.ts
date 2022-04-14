@@ -5,7 +5,8 @@ import {
     ApiChangeCourseRequest,
     ApiCourseListResponse,
     ApiCourseRequest,
-    ApiCourseResponse
+    ApiCourseResponse,
+    ApiUserCourseListResponse
 } from './course.interfaces';
 import { ApiChangeMaterialRequest, ApiMaterialRequest, ApiMaterialResponse } from './material.interfaces';
 
@@ -24,6 +25,17 @@ export class CourseRoute extends ApiRoute {
     static async getCourse(id: number, jwt?: string): Promise<ApiCourseResponse> {
         return this.getMethod({
             path: v1Methods.course.coursesById.replace(':courseId(\\d+)', id.toString()),
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
+    static async getMineCourseList(jwt?: string): Promise<ApiUserCourseListResponse> {
+        return this.getMethod({
+            path: v1Methods.course.mine,
             options: {
                 headers: {
                     Authorization: jwt ?? '',

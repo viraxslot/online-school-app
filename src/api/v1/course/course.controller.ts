@@ -6,7 +6,7 @@ import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
-import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse } from './course.interfaces';
+import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse, UserCourseListResponse } from './course.interfaces';
 
 /**
  * @swagger
@@ -89,9 +89,9 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/CourseListResponse'
+ *               $ref: '#/components/schemas/UserCourseListResponse'
  */
-export async function handleGetMineCourses(req: Request, res: CourseListResponse) {
+export async function handleGetMineCourses(req: Request, res: UserCourseListResponse) {
     const { payload } = Helper.getJwtAndPayload(req);
     const studentRoleId = await DbHelper.getRoleId(UserRoles.Student);
 

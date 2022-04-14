@@ -99,12 +99,59 @@ describe('API: course suite', function () {
         });
     });
 
+    describe('GET: mine course list', function () {
+        it('should return 401 error if no token passed', async () => {
+            const result = await CourseRoute.getMineCourseList();
+            expect(result.status).toBe(401);
+        });
+
+        it('should be possible for student get list of enrolled courses', async () => {
+            const { userId, token } = await ApiHelper.getStudentToken();
+            createdUserIds.push(userId);
+
+            let mineCourses = await CourseRoute.getMineCourseList(token);
+            expect(mineCourses.status).toBe(200);
+            expect(mineCourses.body).toMatchObject([]);
+
+            const enrollResponse = await CourseRoute.enrollCourse(courseId, token);
+            expect(enrollResponse.status).toBe(200);
+
+            mineCourses = await CourseRoute.getMineCourseList(token);
+            expect(mineCourses.body.length).toBe(1);
+            expect(mineCourses.body[0].userId).toBe(userId);
+            expect(mineCourses.body[0].courseId).toBe(courseId);
+            expect(mineCourses.body[0].createdAt).toBeTruthy();
+            expect(mineCourses.body[0].updatedAt).toBeTruthy();
+        });
+
+        it('should be possible for teacher get list of created courses', async () => {
+            const { userId, token } = await ApiHelper.getTeacherToken();
+            createdUserIds.push(userId);
+
+            let mineCourses = await CourseRoute.getMineCourseList(token);
+            expect(mineCourses.status).toBe(200);
+            expect(mineCourses.body).toMatchObject([]);
+
+            const courseData = TestData.getCourse({ categoryId });
+            const createResponse = await CourseRoute.postCourse(courseData, token);
+            expect(createResponse.status).toBe(200);
+            const createdCourseId = createResponse.body.id;
+
+            mineCourses = await CourseRoute.getMineCourseList(token);
+            expect(mineCourses.body.length).toBe(1);
+            expect(mineCourses.body[0].userId).toBe(userId);
+            expect(mineCourses.body[0].courseId).toBe(createdCourseId);
+            expect(mineCourses.body[0].createdAt).toBeTruthy();
+            expect(mineCourses.body[0].updatedAt).toBeTruthy();
+        });
+    });
+
     const negativeRoleTestCases = [
         { title: 'admin role', role: UserRoles.Admin, expectedMessage: 'This action is forbidden for role admin' },
         { title: 'teacher role', role: UserRoles.Teacher, expectedMessage: 'This action is forbidden for role teacher' },
     ];
 
-    describe('GET: enroll the course', function () {
+    describe('POST: enroll the course', function () {
         it('should check type of courseId query parameter', async () => {
             const result = await CourseRoute.enrollCourse('test' as any);
             expect(result.status).toBe(400);
@@ -188,7 +235,7 @@ describe('API: course suite', function () {
         });
     });
 
-    describe('GET: leave the course', function () {
+    describe('POST: leave the course', function () {
         it('should check type of courseId query parameter', async () => {
             const result = await CourseRoute.leaveCourse('test' as any);
             expect(result.status).toBe(400);

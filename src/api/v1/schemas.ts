@@ -170,6 +170,28 @@ const CourseSchemas = {
         },
         required: ['id', 'title', 'description', 'visible', 'categoryId'],
     },
+
+    UserCourseListResponse: {
+        type: 'array',
+        items: {
+            type: 'object',
+            properties: {
+                userId: {
+                    type: 'number'
+                },
+                courseId: {
+                    type: 'number'
+                },
+                createdAt: {
+                    type: 'string'
+                },
+                updatedAt: {
+                    type: 'string'
+                }
+            },
+            required: ['userId', 'courseId', 'createdAt', 'updatedAt']
+        }
+    }
 };
 
 const MaterialSchemas = {
