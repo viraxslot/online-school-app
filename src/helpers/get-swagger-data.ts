@@ -10,8 +10,10 @@ import { SchemasV1 } from '../api/v1/schemas';
  */
 export function getSwaggerData(currentVersion: string, versionFolders: string[]) {
     const apiFilesList = versionFolders.map((version) =>
-        path.resolve(__dirname, '..', 'api', `${version}`, '**', '*controller.ts')
+        path.resolve(process.cwd(), 'src', 'api', `${version}`, '**', '*controller.ts')
     );
+
+    console.log('Controllers list', JSON.stringify(apiFilesList));
 
     const options: OAS3Options = {
         definition: {
