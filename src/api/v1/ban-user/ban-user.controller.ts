@@ -39,9 +39,9 @@ import { ChangeUserBanRequest, ChangeUserBanResponse } from "./ban-user.interfac
  *         description: 
  */
 export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res: ChangeUserBanResponse) {
-    let userId;
+    let banUserId;
     try {
-        userId = parseInt(req.query.userId as string);
+        banUserId = parseInt(req.query.userId as string);
     }
     catch (err) {
         return res.status(500).json({ errors: ApiMessages.common.unableParseId });
@@ -52,16 +52,21 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
     const user: any = await BannedUser.findOne({
         raw: true,
         where: {
-            userId
+            userId: banUserId
         }
     });
 
     const { payload } = Helper.getJwtAndPayload(req);
     const adminName = await DbHelper.getUserName(payload.userId);
+
+    if (payload.userId === banUserId) {
+        return res.status(400).json({ errors: ApiMessages.banUser.unableToBanYourself });
+    }
+
     const body = {
         result: '',
         isBanned: false,
-        userId,
+        userId: banUserId,
         reason: 'empty',
         bannedBy: ''
     };
@@ -71,7 +76,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
             if (ban) {
                 await BannedUser.create({
                     reason,
-                    userId,
+                    userId: banUserId,
                     bannedBy: adminName,
                 });
 
@@ -94,7 +99,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
             else {
                 await BannedUser.destroy({
                     where: {
-                        userId
+                        userId: banUserId
                     }
                 });
                 body.result = ApiMessages.banUser.unBannedSuccessfully;
@@ -102,7 +107,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
         }
     }
     catch (err) {
-        return res.status(500).json({ errors: ApiMessages.banUser.unableBanUnban });
+        return res.status(500).json({ errors: ApiMessages.banUser.unableChangeBanStatus });
     }
 
     return res.status(200).json(body);

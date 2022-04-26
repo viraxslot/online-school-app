@@ -86,11 +86,12 @@ export const ApiMessages = {
         notOwnerError: "You're not owner of this material and course, you can't change/remove it",
     },
     banUser: {
+        unableToBanYourself: 'You can\'t ban yourself',
         alreadyBanned: 'User is already banned',
         wasNotBanned: 'User was not banned',
         bannedSuccessfully: 'User successfully banned',
         unBannedSuccessfully: 'User successfully unbanned',
-        unableBanUnban: 'Unable to ban/unban user: ',
+        unableChangeBanStatus: 'Unable to ban/unban user: ',
         wrongMinReasonLength:
             'Minimum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.minLength,
         wrongMaxReasonLength:

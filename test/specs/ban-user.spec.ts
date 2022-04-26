@@ -156,6 +156,17 @@ describe('API: ban/unban users suite', () => {
             await checkUserBannedOrNot(userId, true);
         });
 
+        it('should not be possible to ban yourself', async () => {
+            const { userId, token } = await ApiHelper.createAdmin();
+            createdUserIds.push(userId);
+
+            const banUserData = TestData.getBanUserData({ userId, ban: true, jwt: token });
+            const result = await BanUserRoute.changeUserBan(banUserData);
+
+            expect(result.status).toBe(400);
+            expect(result.body.errors).toBe('You can\'t ban yourself');
+        });
+
         it('should be possible for admin to unban user', async () => {
             const { userId } = await ApiHelper.createStudent();
             createdUserIds.push(userId);
