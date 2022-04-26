@@ -1,4 +1,4 @@
-import { Permission, Permissions, Role, UserRoles } from '../../db/models';
+import { Permission, Permissions, Role, User, UserRoles } from '../../db/models';
 export class DbHelper {
     static async getRoleId(role: UserRoles): Promise<number | null> {
         const userRole: any = await Role.findOne({
@@ -31,5 +31,16 @@ export class DbHelper {
         });
 
         return userPermission?.id ?? null;
+    }
+
+    static async getUserName(id: number): Promise<string> {
+        const user: any = await User.findOne({
+            raw: true,
+            where: {
+                id,
+            },
+        });
+
+        return user.firstName + ' ' + user.lastName;
     }
 }

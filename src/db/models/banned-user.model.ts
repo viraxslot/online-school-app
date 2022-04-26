@@ -3,8 +3,8 @@ import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
 interface BannedUserAttributes extends DbCommonAttributes {
-    title: string;
     userId: number;
+    reason: string;
     bannedBy: string;
 }
 
@@ -17,6 +17,14 @@ export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAt
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        reason: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
         bannedBy: {
             type: DataTypes.STRING,

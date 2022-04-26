@@ -14,6 +14,8 @@ import sequelize from './db/sequelize';
 import { initialDbSeed } from './helpers/initial-db-seed';
 import { logger } from './helpers/winston-logger';
 import './helpers/jobs';
+import { ApiMessages } from './api/shared/api-messages';
+import bannedUsersRouter from './api/v1/ban-user/ban-user.router';
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,10 +36,12 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, userRouter);
     app.use(versionPrefix, categoryRouter);
     app.use(versionPrefix, courseRouter);
+    // ban user
+    app.use(versionPrefix, bannedUsersRouter);
 });
 
-app.get('*', function (req, res) {
-    res.status(400).json({ error: 'There is no such endpoint, please check request URL' });
+app.use('*', function (req, res) {
+    res.status(400).json({ error: ApiMessages.common.noSuchEndpoint });
 });
 
 const port = process.env.PORT ?? 4000;

@@ -29,4 +29,8 @@ export const v1Methods = {
         materials: 'courses/:courseId/materials',
         materialsById: 'courses/:courseId/materials/:materialId',
     },
+    bannedUsers: {
+        banUserWildcard: 'change-user-ban*',
+        banUser: 'change-user-ban'
+    }
 };

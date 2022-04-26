@@ -25,9 +25,9 @@ describe('API: course suite', function () {
     let courseId: number;
 
     beforeAll(async () => {
-        const student = await ApiHelper.getStudentToken();
-        const teacher = await ApiHelper.getTeacherToken();
-        const admin = await ApiHelper.getAdminToken();
+        const student = await ApiHelper.createStudent();
+        const teacher = await ApiHelper.createTeacher();
+        const admin = await ApiHelper.createAdmin();
 
         studentToken = student.token;
         teacherToken = teacher.token;
@@ -59,7 +59,7 @@ describe('API: course suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get course by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
@@ -83,7 +83,7 @@ describe('API: course suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get courses list with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
@@ -106,7 +106,7 @@ describe('API: course suite', function () {
         });
 
         it('should be possible for student get list of enrolled courses', async () => {
-            const { userId, token } = await ApiHelper.getStudentToken();
+            const { userId, token } = await ApiHelper.createStudent();
             createdUserIds.push(userId);
 
             let mineCourses = await CourseRoute.getMineCourseList(token);
@@ -125,7 +125,7 @@ describe('API: course suite', function () {
         });
 
         it('should be possible for teacher get list of created courses', async () => {
-            const { userId, token } = await ApiHelper.getTeacherToken();
+            const { userId, token } = await ApiHelper.createTeacher();
             createdUserIds.push(userId);
 
             let mineCourses = await CourseRoute.getMineCourseList(token);
@@ -199,7 +199,7 @@ describe('API: course suite', function () {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to enroll course for ${test.title}`, async () => {
-                const { userId, token } = await ApiHelper.getToken(test.role);
+                const { userId, token } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const result = await CourseRoute.enrollCourse(courseId, token);
@@ -283,7 +283,7 @@ describe('API: course suite', function () {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to leave the course for ${test.title}`, async () => {
-                const { userId, token } = await ApiHelper.getToken(test.role);
+                const { userId, token } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const result = await CourseRoute.leaveCourse(courseId, token);
@@ -293,7 +293,7 @@ describe('API: course suite', function () {
         });
 
         it('should return 404 error if user did not enroll the course', async () => {
-            const { userId, token } = await ApiHelper.getStudentToken();
+            const { userId, token } = await ApiHelper.createStudent();
             createdUserIds.push(userId);
 
             const leaveResponse = await CourseRoute.leaveCourse(courseId, token);
@@ -441,7 +441,7 @@ describe('API: course suite', function () {
 
         teacherAdminTestCases.forEach((test) => {
             it(`should be possible to create course with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const { categoryId } = await ApiHelper.createCategory(adminToken);
@@ -506,7 +506,7 @@ describe('API: course suite', function () {
                 const { categoryId } = await ApiHelper.createCategory(adminToken);
                 createdCategoryIds.push(categoryId);
 
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const courseData = TestData.getCourse({ categoryId });
@@ -586,7 +586,7 @@ describe('API: course suite', function () {
         });
 
         it('should not be possible for teacher to remove course that belongs to another teacher', async () => {
-            const { token, userId } = await ApiHelper.getTeacherToken();
+            const { token, userId } = await ApiHelper.createTeacher();
             createdUserIds.push(userId);
 
             const { categoryId } = await ApiHelper.createCategory(adminToken);
@@ -635,7 +635,7 @@ describe('API: course suite', function () {
         });
 
         it('should be possible for admin remove any course record', async () => {
-            const { token, userId } = await ApiHelper.getAdminToken();
+            const { token, userId } = await ApiHelper.createAdmin();
             createdUserIds.push(userId);
 
             const { categoryId } = await ApiHelper.createCategory(adminToken);

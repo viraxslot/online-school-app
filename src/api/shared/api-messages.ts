@@ -15,6 +15,7 @@ export const ApiMessages = {
         onlyAlphabetAndDigitsAllowed: 'Only RU/EN alphabet and digits allowed, please change your request',
         removeSuccess: 'Success: record was removed.',
         requiredFields: (fields: string) => `Please send required fields: ` + fields,
+        noSuchEndpoint: 'There is no such endpoint! Please check the requested URL or Method. API docs can be found at /api/v1/api-docs'
     },
     auth: {
         noAuthNeeded: 'No authentication needed',
@@ -84,7 +85,19 @@ export const ApiMessages = {
         unableRemoveMaterial: 'Unable to remove material: ',
         notOwnerError: "You're not owner of this material and course, you can't change/remove it",
     },
+    banUser: {
+        alreadyBanned: 'User is already banned',
+        wasNotBanned: 'User was not banned',
+        bannedSuccessfully: 'User successfully banned',
+        unBannedSuccessfully: 'User successfully unbanned',
+        unableBanUnban: 'Unable to ban/unban user: ',
+        wrongMinReasonLength:
+            'Minimum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.minLength,
+        wrongMaxReasonLength:
+            'Maximum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.maxLength,
+    },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,
     },
+
 };

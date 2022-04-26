@@ -21,9 +21,9 @@ describe('API: material suite', function () {
     let courseId: number;
 
     beforeAll(async () => {
-        const student = await ApiHelper.getStudentToken();
-        const teacher = await ApiHelper.getTeacherToken();
-        const admin = await ApiHelper.getAdminToken();
+        const student = await ApiHelper.createStudent();
+        const teacher = await ApiHelper.createTeacher();
+        const admin = await ApiHelper.createAdmin();
 
         studentToken = student.token;
         teacherToken = teacher.token;
@@ -55,7 +55,7 @@ describe('API: material suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get materials list by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const material1 = await ApiHelper.createMaterial(courseId, adminToken);
@@ -107,7 +107,7 @@ describe('API: material suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get material by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);

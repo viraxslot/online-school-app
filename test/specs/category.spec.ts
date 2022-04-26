@@ -19,9 +19,9 @@ describe('API: category suite', function () {
     let adminToken: string;
 
     beforeAll(async () => {
-        const student = await ApiHelper.getStudentToken();
-        const teacher = await ApiHelper.getTeacherToken();
-        const admin = await ApiHelper.getAdminToken();
+        const student = await ApiHelper.createStudent();
+        const teacher = await ApiHelper.createTeacher();
+        const admin = await ApiHelper.createAdmin();
 
         studentToken = student.token;
         teacherToken = teacher.token;
@@ -38,7 +38,7 @@ describe('API: category suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get category list with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const category: ApiCategoryRequest = await TestData.getCategory();
@@ -96,7 +96,7 @@ describe('API: category suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get category with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.getToken(test.role);
+                const { token, userId } = await ApiHelper.createUser(test.role);
                 createdUserIds.push(userId);
 
                 const category = await TestData.getCategory();

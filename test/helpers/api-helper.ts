@@ -75,19 +75,19 @@ export class ApiHelper {
         };
     }
 
-    static async getStudentToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Student);
+    static async createStudent(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Student);
     }
 
-    static async getTeacherToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Teacher);
+    static async createTeacher(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Teacher);
     }
 
-    static async getAdminToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Admin);
+    static async createAdmin(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Admin);
     }
 
-    static async getToken(role: UserRoles): Promise<CreatedUser> {
+    static async createUser(role: UserRoles): Promise<CreatedUser> {
         const user = await TestData.getUserData({
             role,
         });

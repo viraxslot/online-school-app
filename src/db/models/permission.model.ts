@@ -28,6 +28,9 @@ export enum Permissions {
     GetMaterialList = 'Get material list',
     ChangeMaterial = 'Change material',
     RemoveMaterial = 'Remove material',
+    // ban users permissions
+    BanUser = 'Ban user',
+    UnbanUser = 'Unban user'
 }
 
 interface PermissionAttributes extends DbCommonAttributes {

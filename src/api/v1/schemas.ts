@@ -282,11 +282,45 @@ const LoginSchemas = {
         type: 'object',
         properties: {
             accessToken: {
-                type: 'string',
+                type: 'string'
             },
         },
         required: ['accessToken'],
     },
+};
+
+const BanUserSchemas = {
+    ChangeUserBanRequest: {
+        type: 'object',
+        properties: {
+            reason: {
+                type: 'string',
+                minLength: 5,
+                maxLength: 200,
+            }
+        },
+        required: ['reason'],
+    },
+    ChangeUserBanResponse: {
+        type: 'object',
+        properties: {
+            userId: {
+                type: 'number'
+            },
+            isBanned: {
+                type: 'boolean'
+            },
+            reason: {
+                type: 'string',
+                minLength: 5,
+                maxLength: 200,
+            },
+            bannedBy: {
+                type: 'string'
+            }
+        },
+        required: ['userId', 'isBanned', 'reason', 'bannedBy'],
+    }
 };
 
 export const SchemasV1 = {
@@ -337,4 +371,5 @@ export const SchemasV1 = {
         type: 'array',
         items: MaterialSchemas.MaterialResponse,
     },
+    ...BanUserSchemas
 };

@@ -8,7 +8,7 @@ export class TestData {
         return faker.random.alphaNumeric(amount ?? 5);
     }
 
-    static async getUserData(options?: { role: UserRoles }): Promise<ApiUserRequest> {
+    static async getUserData(options?: { role: UserRoles; }): Promise<ApiUserRequest> {
         const login = faker.internet.userName() + Date.now();
         const email = faker.internet.email(login);
 
@@ -24,7 +24,7 @@ export class TestData {
         return { body };
     }
 
-    static async getCategory(options?: { titleLength?: number; categoryId?: number }): Promise<any> {
+    static async getCategory(options?: { titleLength?: number; categoryId?: number; }): Promise<any> {
         let title: string;
 
         if (options?.titleLength) {
@@ -43,7 +43,7 @@ export class TestData {
         return { body };
     }
 
-    static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number }): any {
+    static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number; }): any {
         const body: any = {
             title: faker.lorem.words(5) + Date.now(),
             description: faker.lorem.words(10) + Date.now(),
@@ -60,7 +60,7 @@ export class TestData {
         };
     }
 
-    static getMaterial(options?: { materialId?: number }) {
+    static getMaterial(options?: { materialId?: number; }) {
         const body: any = {
             title: faker.lorem.words(5) + Date.now(),
             data: faker.lorem.words(10) + Date.now(),
@@ -73,6 +73,20 @@ export class TestData {
 
         return {
             body,
+        };
+    }
+
+    static getBanUserData(options?: {
+        userId?: number;
+        reason?: string | null;
+        ban?: boolean;
+        jwt?: string;
+    }): any {
+        return {
+            userId: options?.userId ?? null,
+            reason: options?.reason ?? faker.lorem.words(3),
+            ban: options?.ban ?? null,
+            jwt: options?.jwt ?? null
         };
     }
 }

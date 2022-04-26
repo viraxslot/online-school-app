@@ -15,9 +15,9 @@ describe('API: user route suite', function () {
     let teacherToken: string;
     let adminToken: string;
     beforeAll(async () => {
-        const student = await ApiHelper.getStudentToken();
-        const teacher = await ApiHelper.getTeacherToken();
-        const admin = await ApiHelper.getAdminToken();
+        const student = await ApiHelper.createStudent();
+        const teacher = await ApiHelper.createTeacher();
+        const admin = await ApiHelper.createAdmin();
         studentToken = student.token;
         teacherToken = teacher.token;
         adminToken = admin.token;
@@ -158,7 +158,7 @@ describe('API: user route suite', function () {
         });
 
         it('should return 403 error when trying to create admin user with student role', async () => {
-            const student = await ApiHelper.getStudentToken();
+            const student = await ApiHelper.createStudent();
             createdUserIds.push(student.userId);
 
             const user = await TestData.getUserData({
@@ -171,7 +171,7 @@ describe('API: user route suite', function () {
         });
 
         it('should return 403 error when trying to create admin user with teacher role', async () => {
-            const teacher = await ApiHelper.getTeacherToken();
+            const teacher = await ApiHelper.createTeacher();
             createdUserIds.push(teacher.userId);
 
             const user = await TestData.getUserData({
@@ -184,7 +184,7 @@ describe('API: user route suite', function () {
         });
 
         it('should be possible to create admin user with admin token', async () => {
-            const admin = await ApiHelper.getAdminToken();
+            const admin = await ApiHelper.createAdmin();
             createdUserIds.push(admin.userId);
 
             const user = await TestData.getUserData({
