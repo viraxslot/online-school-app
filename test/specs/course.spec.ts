@@ -177,6 +177,26 @@ describe('API: course suite', function () {
             expect(result.status).toBe(401);
         });
 
+        it('should not be possible to join hidden course', async () => {
+            const courseData = TestData.getCourse({
+                categoryId,
+                visible: false
+            });
+            expect(courseData.body.visible).toBe(false);
+
+            const createdCourse = await CourseRoute.postCourse(courseData, teacherToken);
+            expect(createdCourse.status).toBe(200);
+            const courseId = createdCourse.body.id;
+
+            const result = await CourseRoute.enrollCourse(courseId, studentToken);
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.location).toBe('params');
+            expect(error.msg).toBe('Unable to enroll the hidden course');
+            expect(error.value).toBe(courseId.toString());
+        });
+
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to enroll course for ${test.title}`, async () => {
                 const { userId, token } = await ApiHelper.getToken(test.role);

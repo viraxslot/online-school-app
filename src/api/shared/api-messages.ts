@@ -62,6 +62,7 @@ export const ApiMessages = {
         unableChangeCourse: 'Unable to change course: ',
         unableRemoveCourse: 'Unable to remove course record: ',
         unableEnrollCourse: "Error, unable to enroll the course: ",
+        unableEnrollHiddenCourse: "Unable to enroll the hidden course",
         uniqueFields: 'title should be unique',
         notOwnerError: "You're not owner of this course, you can't change/remove it",
         alreadyEnrolled: "You've already enrolled to this course",

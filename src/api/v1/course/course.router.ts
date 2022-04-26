@@ -109,10 +109,21 @@ courseRouter.post(
         .isNumeric()
         .withMessage(ApiMessages.common.numericParameter)
         .custom(async (courseId: number) => {
-            const course = await Course.findByPk(courseId);
+            const course: any = await Course.findOne({
+                raw: true,
+                where: {
+                    id: courseId
+                }
+            });
+
             if (isNil(course)) {
                 throw ApiMessages.course.noCourse;
             }
+
+            if (!course.visible) {
+                throw ApiMessages.course.unableEnrollHiddenCourse;
+            }
+
             return true;
         }),
     checkValidation,
