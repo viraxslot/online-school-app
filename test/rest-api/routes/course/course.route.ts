@@ -171,13 +171,12 @@ export class CourseRoute extends ApiRoute {
         });
     }
 
-    static async postLike(courseId: number, like?: LikeValue | null, jwt?: string): Promise<ApiDefaultResponse> {
+    static async changeLike(courseId: number, like?: LikeValue | null, jwt?: string): Promise<ApiDefaultResponse> {
         return this.postMethod({
-            path: v1Methods.course.like.replace(':courseId', courseId.toString()),
+            path: v1Methods.course.like
+                .replace(':courseId', courseId.toString())
+                .replace(':like', like as string),
             options: {
-                params: {
-                    like
-                },
                 headers: {
                     Authorization: jwt ?? '',
                 },

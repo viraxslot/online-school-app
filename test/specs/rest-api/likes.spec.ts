@@ -25,7 +25,7 @@ describe('REST API: likes suites', () => {
 
     describe('POST: change like', () => {
         it('should check that course id path parameter is numeric', async () => {
-            const result = await CourseRoute.postLike('test' as any);
+            const result = await CourseRoute.changeLike('test' as any);
             expect(result.status).toBe(400);
 
             const error = result.body.errors[0];
@@ -35,7 +35,7 @@ describe('REST API: likes suites', () => {
         });
 
         it('should return validation error if there is no such course', async () => {
-            const result = await CourseRoute.postLike(-1);
+            const result = await CourseRoute.changeLike(-1);
             expect(result.status).toBe(400);
 
             const error = result.body.errors[0];
@@ -45,17 +45,17 @@ describe('REST API: likes suites', () => {
         });
 
         it('should check that like parameter has correct value', async () => {
-            const result = await CourseRoute.postLike(courseId, 'test' as any);
+            const result = await CourseRoute.changeLike(courseId, 'test' as any);
             expect(result.status).toBe(400);
 
             const error = result.body.errors[0];
-            expect(error.location).toBe('query');
+            expect(error.location).toBe('params');
             expect(error.msg).toBe('Wrong like parameter value, please use one of these: yes, no, remove');
             expect(error.param).toBe('like');
         });
 
         it('should return 401 error if no token passed', async () => {
-            const result = await CourseRoute.postLike(courseId, LikeValue.Yes);
+            const result = await CourseRoute.changeLike(courseId, LikeValue.Yes);
             expect(result.status).toBe(401);
         });
 
@@ -77,7 +77,7 @@ describe('REST API: likes suites', () => {
                 const { courseId } = await ApiHelper.createCourse(adminToken);
                 createdCourseIds.push(courseId);
 
-                const result = await CourseRoute.postLike(courseId, test.value, studentToken);
+                const result = await CourseRoute.changeLike(courseId, test.value, studentToken);
                 expect(result.status).toBe(200);
                 expect(result.body.result).toBe(test.expectedMessage);
 
@@ -96,7 +96,7 @@ describe('REST API: likes suites', () => {
         });
 
         it('should be possible to remove the like action', async () => {
-            const addLikeResult = await CourseRoute.postLike(courseId, LikeValue.Yes, studentToken);
+            const addLikeResult = await CourseRoute.changeLike(courseId, LikeValue.Yes, studentToken);
             expect(addLikeResult.status).toBe(200);
 
             const payload = Helper.getTokenPayload(studentToken);
@@ -109,7 +109,7 @@ describe('REST API: likes suites', () => {
             });
             expect(likedCourse).not.toBeNull();
 
-            const removeLikeResult = await CourseRoute.postLike(courseId, LikeValue.Remove, studentToken);
+            const removeLikeResult = await CourseRoute.changeLike(courseId, LikeValue.Remove, studentToken);
             expect(removeLikeResult.status).toBe(200);
 
             const likedCourse2: any = await Like.findOne({
@@ -139,7 +139,7 @@ describe('REST API: likes suites', () => {
             it(`should not be possible to change like for ${test.title}`, async () => {
                 const { token } = await ApiHelper.createUser(test.role);
 
-                const result = await CourseRoute.postLike(courseId, LikeValue.Yes, token);
+                const result = await CourseRoute.changeLike(courseId, LikeValue.Yes, token);
                 expect(result.status).toBe(403);
                 expect(result.body.errors).toBe(test.expectedMessage);
             });

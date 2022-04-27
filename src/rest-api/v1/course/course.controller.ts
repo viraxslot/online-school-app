@@ -1,12 +1,43 @@
 import { Request } from 'express';
 import { isNil, omit } from 'lodash';
-import { Category, Course, CreatedCourses, StudentCourses, UserRoles } from '../../../db/models';
+import { Category, Course, CreatedCourses, Like, LikeValue, StudentCourses, UserRoles } from '../../../db/models';
+import sequelize from '../../../db/sequelize';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
 import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse, UserCourseListResponse } from './course.interfaces';
+
+async function countLikes(courseId: number): Promise<{ likes: number; dislikes: number; }> {
+    const likes = await Like.count({
+        where: {
+            courseId,
+            like: LikeValue.Yes,
+        },
+        attributes: {
+            include: [
+                [sequelize.fn('COUNT', sequelize.col('like')), 'n_likes']
+            ]
+        }
+    });
+    const dislikes = await Like.count({
+        where: {
+            courseId,
+            like: LikeValue.No
+        },
+        attributes: {
+            include: [
+                [sequelize.fn('COUNT', sequelize.col('like')), 'n_dislikes']
+            ]
+        }
+    });
+
+    return {
+        likes,
+        dislikes
+    };
+}
 
 /**
  * @swagger
@@ -25,9 +56,9 @@ import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse,
  *         description:
  */
 export async function handleCourseById(req: Request, res: CourseResponse) {
-    const courseId = req.params.courseId;
 
     try {
+        const courseId = parseInt(req.params.courseId);
         const course: any = await Course.findOne({
             raw: true,
             where: {
@@ -38,6 +69,10 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
         if (isNil(course)) {
             return res.status(404).json({ errors: ApiMessages.course.noCourse });
         }
+
+        const { likes, dislikes } = await countLikes(courseId);
+        course.likes = likes;
+        course.dislikes = dislikes;
 
         return res.status(200).json(course);
     } catch (err) {
@@ -65,10 +100,40 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
     try {
         const courses: any = await Course.findAll({
             raw: true,
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*) as likes
+                            FROM likes AS l
+                            WHERE
+                                l."courseId" = course.id
+                                AND
+                                l.like = 'yes'
+                        )`),
+                        'likes'
+                    ],
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*) as likes
+                            FROM likes AS l
+                            WHERE
+                                l."courseId" = course.id
+                                AND
+                                l.like = 'no'
+                        )`),
+                        'dislikes'
+                    ],
+                ]
+            },
         });
-
         const result = courses.map((el: any) => {
             return omit(el, ['createdAt', 'updatedAt']);
+        });
+
+        result.forEach((el: any) => {
+            el.likes = parseInt(el.likes);
+            el.dislikes = parseInt(el.dislikes);
         });
 
         return res.status(200).json(result);

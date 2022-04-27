@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 import jwt from 'jsonwebtoken';
 import { ApiMessages } from '../../../src/rest-api/shared/api-messages';
 import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
-import { Category, Course, CreatedCourses, StudentCourses, User, UserRoles } from '../../../src/db/models';
+import { Category, Course, CreatedCourses, LikeValue, StudentCourses, User, UserRoles } from '../../../src/db/models';
 import { logger } from '../../../src/helpers/winston-logger';
 import { CourseRoute } from '../../rest-api/routes/course/course.route';
 import { ApiHelper } from '../../helpers/api-helper';
@@ -73,6 +73,29 @@ describe('REST API: course suite', function () {
                 expect(result.body.categoryId).toBe(categoryId);
             });
         });
+
+        it('should return amount of likes and dislikes for the course', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const likeResponse = await CourseRoute.changeLike(courseId, LikeValue.Yes, studentToken);
+            expect(likeResponse.status).toBe(200);
+
+            const courseResponse = await CourseRoute.getCourse(courseId, studentToken);
+            expect(courseResponse.status).toBe(200);
+
+            expect(courseResponse.body.likes).toBe(1);
+            expect(courseResponse.body.dislikes).toBe(0);
+
+            const dislikeResponse = await CourseRoute.changeLike(courseId, LikeValue.No, studentToken);
+            expect(dislikeResponse.status).toBe(200);
+
+            const courseResponse2 = await CourseRoute.getCourse(courseId, studentToken);
+            expect(courseResponse2.status).toBe(200);
+
+            expect(courseResponse2.body.likes).toBe(0);
+            expect(courseResponse2.body.dislikes).toBe(1);
+        });
     });
 
     describe('GET: course list', function () {
@@ -96,6 +119,28 @@ describe('REST API: course suite', function () {
                 const foundCourse = result.body.find((el) => el.id === courseId);
                 expect(foundCourse).not.toBeNull();
             });
+        });
+
+        it('should return likes and dislikes for the course', async () => {
+            const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
+            createdCategoryIds.push(categoryId);
+
+            const student1 = await ApiHelper.createStudent();
+            const student2 = await ApiHelper.createStudent();
+            createdUserIds.push(student1.userId, student2.userId);
+
+            const likeResponse1 = await CourseRoute.changeLike(courseId, LikeValue.Yes, student1.token);
+            const likeResponse2 = await CourseRoute.changeLike(courseId, LikeValue.Yes, student2.token);
+            expect(likeResponse1.status).toBe(200);
+            expect(likeResponse2.status).toBe(200);
+
+            const coursesList = await CourseRoute.getCourseList(student1.token);
+            expect(coursesList.status).toBe(200);
+
+            const course = coursesList.body.find(el => el.id === courseId);
+            expect(course).not.toBeNull();
+            expect(course?.likes).toBe(2);
+            expect(course?.dislikes).toBe(0);
         });
     });
 

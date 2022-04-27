@@ -167,6 +167,12 @@ const CourseSchemas = {
             categoryId: {
                 type: 'number',
             },
+            likes: {
+                type: 'number'
+            },
+            dislikes: {
+                type: 'number'
+            }
         },
         required: ['id', 'title', 'description', 'visible', 'categoryId'],
     },

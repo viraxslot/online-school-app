@@ -7,7 +7,7 @@ import { Helper } from "../helper";
 
 /**
  * @swagger
- * /api/v1/courses/{courseId}?like={string}:
+ * /api/v1/courses/{courseId}/like/{likeValue}:
  *   post:
  *     tags:
  *       - Course likes
@@ -19,7 +19,7 @@ import { Helper } from "../helper";
  *           type: number
  *         required: true
  *         description: course id
- *       - in: query
+ *       - in: path
  *         name: like
  *         schema:
  *           type: string
@@ -39,7 +39,7 @@ export async function handleChangeLikeRequest(req: Request, res: DefaultResponse
     try {
         const userId = payload.userId;
         const courseId = parseInt(req.params.courseId);
-        const like = req.query.like;
+        const like = req.params.like;
 
         const likeRecord = await Like.findOne({
             where: {

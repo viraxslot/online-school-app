@@ -1,5 +1,5 @@
 import express from 'express';
-import { body, param, query } from 'express-validator';
+import { body, param } from 'express-validator';
 import { isNil } from 'lodash';
 import { Category, Course, LikeValue, Material, Permissions } from '../../../db/models';
 import { checkJwtAuth } from '../../middleware/check-jwt-auth';
@@ -16,7 +16,7 @@ import {
     handleGetMineCourses,
     handleLeaveCourse,
     handlePostCourse,
-    handlePutCourse,
+    handlePutCourse
 } from './course.controller';
 import { handleChangeLikeRequest } from './likes.controller';
 import {
@@ -24,7 +24,7 @@ import {
     handleGetMaterialById,
     handleGetMaterialsList,
     handlePostMaterial,
-    handlePutMaterial,
+    handlePutMaterial
 } from './material.controller';
 const courseRouter = express.Router();
 
@@ -394,7 +394,7 @@ courseRouter.post(
             }
             return true;
         }),
-    query('like')
+    param('like')
         .custom(async (like: string) => {
             if (!Object.values(LikeValue).includes(like as any)) {
                 throw new Error(ApiMessages.course.likeValues);

@@ -12,6 +12,8 @@ export interface CourseResponseData extends ResponseData {
     description: string;
     visible: boolean;
     categoryId: number;
+    likes: number;
+    dislikes: number;
 }
 
 export interface UserCourseResponseData extends ResponseData {
