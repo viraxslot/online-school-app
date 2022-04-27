@@ -29,6 +29,7 @@ export const ApiMessages = {
         userExist: 'User with such credentials already exist',
         unableCreateUser: 'Unable to create user: ',
         wrongCredentials: 'Unable to authenticate user, wrong credentials',
+        userBanned: 'User is banned, you can\'t get a new session'
     },
     user: {
         noUser: 'Unable to find user record',

@@ -1,8 +1,10 @@
 import { isNil } from "lodash";
 import { DbHelper } from "../../src/api/v1/db-helper";
 import { SchemasV1 } from "../../src/api/v1/schemas";
-import { BannedUser, User, UserRoles } from "../../src/db/models";
+import { BannedUser, JwtAuth, User, UserRoles } from "../../src/db/models";
 import { BanUserRoute } from "../api/routes/banned-users/banned-users.route";
+import { LoginRoute } from "../api/routes/login/login.route";
+import { UserRoute } from "../api/routes/user/user.route";
 import { ApiHelper } from "../helpers/api-helper";
 import { SchemaValidator } from "../helpers/schema-validator";
 import { TestData } from "../helpers/test-data";
@@ -269,6 +271,41 @@ describe('API: ban/unban users suite', () => {
             expect(body.userId).toBe(userId);
             expect(body.bannedBy).toBe('');
             expect(body.result).toBe('User was not banned');
+        });
+
+        it('should remove all user session after the ban', async () => {
+            const user = await TestData.getUserData();
+            const signUpResponse = await UserRoute.postUser(user);
+            expect(signUpResponse.status).toBe(200);
+            const userId = signUpResponse.body.id;
+
+            const signInResponse = await LoginRoute.postSession({
+                body: {
+                    username: user.body.login,
+                    password: user.body.password,
+                },
+            });
+            expect(signInResponse.status).toBe(200);
+
+            const userSessions = await JwtAuth.findAll({
+                raw: true,
+                where: {
+                    userId
+                }
+            });
+            expect(userSessions.length).not.toBe(0);
+
+            const banUserData = TestData.getBanUserData({ userId, ban: true, jwt: adminToken });
+            const banResult = await BanUserRoute.changeUserBan(banUserData);
+            expect(banResult.status).toBe(200);
+
+            const userSessions2 = await JwtAuth.findAll({
+                raw: true,
+                where: {
+                    userId
+                }
+            });
+            expect(userSessions2.length).toBe(0);
         });
     });
 

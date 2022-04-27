@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
 import { Op } from 'sequelize';
 import config from '../../../../config/config';
-import { JwtAuth, User } from '../../../db/models';
+import { BannedUser, JwtAuth, User } from '../../../db/models';
 import { ApiMessages } from '../../shared/api-messages';
 import { SessionRequest, SessionResponse } from './login.interfaces';
 
@@ -51,6 +51,17 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
 
     if (isNil(existentUser)) {
         return res.status(404).json({ errors: ApiMessages.user.noUser });
+    }
+
+    const bannedUser = await BannedUser.findOne({
+        raw: true,
+        where: {
+            userId: existentUser.id
+        }
+    });
+
+    if (!isNil(bannedUser)) {
+        return res.status(200).json({ errors: ApiMessages.login.userBanned });
     }
 
     const verifiedPassword = await bcrypt.compare(password, (existentUser as any).password);

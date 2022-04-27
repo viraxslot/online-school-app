@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { isNil, omit } from "lodash";
-import { BannedUser } from "../../../db/models";
+import { BannedUser, JwtAuth } from "../../../db/models";
 import { ApiMessages } from "../../shared/api-messages";
 import { DbHelper } from "../db-helper";
 import { Helper } from "../helper";
@@ -79,6 +79,12 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
                     reason,
                     userId: banUserId,
                     bannedBy: adminName,
+                });
+
+                await JwtAuth.destroy({
+                    where: {
+                        userId: banUserId
+                    }
                 });
 
                 body.result = ApiMessages.bannedUsers.bannedSuccessfully;
