@@ -260,6 +260,8 @@ Request body:
 empty
 ```
 
+Response body:
+
 ```JSON
 [
     {

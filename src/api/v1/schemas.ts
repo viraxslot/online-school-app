@@ -337,7 +337,7 @@ const BanUserSchemas = {
             }
         },
         required: ['userId', 'reason', 'bannedBy'],
-    }
+    },
 };
 
 export const SchemasV1 = {

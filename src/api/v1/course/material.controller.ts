@@ -18,7 +18,7 @@ import {
  * /api/v1/courses/{courseId}/materials:
  *   get:
  *     tags:
- *       - Course
+ *       - Course materials
  *     summary: Allow to get list of materials by course id
  *     description: "Allow to get list of materials by course id. Available for roles: ALL"
  *     responses:
@@ -51,7 +51,7 @@ export async function handleGetMaterialsList(req: Request, res: MaterialListResp
  * /api/v1/courses/{courseId}/materials/{materialId}:
  *   get:
  *     tags:
- *       - Course
+ *       - Course materials
  *     summary: Allow to get material by id
  *     description: "Allow to get material by id. Available for roles: ALL"
  *     responses:
@@ -85,7 +85,7 @@ export async function handleGetMaterialById(req: GetMaterialRequest, res: Materi
  * /api/v1/courses/{courseId}/materials:
  *   post:
  *     tags:
- *       - Course
+ *       - Course materials
  *     summary: Allow to add material
  *     description: "Allow to add material. Available for roles: teacher, admin"
  *     requestBody:
@@ -138,7 +138,7 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
  * /api/v1/courses/{courseId}/materials:
  *   put:
  *     tags:
- *       - Course
+ *       - Course materials
  *     summary: Allow to change material
  *     description: "Allow to change material. Available for roles: teacher, admin"
  *     requestBody:
@@ -197,7 +197,7 @@ export async function handlePutMaterial(req: ChangeMaterialRequest, res: Materia
  * /api/v1/courses/{courseId}/materials/{materialId}:
  *   delete:
  *     tags:
- *       - Course
+ *       - Course materials
  *     summary: Allow to remove material by id
  *     description: "Allow to remove material by id. Available for roles: teacher, admin"
  *     responses:

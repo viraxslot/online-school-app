@@ -70,6 +70,7 @@ export const ApiMessages = {
         alreadyEnrolled: "You've already enrolled to this course",
         successEnroll: "You've successfully enrolled the course",
         successLeave: "You've successfully left the course",
+        likeValues: "Wrong like parameter value, please use one of these: yes, no, remove"
     },
     material: {
         noMaterial: 'Unable to find material record(s)',
@@ -99,8 +100,13 @@ export const ApiMessages = {
         wrongMaxReasonLength:
             'Maximum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.maxLength,
     },
+    likes: {
+        unableToChangeLike: 'Unable to change like for the course: ',
+        likedCourse: 'You\'ve liked the course',
+        dislikedCourse: 'You\'ve disliked the course',
+        likeRemoved: 'You\'ve removed your like/dislike from the course',
+    },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,
     },
-
 };

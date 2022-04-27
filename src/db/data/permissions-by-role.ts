@@ -11,7 +11,8 @@ const PermissionsByRole = {
         Permissions.GetMaterialList,
         Permissions.EnrollCourse,
         Permissions.LeaveCourse,
-        Permissions.GetMineCourseList
+        Permissions.GetMineCourseList,
+        Permissions.ChangeLike,
     ],
     [UserRoles.Teacher]: [
         Permissions.GetCategory,
@@ -38,7 +39,8 @@ const PermissionsByRole = {
 PermissionsByRole[UserRoles.Admin] = PermissionsByRole[UserRoles.Admin].filter(p => {
     return ![
         Permissions.EnrollCourse,
-        Permissions.LeaveCourse
+        Permissions.LeaveCourse,
+        Permissions.ChangeLike
     ].includes(p);
 });
 

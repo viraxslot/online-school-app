@@ -2,11 +2,19 @@ import { DataTypes, ModelDefined, Optional } from 'sequelize';
 import { DbCommonAttributes } from '../interfaces/common.db';
 import sequelize from '../sequelize';
 
-interface LikeAttributes extends DbCommonAttributes {
-    title: string;
+export enum LikeValue {
+    Yes = 'yes',
+    No = 'no',
+    Remove = 'remove'
 }
 
-type LikeCreationAttributes = Optional<LikeAttributes, 'id'>
+interface LikeAttributes extends DbCommonAttributes {
+    userId: number;
+    courseId: number;
+    like: LikeValue;
+}
+
+type LikeCreationAttributes = Optional<LikeAttributes, 'id'>;
 
 export const Like: ModelDefined<LikeAttributes, LikeCreationAttributes> = sequelize.define('like', {
     id: {
@@ -14,4 +22,16 @@ export const Like: ModelDefined<LikeAttributes, LikeCreationAttributes> = sequel
         autoIncrement: true,
         primaryKey: true,
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    courseId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    like: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 });

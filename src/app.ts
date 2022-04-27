@@ -47,18 +47,16 @@ app.use('*', function (req, res) {
 const port = process.env.PORT ?? 4000;
 
 (async () => {
-    await sequelize
-        .sync()
-        .then(async () => {
-            await initialDbSeed();
-        })
-        .then(() => {
-            logger.info('Database is synchronized');
-            app.listen(port, () => {
-                logger.info(`Server running on port ${port}`);
-            });
-        })
-        .catch((err) => {
-            logger.error(JSON.stringify(err));
+    try {
+        await sequelize.sync();
+        await initialDbSeed();
+
+        logger.info('Database is synchronized');
+        app.listen(port, () => {
+            logger.info(`Server running on port ${port}`);
         });
+    }
+    catch (err) {
+        logger.error(JSON.stringify(err));
+    }
 })();

@@ -20,11 +20,15 @@ export class Helper {
      */
     static getJwtAndPayload(req: RequestBody<any, any>): { token: string; payload: TokenPayload; } {
         const authHeader = req.headers.authorization?.replace('Bearer ', '') as string;
-        const decoded = jwt.decode(authHeader) as TokenPayload;
+        const decoded = Helper.getTokenPayload(authHeader);
 
         return {
             token: authHeader,
             payload: decoded,
         };
+    }
+
+    static getTokenPayload(token: string): TokenPayload {
+        return jwt.decode(token) as TokenPayload;
     }
 }

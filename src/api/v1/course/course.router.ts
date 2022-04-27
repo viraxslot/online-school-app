@@ -1,7 +1,7 @@
 import express from 'express';
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import { isNil } from 'lodash';
-import { Category, Course, Material, Permissions } from '../../../db/models';
+import { Category, Course, LikeValue, Material, Permissions } from '../../../db/models';
 import { checkJwtAuth } from '../../middleware/check-jwt-auth';
 import { checkPermission } from '../../middleware/check-permission';
 import { checkValidation } from '../../middleware/check-validation';
@@ -18,6 +18,7 @@ import {
     handlePostCourse,
     handlePutCourse,
 } from './course.controller';
+import { handleChangeLikeRequest } from './likes.controller';
 import {
     handleDeleteMaterial,
     handleGetMaterialById,
@@ -375,6 +376,36 @@ courseRouter.delete(
     checkJwtAuth,
     checkPermission(Permissions.RemoveMaterial),
     handleDeleteMaterial
+);
+
+/**
+ * Like endpoints
+ */
+
+courseRouter.post(
+    '/' + v1Methods.course.like,
+    param('courseId')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter)
+        .custom(async (courseId: number) => {
+            const course = await Course.findByPk(courseId);
+            if (isNil(course)) {
+                throw new Error(ApiMessages.course.noCourse);
+            }
+            return true;
+        }),
+    query('like')
+        .custom(async (like: string) => {
+            if (!Object.values(LikeValue).includes(like as any)) {
+                throw new Error(ApiMessages.course.likeValues);
+            }
+
+            return true;
+        }),
+    checkValidation,
+    checkJwtAuth,
+    checkPermission(Permissions.ChangeLike),
+    handleChangeLikeRequest
 );
 
 export default courseRouter;

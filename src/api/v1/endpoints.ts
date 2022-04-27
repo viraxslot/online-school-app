@@ -28,6 +28,7 @@ export const v1Methods = {
         mine: 'courses/mine',
         materials: 'courses/:courseId/materials',
         materialsById: 'courses/:courseId/materials/:materialId',
+        like: 'courses/:courseId/like'
     },
     bannedUsers: {
         bannedUsers: 'banned-users',

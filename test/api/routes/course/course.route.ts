@@ -1,4 +1,5 @@
 import { v1Methods } from '../../../../src/api/v1/endpoints';
+import { LikeValue } from '../../../../src/db/models';
 import { ApiRoute } from '../../api-route';
 import { ApiDefaultResponse } from '../auth/auth.interfaces';
 import {
@@ -163,6 +164,20 @@ export class CourseRoute extends ApiRoute {
         return this.deleteMethod({
             path,
             options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
+    static async postLike(courseId: number, like?: LikeValue | null, jwt?: string): Promise<ApiDefaultResponse> {
+        return this.postMethod({
+            path: v1Methods.course.like.replace(':courseId', courseId.toString()),
+            options: {
+                params: {
+                    like
+                },
                 headers: {
                     Authorization: jwt ?? '',
                 },

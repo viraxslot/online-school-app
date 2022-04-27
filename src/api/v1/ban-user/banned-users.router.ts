@@ -44,7 +44,7 @@ bannedUsersRouter.post(
         .withMessage(ApiMessages.bannedUsers.wrongMaxReasonLength),
     checkValidation,
     checkJwtAuth,
-    checkPermission(Permissions.BanUser),
+    checkPermission(Permissions.ChangeUserBan),
     handleChangeUserBanRequest
 );
 
