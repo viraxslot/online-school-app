@@ -1,15 +1,15 @@
 import { isNil } from "lodash";
-import { DbHelper } from "../../src/api/v1/db-helper";
-import { SchemasV1 } from "../../src/api/v1/schemas";
-import { BannedUser, JwtAuth, User, UserRoles } from "../../src/db/models";
-import { BanUserRoute } from "../api/routes/banned-users/banned-users.route";
-import { LoginRoute } from "../api/routes/login/login.route";
-import { UserRoute } from "../api/routes/user/user.route";
-import { ApiHelper } from "../helpers/api-helper";
-import { SchemaValidator } from "../helpers/schema-validator";
-import { TestData } from "../helpers/test-data";
+import { DbHelper } from "../../../src/rest-api/v1/db-helper";
+import { SchemasV1 } from "../../../src/rest-api/v1/schemas";
+import { BannedUser, JwtAuth, User, UserRoles } from "../../../src/db/models";
+import { BanUserRoute } from "../../rest-api/routes/banned-users/banned-users.route";
+import { LoginRoute } from "../../rest-api/routes/login/login.route";
+import { UserRoute } from "../../rest-api/routes/user/user.route";
+import { ApiHelper } from "../../helpers/api-helper";
+import { SchemaValidator } from "../../helpers/schema-validator";
+import { TestData } from "../../helpers/test-data";
 
-describe('API: ban/unban users suite', () => {
+describe('REST API: ban/unban users suite', () => {
     const createdUserIds: number[] = [];
     let adminToken: string;
 

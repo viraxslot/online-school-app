@@ -1,10 +1,10 @@
-import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
+import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
     ChangeCourseRequestData,
     CourseRequestData,
     CourseResponseData,
     UserCourseResponseData,
-} from '../../../../src/api/v1/course/course.interfaces';
+} from '../../../../src/rest-api/v1/course/course.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiCourseRequest extends ApiRequest {

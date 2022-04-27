@@ -1,15 +1,15 @@
-import config from '../../config/config';
-import { ApiMessages } from '../../src/api/shared/api-messages';
-import { SchemasV1 } from '../../src/api/v1/schemas';
-import { User } from '../../src/db/models';
-import { AuthRoute } from '../api/routes/auth/auth.route';
-import { LoginRoute } from '../api/routes/login/login.route';
-import { SchemaValidator } from '../helpers/schema-validator';
-import { TestData } from '../helpers/test-data';
+import config from '../../../config/config';
+import { ApiMessages } from '../../../src/rest-api/shared/api-messages';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { User } from '../../../src/db/models';
+import { AuthRoute } from '../../rest-api/routes/auth/auth.route';
+import { LoginRoute } from '../../rest-api/routes/login/login.route';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { TestData } from '../../helpers/test-data';
 import jwt from 'jsonwebtoken';
-import { UserRoute } from '../api/routes/user/user.route';
+import { UserRoute } from '../../rest-api/routes/user/user.route';
 
-describe('API: auth route suite', function () {
+describe('REST API: auth route suite', function () {
     describe('no-auth:', function () {
         it('should return result with no authentication', async () => {
             const result = await AuthRoute.getNoAuth();

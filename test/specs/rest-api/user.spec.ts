@@ -1,14 +1,14 @@
-import { DbHelper } from '../../src/api/v1/db-helper';
-import { SchemasV1 } from '../../src/api/v1/schemas';
-import { User, UserRoles } from '../../src/db/models';
-import { ApiChangeUserRequest } from '../api/routes/user/user.interfaces';
-import { UserRoute } from '../api/routes/user/user.route';
-import { ApiHelper } from '../helpers/api-helper';
-import { SchemaValidator } from '../helpers/schema-validator';
-import { SeedData } from '../helpers/seed-data';
-import { TestData } from '../helpers/test-data';
+import { DbHelper } from '../../../src/rest-api/v1/db-helper';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { User, UserRoles } from '../../../src/db/models';
+import { ApiChangeUserRequest } from '../../rest-api/routes/user/user.interfaces';
+import { UserRoute } from '../../rest-api/routes/user/user.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { SeedData } from '../../helpers/seed-data';
+import { TestData } from '../../helpers/test-data';
 
-describe('API: user route suite', function () {
+describe('REST API: user route suite', function () {
     const createdUserIds: number[] = [];
 
     let studentToken: string;

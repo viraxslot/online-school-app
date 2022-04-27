@@ -1,4 +1,4 @@
-import { v1Methods } from '../../../../src/api/v1/endpoints';
+import { v1Methods } from '../../../../src/rest-api/v1/endpoints';
 import { ApiRoute } from '../../api-route';
 import { ApiSignInRequest, ApiSignInResponse } from './login.interfaces';
 

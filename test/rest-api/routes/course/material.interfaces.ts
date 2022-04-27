@@ -1,9 +1,9 @@
-import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
+import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
     ChangeMaterialRequestData,
     MaterialRequestData,
     MaterialResponseData,
-} from '../../../../src/api/v1/course/material.interfaces';
+} from '../../../../src/rest-api/v1/course/material.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiMaterialRequest extends ApiRequest {

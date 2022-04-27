@@ -1,8 +1,8 @@
 import { User, UserRoles } from '../../src/db/models';
 import { logger } from '../../src/helpers/winston-logger';
-import { CategoryRoute } from '../api/routes/category/category.route';
-import { CourseRoute } from '../api/routes/course/course.route';
-import { LoginRoute } from '../api/routes/login/login.route';
+import { CategoryRoute } from '../rest-api/routes/category/category.route';
+import { CourseRoute } from '../rest-api/routes/course/course.route';
+import { LoginRoute } from '../rest-api/routes/login/login.route';
 import { TestData } from './test-data';
 
 interface CreatedUser {

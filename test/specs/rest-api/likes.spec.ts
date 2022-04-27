@@ -1,9 +1,9 @@
-import { Helper } from "../../src/api/v1/helper";
-import { Course, Like, LikeValue, User, UserRoles } from "../../src/db/models";
-import { CourseRoute } from "../api/routes/course/course.route";
-import { ApiHelper } from "../helpers/api-helper";
+import { Helper } from "../../../src/rest-api/v1/helper";
+import { Course, Like, LikeValue, User, UserRoles } from "../../../src/db/models";
+import { CourseRoute } from "../../rest-api/routes/course/course.route";
+import { ApiHelper } from "../../helpers/api-helper";
 
-describe('API: likes suites', () => {
+describe('REST API: likes suites', () => {
     const createdUserIds: number[] = [];
     const createdCourseIds: number[] = [];
 

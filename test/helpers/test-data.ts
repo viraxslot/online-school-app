@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { SchemasV1 } from '../../src/api/v1/schemas';
+import { SchemasV1 } from '../../src/rest-api/v1/schemas';
 import { UserRoles } from '../../src/db/models';
-import { ApiUserRequest } from '../api/routes/user/user.interfaces';
+import { ApiUserRequest } from '../rest-api/routes/user/user.interfaces';
 
 export class TestData {
     static getRandomPrefix(amount?: number): string {

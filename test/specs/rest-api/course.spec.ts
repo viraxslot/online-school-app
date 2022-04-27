@@ -1,16 +1,16 @@
 import { omit } from 'lodash';
 import jwt from 'jsonwebtoken';
-import { ApiMessages } from '../../src/api/shared/api-messages';
-import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, Course, CreatedCourses, StudentCourses, User, UserRoles } from '../../src/db/models';
-import { logger } from '../../src/helpers/winston-logger';
-import { CourseRoute } from '../api/routes/course/course.route';
-import { ApiHelper } from '../helpers/api-helper';
-import { SchemaValidator } from '../helpers/schema-validator';
-import { TestData } from '../helpers/test-data';
-import { TokenPayload } from '../../src/api/shared/interfaces';
+import { ApiMessages } from '../../../src/rest-api/shared/api-messages';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { Category, Course, CreatedCourses, StudentCourses, User, UserRoles } from '../../../src/db/models';
+import { logger } from '../../../src/helpers/winston-logger';
+import { CourseRoute } from '../../rest-api/routes/course/course.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { TestData } from '../../helpers/test-data';
+import { TokenPayload } from '../../../src/rest-api/shared/interfaces';
 
-describe('API: course suite', function () {
+describe('REST API: course suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
 

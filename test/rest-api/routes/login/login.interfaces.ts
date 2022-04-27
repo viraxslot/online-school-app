@@ -1,5 +1,5 @@
-import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
-import { SessionRequestData, SessionResponseData } from '../../../../src/api/v1/login/login.interfaces';
+import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
+import { SessionRequestData, SessionResponseData } from '../../../../src/rest-api/v1/login/login.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiSignInRequest extends ApiRequest {

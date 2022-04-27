@@ -1,9 +1,9 @@
-import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
+import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
     CategoryRequestData,
     CategoryResponseData,
     ChangeCategoryRequestData
-} from '../../../../src/api/v1/category/category.interfaces';
+} from '../../../../src/rest-api/v1/category/category.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiCategoryRequest extends ApiRequest {

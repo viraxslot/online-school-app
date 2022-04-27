@@ -1,13 +1,13 @@
-import { SchemasV1 } from '../../src/api/v1/schemas';
-import { User } from '../../src/db/models';
-import { BanUserRoute } from '../api/routes/banned-users/banned-users.route';
-import { LoginRoute } from '../api/routes/login/login.route';
-import { UserRoute } from '../api/routes/user/user.route';
-import { ApiHelper } from '../helpers/api-helper';
-import { SchemaValidator } from '../helpers/schema-validator';
-import { TestData } from '../helpers/test-data';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { User } from '../../../src/db/models';
+import { BanUserRoute } from '../../rest-api/routes/banned-users/banned-users.route';
+import { LoginRoute } from '../../rest-api/routes/login/login.route';
+import { UserRoute } from '../../rest-api/routes/user/user.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { TestData } from '../../helpers/test-data';
 
-describe('API: login route suite', function () {
+describe('REST API: login route suite', function () {
     const createdUserIds: number[] = [];
 
     describe('POST, session', function () {

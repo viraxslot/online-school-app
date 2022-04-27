@@ -1,8 +1,8 @@
-import { ErrorResponseData } from '../../../../src/api/shared/interfaces';
+import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
     ChangeUserRequestData, UserRequestData,
     UserResponseData
-} from '../../../../src/api/v1/user/user.interfaces';
+} from '../../../../src/rest-api/v1/user/user.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 
 export interface ApiUserRequest extends ApiRequest {

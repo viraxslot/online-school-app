@@ -1,15 +1,15 @@
 import { find } from 'lodash';
-import { ApiMessages } from '../../src/api/shared/api-messages';
-import { SchemasV1 } from '../../src/api/v1/schemas';
-import { Category, Material, User, UserRoles } from '../../src/db/models';
-import { CourseRoute } from '../api/routes/course/course.route';
-import { ApiHelper } from '../helpers/api-helper';
-import { SchemaValidator } from '../helpers/schema-validator';
-import { TestData } from '../helpers/test-data';
+import { ApiMessages } from '../../../src/rest-api/shared/api-messages';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { Category, Material, User, UserRoles } from '../../../src/db/models';
+import { CourseRoute } from '../../rest-api/routes/course/course.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { TestData } from '../../helpers/test-data';
 import { cloneDeep } from 'lodash';
-import { logger } from '../../src/helpers/winston-logger';
+import { logger } from '../../../src/helpers/winston-logger';
 
-describe('API: material suite', function () {
+describe('REST API: material suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
