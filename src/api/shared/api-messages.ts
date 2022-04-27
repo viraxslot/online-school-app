@@ -85,7 +85,8 @@ export const ApiMessages = {
         unableRemoveMaterial: 'Unable to remove material: ',
         notOwnerError: "You're not owner of this material and course, you can't change/remove it",
     },
-    banUser: {
+    bannedUsers: {
+        unableToGetBannedUsers: 'Unable to get banned users: ',
         unableToBanYourself: 'You can\'t ban yourself',
         alreadyBanned: 'User is already banned',
         wasNotBanned: 'User was not banned',

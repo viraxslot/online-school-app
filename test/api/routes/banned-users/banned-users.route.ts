@@ -1,6 +1,6 @@
 import { v1Methods } from "../../../../src/api/v1/endpoints";
 import { ApiRoute } from "../../api-route";
-import { ApiBanUserResponse } from "./ban-user.interfaces";
+import { ApiBannedUsersList, ApiBanUserResponse } from "./banned-users.interfaces";
 
 interface BanUserOptions {
     userId: number;
@@ -10,6 +10,17 @@ interface BanUserOptions {
 }
 
 export class BanUserRoute extends ApiRoute {
+    static async getBannedUsersList(jwt?: string): Promise<ApiBannedUsersList> {
+        return this.getMethod({
+            path: v1Methods.bannedUsers.bannedUsers,
+            options: {
+                headers: {
+                    Authorization: jwt ?? '',
+                },
+            },
+        });
+    }
+
     static async changeUserBan(options: BanUserOptions): Promise<ApiBanUserResponse> {
         return this.postMethod({
             path: v1Methods.bannedUsers.banUser,

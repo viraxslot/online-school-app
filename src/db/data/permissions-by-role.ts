@@ -36,7 +36,10 @@ const PermissionsByRole = {
 
 // remove roles
 PermissionsByRole[UserRoles.Admin] = PermissionsByRole[UserRoles.Admin].filter(p => {
-    return ![Permissions.EnrollCourse, Permissions.LeaveCourse].includes(p);
+    return ![
+        Permissions.EnrollCourse,
+        Permissions.LeaveCourse
+    ].includes(p);
 });
 
 export { PermissionsByRole };

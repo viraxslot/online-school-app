@@ -15,7 +15,7 @@ import { initialDbSeed } from './helpers/initial-db-seed';
 import { logger } from './helpers/winston-logger';
 import './helpers/jobs';
 import { ApiMessages } from './api/shared/api-messages';
-import bannedUsersRouter from './api/v1/ban-user/ban-user.router';
+import bannedUsersRouter from './api/v1/ban-user/banned-users.router';
 
 const app = express();
 app.use(bodyParser.json());

@@ -29,13 +29,14 @@ export enum Permissions {
     ChangeMaterial = 'Change material',
     RemoveMaterial = 'Remove material',
     // ban users permissions
+    GetBannedUsersList = 'Get banned users list',
     BanUser = 'Ban user',
     UnbanUser = 'Unban user'
 }
 
 interface PermissionAttributes extends DbCommonAttributes {
     id: number;
-    permission: string;
+    permission: Permissions;
 }
 
 type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>;

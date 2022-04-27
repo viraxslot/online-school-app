@@ -2,7 +2,7 @@ import { isNil } from "lodash";
 import { DbHelper } from "../../src/api/v1/db-helper";
 import { SchemasV1 } from "../../src/api/v1/schemas";
 import { BannedUser, User, UserRoles } from "../../src/db/models";
-import { BanUserRoute } from "../api/routes/ban-user/ban-user.route";
+import { BanUserRoute } from "../api/routes/banned-users/banned-users.route";
 import { ApiHelper } from "../helpers/api-helper";
 import { SchemaValidator } from "../helpers/schema-validator";
 import { TestData } from "../helpers/test-data";
@@ -20,6 +20,48 @@ describe('API: ban/unban users suite', () => {
         const admin = await ApiHelper.createAdmin();
         adminToken = admin.token;
         createdUserIds.push(admin.userId);
+    });
+
+    const negativeRoleTestCases = [
+        {
+            title: 'student role',
+            role: UserRoles.Student
+        },
+        {
+            title: 'teacher role',
+            role: UserRoles.Teacher
+        }
+    ];
+
+    describe('GET: list of banned users', () => {
+        it('should return 401 error if token is not passed', async () => {
+            const result = await BanUserRoute.getBannedUsersList();
+            expect(result.status).toBe(401);
+        });
+
+        it('should be possible to get list of banned users for admin', async () => {
+            const banUserData = TestData.getBanUserData({ userId, ban: true, jwt: adminToken });
+            const banResult = await BanUserRoute.changeUserBan(banUserData);
+            expect(banResult.status).toBe(200);
+
+            const result = await BanUserRoute.getBannedUsersList(adminToken);
+            expect(result.status).toBe(200);
+            SchemaValidator.check(result.body, SchemasV1.BannedUsersListResponse);
+
+            const bannedUser = result.body.find(el => el.userId === userId);
+            expect(bannedUser).not.toBeNull();
+        });
+
+        negativeRoleTestCases.forEach(test => {
+            it(`should not be possible to get banned users list for ${test.title}`, async () => {
+                const { userId, token } = await ApiHelper.createUser(test.role);
+                createdUserIds.push(userId);
+
+                const result = await BanUserRoute.getBannedUsersList(token);
+                expect(result.status).toBe(403);
+                expect(result.body.errors).toBe(`This action is forbidden for role ${test.role}`);
+            });
+        });
     });
 
     describe('POST: ban and unban users', () => {
@@ -84,6 +126,13 @@ describe('API: ban/unban users suite', () => {
             expect(error.param).toBe('reason');
         });
 
+        it('should return 401 error if token is not passed', async () => {
+            const banUserData = TestData.getBanUserData({ userId, ban: true });
+            const result = await BanUserRoute.changeUserBan(banUserData);
+
+            expect(result.status).toBe(401);
+        });
+
         const reasonLengthValidation = [
             {
                 title: 'minimum length',
@@ -109,17 +158,6 @@ describe('API: ban/unban users suite', () => {
                 expect(error.param).toBe('reason');
             });
         });
-
-        const negativeRoleTestCases = [
-            {
-                title: 'student role',
-                role: UserRoles.Student
-            },
-            {
-                title: 'teacher role',
-                role: UserRoles.Teacher
-            }
-        ];
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to ban user for ${test.role}`, async () => {

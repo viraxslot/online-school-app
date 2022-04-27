@@ -30,6 +30,7 @@ export const v1Methods = {
         materialsById: 'courses/:courseId/materials/:materialId',
     },
     bannedUsers: {
+        bannedUsers: 'banned-users',
         banUserWildcard: 'change-user-ban*',
         banUser: 'change-user-ban'
     }

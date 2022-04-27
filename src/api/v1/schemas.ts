@@ -320,6 +320,23 @@ const BanUserSchemas = {
             }
         },
         required: ['userId', 'isBanned', 'reason', 'bannedBy'],
+    },
+    BannedUser: {
+        type: 'object',
+        properties: {
+            userId: {
+                type: 'number'
+            },
+            reason: {
+                type: 'string',
+                minLength: 5,
+                maxLength: 200,
+            },
+            bannedBy: {
+                type: 'string'
+            }
+        },
+        required: ['userId', 'reason', 'bannedBy'],
     }
 };
 
@@ -371,5 +388,9 @@ export const SchemasV1 = {
         type: 'array',
         items: MaterialSchemas.MaterialResponse,
     },
-    ...BanUserSchemas
+    ...BanUserSchemas,
+    BannedUsersListResponse: {
+        type: 'array',
+        items: BanUserSchemas.BannedUser
+    }
 };

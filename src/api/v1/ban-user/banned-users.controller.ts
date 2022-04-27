@@ -1,16 +1,17 @@
-import { isNil } from "lodash";
+import { Request } from "express";
+import { isNil, omit } from "lodash";
 import { BannedUser } from "../../../db/models";
 import { ApiMessages } from "../../shared/api-messages";
 import { DbHelper } from "../db-helper";
 import { Helper } from "../helper";
-import { ChangeUserBanRequest, ChangeUserBanResponse } from "./ban-user.interfaces";
+import { BannedUsersListResponse, ChangeUserBanRequest, ChangeUserBanResponse } from "./banned-users.interfaces";
 
 /**
  * @swagger
  * /api/v1/change-user-ban?userId={number}&ban={boolean}:
  *   post:
  *     tags:
- *       - Ban/unban user
+ *       - Banned users
  *     summary: Allow to ban/unban a user
  *     parameters:
  *       - in: query
@@ -60,7 +61,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
     const adminName = await DbHelper.getUserName(payload.userId);
 
     if (payload.userId === banUserId) {
-        return res.status(400).json({ errors: ApiMessages.banUser.unableToBanYourself });
+        return res.status(400).json({ errors: ApiMessages.bannedUsers.unableToBanYourself });
     }
 
     const body = {
@@ -80,18 +81,18 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
                     bannedBy: adminName,
                 });
 
-                body.result = ApiMessages.banUser.bannedSuccessfully;
+                body.result = ApiMessages.bannedUsers.bannedSuccessfully;
                 body.isBanned = true;
                 body.reason = reason;
                 body.bannedBy = adminName;
             }
             else {
-                body.result = ApiMessages.banUser.wasNotBanned;
+                body.result = ApiMessages.bannedUsers.wasNotBanned;
             }
         }
         else {
             if (ban) {
-                body.result = ApiMessages.banUser.alreadyBanned;
+                body.result = ApiMessages.bannedUsers.alreadyBanned;
                 body.reason = user.reason;
                 body.isBanned = true;
                 body.bannedBy = user.bannedBy;
@@ -102,13 +103,46 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
                         userId: banUserId
                     }
                 });
-                body.result = ApiMessages.banUser.unBannedSuccessfully;
+                body.result = ApiMessages.bannedUsers.unBannedSuccessfully;
             }
         }
     }
     catch (err) {
-        return res.status(500).json({ errors: ApiMessages.banUser.unableChangeBanStatus });
+        return res.status(500).json({ errors: ApiMessages.bannedUsers.unableChangeBanStatus });
     }
 
     return res.status(200).json(body);
+}
+
+/**
+ * @swagger
+ * /api/v1/banned-users:
+ *   get:
+ *     tags:
+ *       - Banned users
+ *     summary: Allow to get list of banned users
+ *     description: "Roles: admin only"
+ *     responses:
+ *       200:
+ *         content:
+ *           json:
+ *             schema:
+ *               $ref: '#/components/schemas/BannedUsersListResponse'
+ *         description: 
+ */
+export async function handleGetBannedUsersListRequest(req: Request, res: BannedUsersListResponse) {
+    try {
+        const bannedUsers = await BannedUser.findAll({
+            raw: true
+        });
+
+        const result: any = bannedUsers.map((el: any) => {
+            return omit(el, ['createdAt', 'updatedAt']);
+        });
+
+        return res.status(200).json(result);
+    }
+    catch (err) {
+        return res.status(500).json({ errors: ApiMessages.bannedUsers.unableToGetBannedUsers + err });
+    }
 }
