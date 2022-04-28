@@ -1,9 +1,7 @@
 version: '3.8'
 services:
     nginx:
-        build:
-            dockerfile: Dockerfile
-            context: ./src/nginx
+        image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-nginx:latest
         ports:
             - '80:80'
         depends_on:
