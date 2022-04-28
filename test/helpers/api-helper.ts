@@ -1,8 +1,8 @@
 import { User, UserRoles } from '../../src/db/models';
 import { logger } from '../../src/helpers/winston-logger';
-import { CategoryRoute } from '../api/routes/category/category.route';
-import { CourseRoute } from '../api/routes/course/course.route';
-import { LoginRoute } from '../api/routes/login/login.route';
+import { CategoryRoute } from '../rest-api/routes/category/category.route';
+import { CourseRoute } from '../rest-api/routes/course/course.route';
+import { LoginRoute } from '../rest-api/routes/login/login.route';
 import { TestData } from './test-data';
 
 interface CreatedUser {
@@ -75,19 +75,19 @@ export class ApiHelper {
         };
     }
 
-    static async getStudentToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Student);
+    static async createStudent(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Student);
     }
 
-    static async getTeacherToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Teacher);
+    static async createTeacher(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Teacher);
     }
 
-    static async getAdminToken(): Promise<CreatedUser> {
-        return await this.getToken(UserRoles.Admin);
+    static async createAdmin(): Promise<CreatedUser> {
+        return await this.createUser(UserRoles.Admin);
     }
 
-    static async getToken(role: UserRoles): Promise<CreatedUser> {
+    static async createUser(role: UserRoles): Promise<CreatedUser> {
         const user = await TestData.getUserData({
             role,
         });

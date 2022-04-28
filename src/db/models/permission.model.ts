@@ -17,19 +17,27 @@ export enum Permissions {
     CreateCourse = 'Create course',
     GetCourse = 'Get course',
     GetCourseList = 'Get course list',
+    GetMineCourseList = 'Get mine course list',
     ChangeCourse = 'Change course',
     RemoveCourse = 'Remove course',
+    EnrollCourse = 'Enroll course',
+    LeaveCourse = 'Leave course',
     // material permissions
     CreateMaterial = 'Create material',
     GetMaterial = 'Get material',
     GetMaterialList = 'Get material list',
     ChangeMaterial = 'Change material',
     RemoveMaterial = 'Remove material',
+    // ban users permissions
+    GetBannedUsersList = 'Get banned users list',
+    ChangeUserBan = 'Ban or unban user',
+    // likes permissions
+    ChangeLike = 'Add or remove like'
 }
 
 interface PermissionAttributes extends DbCommonAttributes {
     id: number;
-    permission: string;
+    permission: Permissions;
 }
 
 type PermissionCreationAttributes = Optional<PermissionAttributes, 'id'>;

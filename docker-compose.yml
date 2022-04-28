@@ -1,49 +1,41 @@
-version: "3.8"
+version: '3.8'
 services:
-  backend:
-    build:
-      target: base
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      DOCKER_RUN: ${DOCKER_RUN:-true}
-      POSTGRES_HOST: ${POSTGRES_HOST:-localhost}
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    depends_on:
-      - database
-    volumes:
-      - ./:/app
-    ports:
-      - '4000:4000'
-    command: npm run dev
+    nginx:
+        build:
+            dockerfile: Dockerfile
+            context: ./src/nginx
+        ports:
+            - '80:80'
+        depends_on:
+            - backend
+            - database
+    backend:
+        build:
+            target: base
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            DOCKER_RUN: ${DOCKER_RUN:-true}
+            POSTGRES_HOST: ${POSTGRES_HOST}
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        depends_on:
+            - database
+        volumes:
+            - ./:/app
+        command: npm run dev
 
-  database:
-    image: postgres:14.1-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    volumes:
-      - pg-data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
-
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    environment:
-      PGADMIN_PORT: ${PGADMIN_PORT:-5050}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-password}
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-aw.vershinin@yandex.ru}
-      PGADMIN_CONFIG_SERVER_MODE: ${PGADMIN_CONFIG_SERVER_MODE:-False}
-    volumes:
-       - pgadmin:/var/lib/pgadmin
-    ports:
-      - "5050:80"
-
+    database:
+        image: postgres:14.1-alpine
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+            - pg-data:/var/lib/postgresql/data
+        ports:
+            - '5432:5432'
 volumes:
-  pg-data:
-  pgadmin:
+    pg-data:

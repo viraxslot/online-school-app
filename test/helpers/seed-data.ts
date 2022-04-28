@@ -1,6 +1,6 @@
 import { User, UserRoles } from '../../src/db/models';
 import { logger } from '../../src/helpers/winston-logger';
-import { ApiUserRequest } from '../api/routes/user/user.interfaces';
+import { ApiUserRequest } from '../rest-api/routes/user/user.interfaces';
 import { TestData } from './test-data';
 
 export class SeedData {

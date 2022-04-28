@@ -1,18 +1,21 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import apiKeyRouter from './api/v1/auth/api-key/api-key.router';
-import basicRouter from './api/v1/auth/basic/basic-auth.router';
-import jwtRouter from './api/v1/auth/jwt/jwt.router';
-import noAuthRouter from './api/v1/auth/no-auth/no-auth.router';
-import categoryRouter from './api/v1/category/category.router';
-import courseRouter from './api/v1/course/course.router';
-import healthRouter from './api/v1/health/health.router';
-import loginRouter from './api/v1/login/login.router';
-import swaggerRouter from './api/v1/swagger/swagger.router';
-import userRouter from './api/v1/user/user.router';
+import apiKeyRouter from './rest-api/v1/auth/api-key/api-key.router';
+import basicRouter from './rest-api/v1/auth/basic/basic-auth.router';
+import jwtRouter from './rest-api/v1/auth/jwt/jwt.router';
+import noAuthRouter from './rest-api/v1/auth/no-auth/no-auth.router';
+import categoryRouter from './rest-api/v1/category/category.router';
+import courseRouter from './rest-api/v1/course/course.router';
+import healthRouter from './rest-api/v1/health/health.router';
+import loginRouter from './rest-api/v1/login/login.router';
+import swaggerRouter from './rest-api/v1/swagger/swagger.router';
+import userRouter from './rest-api/v1/user/user.router';
 import sequelize from './db/sequelize';
 import { initialDbSeed } from './helpers/initial-db-seed';
 import { logger } from './helpers/winston-logger';
+import './helpers/jobs';
+import { ApiMessages } from './rest-api/shared/api-messages';
+import bannedUsersRouter from './rest-api/v1/ban-user/banned-users.router';
 
 const app = express();
 app.use(bodyParser.json());
@@ -33,27 +36,27 @@ supportedVersions.forEach((version) => {
     app.use(versionPrefix, userRouter);
     app.use(versionPrefix, categoryRouter);
     app.use(versionPrefix, courseRouter);
+    // ban user
+    app.use(versionPrefix, bannedUsersRouter);
 });
 
-app.get('*', function (req, res) {
-    res.redirect('/api/v1/api-docs/');
+app.use('*', function (req, res) {
+    res.status(400).json({ error: ApiMessages.common.noSuchEndpoint });
 });
 
 const port = process.env.PORT ?? 4000;
 
 (async () => {
-    await sequelize
-        .sync()
-        .then(async () => {
-            await initialDbSeed();
-        })
-        .then(() => {
-            logger.info('Database is synchronized');
-            app.listen(port, () => {
-                logger.info(`Server running on port ${port}`);
-            });
-        })
-        .catch((err) => {
-            logger.error(JSON.stringify(err));
+    try {
+        await sequelize.sync();
+        await initialDbSeed();
+
+        logger.info('Database is synchronized');
+        app.listen(port, () => {
+            logger.info(`Server running on port ${port}`);
         });
+    }
+    catch (err) {
+        logger.error(JSON.stringify(err));
+    }
 })();
