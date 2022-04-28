@@ -1,26 +1,33 @@
 version: '3.8'
 services:
+    nginx:
+        build:
+            dockerfile: Dockerfile
+            context: ./src/nginx
+        ports:
+            - '80:80'
+        depends_on:
+            - backend
+            - database
     backend:
         image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-backend:latest
         environment:
             DOCKER_RUN: ${DOCKER_RUN:-true}
             POSTGRES_HOST: ${POSTGRES_HOST}
-            POSTGRES_DB: ${POSTGRES_DB:-postgres}
-            POSTGRES_USER: ${POSTGRES_USER:-postgres}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
             NODE_ENV: production
         depends_on:
             - database
-        ports:
-            - 4000:4000
         command: node /app/build/src/app.js
 
     database:
         image: postgres:14.1-alpine
         environment:
-            POSTGRES_DB: ${POSTGRES_DB:-postgres}
-            POSTGRES_USER: ${POSTGRES_USER:-postgres}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         volumes:
             - pg-data-prod:/var/lib/postgresql/data
 volumes:
