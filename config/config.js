@@ -26,11 +26,11 @@ module.exports = {
     basicAuth: process.env.BASIC_AUTH ?? [],
     jwtSecret: process.env.JWT_SECRET ?? '',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '2h',
-    adminLogin: process.env.ADMIN_LOGIN,
-    adminPassword: process.env.ADMIN_PASSWORD,
+    adminLogin: process.env.ADMIN_LOGIN ?? '',
+    adminPassword: process.env.ADMIN_PASSWORD ?? '',
     aws: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretKeyId: process.env.AWS_SECRET_ACCESS_KEY,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+        secretKeyId: process.env.AWS_SECRET_ACCESS_KEY ?? '',
         region: process.env.AWS_REGION ?? 'us-east-2',
         cloudWatchLogGroup: process.env.AWS_CLOUD_WATCH_LOG_GROUP ?? '/docker-compose/online-school-app'
     }

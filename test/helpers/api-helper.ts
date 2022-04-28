@@ -1,5 +1,4 @@
 import { User, UserRoles } from '../../src/db/models';
-import { logger } from '../../src/helpers/winston-logger';
 import { CategoryRoute } from '../rest-api/routes/category/category.route';
 import { CourseRoute } from '../rest-api/routes/course/course.route';
 import { LoginRoute } from '../rest-api/routes/login/login.route';
@@ -95,20 +94,14 @@ export class ApiHelper {
             role: options.role,
         });
 
-        let createdUser;
-        try {
-            createdUser = await User.create({
-                login: user.body.login,
-                email: user.body.email,
-                password: user.body.password,
-                role: user.body.role,
-                firstName: user.body?.firstName ?? null,
-                lastName: user.body?.lastName ?? null,
-            });
-        } catch (err) {
-            logger.error(err);
-            expect(err).toBeNull();
-        }
+        const createdUser = await User.create({
+            login: user.body.login,
+            email: user.body.email,
+            password: user.body.password,
+            role: user.body.role,
+            firstName: user.body?.firstName ?? null,
+            lastName: user.body?.lastName ?? null,
+        });
 
         const signInResponse = await LoginRoute.postSession({
             body: {

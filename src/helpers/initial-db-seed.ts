@@ -10,10 +10,15 @@ import { logger } from './winston-logger';
 export async function initialDbSeed() {
     try {
         logger.info('Trying to create initial data');
+        logger.info('Creating roles');
         await createRoles();
+        logger.info('Creating permissions');
         await createPermissions();
+        logger.info('Removing old permissions for roles');
         await removeOldPermissionsForRoles();
+        logger.info('Creating new permissions for roles');
         await createPermissionsForRoles();
+        logger.info('Creating admin user');
         await createAdminUser();
         logger.info('Initial data was successfully created');
     }

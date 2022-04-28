@@ -53,6 +53,8 @@ jobs:
                   echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
                   echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
                   echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+                  echo "ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }}" >> .env
+                  echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
 
             - name: Start application
               run: |
