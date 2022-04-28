@@ -27,6 +27,6 @@ services:
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         volumes:
-            - pg-data-prod:/var/lib/postgresql/data
+            - pg-data-prod-v2:/var/lib/postgresql/data
 volumes:
-    pg-data-prod:
+    pg-data-prod-v2:

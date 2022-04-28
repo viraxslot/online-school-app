@@ -31,6 +31,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
     const { username, password } = req.body;
 
     let existentUser: any;
+    let bannedUser: any;
     try {
         existentUser = await User.findOne({
             raw: true,
@@ -45,20 +46,20 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
                 ],
             },
         });
+
+        if (isNil(existentUser)) {
+            return res.status(404).json({ errors: ApiMessages.user.noUser });
+        }
+
+        bannedUser = await BannedUser.findOne({
+            raw: true,
+            where: {
+                userId: existentUser.id
+            }
+        });
     } catch (err) {
         return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
     }
-
-    if (isNil(existentUser)) {
-        return res.status(404).json({ errors: ApiMessages.user.noUser });
-    }
-
-    const bannedUser = await BannedUser.findOne({
-        raw: true,
-        where: {
-            userId: existentUser.id
-        }
-    });
 
     if (!isNil(bannedUser)) {
         return res.status(200).json({ errors: ApiMessages.login.userBanned });
