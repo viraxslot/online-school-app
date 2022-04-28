@@ -8,17 +8,13 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
     env = process.env.NODE_ENV;
 }
 const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
-
 const isDocker = process.env.DOCKER_RUN ?? false;
-if (!isDocker) {
-    process.env.POSTGRES_HOST = 'localhost';
-}
 
 dotenv.config({ path: envPath });
 
 module.exports = {
     env,
-    host: process.env.POSTGRES_HOST,
+    host: isDocker ? process.env.POSTGRES_HOST : 'localhost',
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,

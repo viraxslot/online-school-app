@@ -23,7 +23,7 @@ async function checkServerIsUp() {
     for (let i = 0; i <= MAX_REQUESTS; i++) {
         try {
             logger.info('Checking server is up, try ' + (i + 1));
-            const result = await axios(config.apiUrl + '/health');
+            const result = await axios(config.apiUrl + 'health');
             logger.info('Server is up, status code', result.status);
             serverReady = true;
             break;

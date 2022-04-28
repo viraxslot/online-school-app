@@ -21,6 +21,7 @@ export const ApiMessages = {
         noAuthNeeded: 'No authentication needed',
         authPassed: 'Authentication passed!',
         expiredToken: 'Token is expired',
+        unableToFindAPIKey: 'Unable to find API key'
     },
     login: {
         wrongMinPasswordLength: 'Minimum password length is: ' + SchemasV1.UserRequest.properties.password.minLength,
