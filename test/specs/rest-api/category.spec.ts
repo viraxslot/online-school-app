@@ -38,7 +38,7 @@ describe('REST API: category suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get category list with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const category: ApiCategoryRequest = await TestData.getCategory();
@@ -96,7 +96,7 @@ describe('REST API: category suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get category with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const category = await TestData.getCategory();

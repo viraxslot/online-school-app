@@ -59,7 +59,7 @@ describe('REST API: course suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get course by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
@@ -106,7 +106,7 @@ describe('REST API: course suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get courses list with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
@@ -244,7 +244,7 @@ describe('REST API: course suite', function () {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to enroll course for ${test.title}`, async () => {
-                const { userId, token } = await ApiHelper.createUser(test.role);
+                const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const result = await CourseRoute.enrollCourse(courseId, token);
@@ -328,7 +328,7 @@ describe('REST API: course suite', function () {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to leave the course for ${test.title}`, async () => {
-                const { userId, token } = await ApiHelper.createUser(test.role);
+                const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const result = await CourseRoute.leaveCourse(courseId, token);
@@ -486,7 +486,7 @@ describe('REST API: course suite', function () {
 
         teacherAdminTestCases.forEach((test) => {
             it(`should be possible to create course with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const { categoryId } = await ApiHelper.createCategory(adminToken);
@@ -551,7 +551,7 @@ describe('REST API: course suite', function () {
                 const { categoryId } = await ApiHelper.createCategory(adminToken);
                 createdCategoryIds.push(categoryId);
 
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const courseData = TestData.getCourse({ categoryId });

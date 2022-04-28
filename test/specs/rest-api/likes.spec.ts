@@ -137,7 +137,7 @@ describe('REST API: likes suites', () => {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to change like for ${test.title}`, async () => {
-                const { token } = await ApiHelper.createUser(test.role);
+                const { token } = await ApiHelper.createUser({ role: test.role });
 
                 const result = await CourseRoute.changeLike(courseId, LikeValue.Yes, token);
                 expect(result.status).toBe(403);
