@@ -46,7 +46,6 @@ jobs:
             - name: Create env file from github secrets
               run: |
                   touch .env
-                  echo "DOCKER_RUN=true" >> .env
                   echo "POSTGRES_HOST=database.online-school-app.local" >> .env
                   echo "POSTGRES_DB=online-school-db-prod" >> .env
                   echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env

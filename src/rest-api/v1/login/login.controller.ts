@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
 import { Op } from 'sequelize';
-import config from '../../../../config/config';
+import appConfig from '../../../../config/app-config';
 import { BannedUser, JwtAuth, User } from '../../../db/models';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
@@ -82,7 +82,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
         });
 
         if (!isNil(createdToken)) {
-            const valid = jwt.verify(createdToken.jwt, config.jwtSecret);
+            const valid = jwt.verify(createdToken.jwt, appConfig.jwtSecret);
             if (valid) {
                 return res.status(200).json({ accessToken: createdToken.jwt });
             }
@@ -101,8 +101,8 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
 
     let token: string;
     try {
-        token = jwt.sign({ userId: existentUser.id, roleId: existentUser.role }, config.jwtSecret, {
-            expiresIn: config.jwtExpiresIn,
+        token = jwt.sign({ userId: existentUser.id, roleId: existentUser.role }, appConfig.jwtSecret, {
+            expiresIn: appConfig.jwtExpiresIn,
         });
 
         await JwtAuth.create({

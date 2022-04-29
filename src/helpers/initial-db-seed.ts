@@ -1,6 +1,6 @@
 import { find, isNil } from 'lodash';
 import { Op } from 'sequelize';
-import config from '../../config/config';
+import appConfig from '../../config/app-config';
 import { ApiHelper } from '../../test/helpers/api-helper';
 import { PermissionsByRole } from '../db/data/permissions-by-role';
 import { Permission, Permissions, Role, User, UserRoles } from '../db/models';
@@ -92,18 +92,15 @@ async function createPermissionsForRoles() {
 async function createAdminUser() {
     const adminUser = await User.findOne({
         where: {
-            login: config.adminLogin,
+            login: appConfig.adminLogin,
         }
     });
 
     if (isNil(adminUser)) {
-        logger.info(`Db host: ${config.host}`);
-        logger.info(`Admin user: ${config.adminLogin}, admin password: ${config.adminPassword?.slice(1, 4)}`);
-
         logger.info('Admin user is not found, trying to create');
         await ApiHelper.createUser({
-            login: config.adminLogin,
-            password: config.adminPassword,
+            login: appConfig.adminLogin,
+            password: appConfig.adminPassword,
             email: 'admin@quantori.academy',
             role: UserRoles.Admin
         });

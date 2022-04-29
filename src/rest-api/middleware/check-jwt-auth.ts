@@ -1,7 +1,7 @@
 import { NextFunction, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
-import config from '../../../config/config';
+import appConfig from '../../../config/app-config';
 import { JwtAuth } from '../../db/models';
 import { logger } from '../../helpers/winston-logger';
 import { ApiMessages } from '../shared/api-messages';
@@ -29,7 +29,7 @@ export async function checkJwtAuth(req: Request, res: DefaultResponse, next: Nex
             return res.status(401).json({ errors: ApiMessages.common.unauthorized });
         }
 
-        valid = jwt.verify(token, config.jwtSecret);
+        valid = jwt.verify(token, appConfig.jwtSecret);
     } catch (err: any) {
         if (err.toString().includes('TokenExpiredError')) {
             await JwtAuth.destroy({

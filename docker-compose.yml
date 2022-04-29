@@ -15,7 +15,6 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            DOCKER_RUN: ${DOCKER_RUN:-true}
             POSTGRES_HOST: ${POSTGRES_HOST}
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}

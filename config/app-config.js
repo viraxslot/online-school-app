@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
+const { isNil } = require('lodash');
 
 let env = 'development';
 
@@ -8,13 +9,12 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
     env = process.env.NODE_ENV;
 }
 const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
-const isDocker = process.env.DOCKER_RUN ?? false;
-
 dotenv.config({ path: envPath });
 
+const keepDbHost = (env === 'development' && !isNil(process.env.JEST_RUN)) ? false : true;
 module.exports = {
     env,
-    host: isDocker ? process.env.POSTGRES_HOST : 'localhost',
+    host: keepDbHost ? process.env.POSTGRES_HOST : 'localhost',
     database: process.env.POSTGRES_DB,
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
