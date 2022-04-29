@@ -9,13 +9,8 @@ services:
             - database
     backend:
         image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-backend:latest
-        environment:
-            DOCKER_RUN: ${DOCKER_RUN:-true}
-            POSTGRES_HOST: ${POSTGRES_HOST}
-            POSTGRES_DB: ${POSTGRES_DB}
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            NODE_ENV: production
+        env_file:
+            - .env
         depends_on:
             - database
         command: node /app/build/src/app.js

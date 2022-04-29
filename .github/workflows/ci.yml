@@ -60,5 +60,5 @@ jobs:
               run: |
                   docker context create ecs ecs_context --from-env
                   docker context use ecs_context
-                  docker compose -f docker-compose.prod.yml --env-file .env up
+                  docker compose -f docker-compose.prod.yml up
                   rm -f .env
