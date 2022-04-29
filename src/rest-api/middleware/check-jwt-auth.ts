@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
 import config from '../../../config/config';
 import { JwtAuth } from '../../db/models';
+import { logger } from '../../helpers/winston-logger';
 import { ApiMessages } from '../shared/api-messages';
 import { DefaultResponse } from '../shared/interfaces';
 import { Helper } from '../v1/helper';
@@ -40,6 +41,7 @@ export async function checkJwtAuth(req: Request, res: DefaultResponse, next: Nex
             return res.status(401).json({ errors: ApiMessages.auth.expiredToken });
         }
 
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: err });
     }
 

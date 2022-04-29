@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { isNil, omit } from "lodash";
 import { BannedUser, JwtAuth } from "../../../db/models";
+import { logger } from "../../../helpers/winston-logger";
 import { ApiMessages } from "../../shared/api-messages";
 import { DbHelper } from "../db-helper";
 import { Helper } from "../helper";
@@ -45,6 +46,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
         banUserId = parseInt(req.query.userId as string);
     }
     catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unableParseId });
     }
 
@@ -114,6 +116,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
         }
     }
     catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.bannedUsers.unableChangeBanStatus });
     }
 
@@ -149,6 +152,7 @@ export async function handleGetBannedUsersListRequest(req: Request, res: BannedU
         return res.status(200).json(result);
     }
     catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.bannedUsers.unableToGetBannedUsers + err });
     }
 }

@@ -2,6 +2,7 @@ import { Helper } from "../../../src/rest-api/v1/helper";
 import { Course, Like, LikeValue, User, UserRoles } from "../../../src/db/models";
 import { CourseRoute } from "../../rest-api/routes/course/course.route";
 import { ApiHelper } from "../../helpers/api-helper";
+import { logger } from "../../../src/helpers/winston-logger";
 
 describe('REST API: likes suites', () => {
     const createdUserIds: number[] = [];
@@ -164,7 +165,7 @@ describe('REST API: likes suites', () => {
             }
         }
         catch (err: any) {
-            console.log(JSON.stringify(err));
+            logger.info(JSON.stringify(err));
         }
     });
 });

@@ -2,6 +2,7 @@ import { Request } from 'express';
 import { isNil, omit } from 'lodash';
 import { Op } from 'sequelize';
 import { User, UserRoles } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
@@ -48,6 +49,7 @@ export async function handlePostUser(req: UserRequest, res: UserResponse) {
                 return res.status(403).json({ errors: ApiMessages.common.forbiddenForRole(role) });
             }
         } catch (err) {
+            logger.error(JSON.stringify(err));
             return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
     }
@@ -74,6 +76,7 @@ export async function handlePostUser(req: UserRequest, res: UserResponse) {
 
         return res.json(omit(newUser.toJSON(), 'password') as any);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.login.unableCreateUser + err });
     }
 }
@@ -167,6 +170,7 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
             return res.status(400).json({ errors: ApiMessages.user.unableUpdateUser + ApiMessages.user.uniqueFields });
         }
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.user.unableUpdateUser + err });
     }
 }
@@ -212,6 +216,7 @@ export async function handleDeleteTeacher(req: Request, res: DefaultResponse) {
             },
         });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.user.unableRemoveUser + err });
     }
 

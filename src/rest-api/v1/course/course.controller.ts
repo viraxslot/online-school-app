@@ -76,6 +76,7 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
 
         return res.status(200).json(course);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.noCourse + ': ' + err });
     }
 }
@@ -138,6 +139,7 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
 
         return res.status(200).json(result);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.noCourse + err });
     }
 }
@@ -171,6 +173,7 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
             return res.json(result);
         }
         catch (err) {
+            logger.error(JSON.stringify(err));
             return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
         }
     }
@@ -185,6 +188,7 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
         return res.json(result);
     }
     catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
     }
 
@@ -340,7 +344,6 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
             return res.status(400).json({ errors: ApiMessages.course.uniqueFields });
         }
         logger.error(err);
-
         return res.status(500).json({
             errors: ApiMessages.course.unableCreateCourse + err,
         });
@@ -395,6 +398,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
         const result: any = foundCourse.toJSON();
         return res.status(200).json(result);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.unableChangeCourse + err });
     }
 }
@@ -441,6 +445,7 @@ export async function handleDeleteCourse(req: Request, res: DefaultResponse) {
         });
         return res.status(200).json({ result: ApiMessages.common.removeSuccess });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.unableRemoveCourse + err });
     }
 }

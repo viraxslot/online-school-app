@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { isNil } from 'lodash';
 import { CreatedCourses, Material } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { Helper } from '../helper';
@@ -42,6 +43,7 @@ export async function handleGetMaterialsList(req: Request, res: MaterialListResp
 
         return res.json(material);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.material.noMaterial + err });
     }
 }
@@ -76,6 +78,7 @@ export async function handleGetMaterialById(req: GetMaterialRequest, res: Materi
 
         return res.json(material);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.material.noMaterial + err });
     }
 }
@@ -129,6 +132,7 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
         const result = material.toJSON();
         return res.json(result as any);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.material.unableCreateMaterial + err });
     }
 }
@@ -188,6 +192,7 @@ export async function handlePutMaterial(req: ChangeMaterialRequest, res: Materia
 
         return res.status(200).json(result);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.material.unableChangeMaterial + err });
     }
 }

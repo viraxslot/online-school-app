@@ -4,6 +4,7 @@ import { isNil } from 'lodash';
 import { Op } from 'sequelize';
 import config from '../../../../config/config';
 import { BannedUser, JwtAuth, User } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { SessionRequest, SessionResponse } from './login.interfaces';
 
@@ -58,6 +59,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
             }
         });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
     }
 
@@ -93,7 +95,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
                 },
             });
         } else {
-            console.error({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
+            logger.error({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
     }
 
@@ -108,6 +110,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
             userId: existentUser?.id,
         });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
     }
 

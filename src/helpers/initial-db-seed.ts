@@ -97,11 +97,18 @@ async function createAdminUser() {
     });
 
     if (isNil(adminUser)) {
+        logger.info(`Db host: ${config.host}`);
+        logger.info(`Admin user: ${config.adminLogin}, admin password: ${config.adminPassword?.slice(1, 4)}`);
+
+        logger.info('Admin user is not found, trying to create');
         await ApiHelper.createUser({
             login: config.adminLogin,
             password: config.adminPassword,
             email: 'admin@quantori.academy',
             role: UserRoles.Admin
         });
+    }
+    else {
+        logger.info('Admin user exists, nothing to do');
     }
 }
