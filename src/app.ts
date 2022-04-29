@@ -16,6 +16,7 @@ import { logger } from './helpers/winston-logger';
 import './helpers/jobs';
 import { ApiMessages } from './rest-api/shared/api-messages';
 import bannedUsersRouter from './rest-api/v1/ban-user/banned-users.router';
+import appConfig from '../config/app-config';
 
 const app = express();
 app.use(bodyParser.json());
@@ -48,7 +49,8 @@ const port = process.env.PORT ?? 4000;
 
 (async () => {
     try {
-        await sequelize.sync();
+        if (appConfig)
+            await sequelize.sync();
         await initialDbSeed();
 
         logger.info('Database is synchronized');

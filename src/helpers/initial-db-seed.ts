@@ -1,14 +1,30 @@
-import { find } from 'lodash';
+import { find, isNil } from 'lodash';
 import { Op } from 'sequelize';
+import appConfig from '../../config/app-config';
+import { ApiHelper } from '../../test/helpers/api-helper';
 import { PermissionsByRole } from '../db/data/permissions-by-role';
-import { Permission, Permissions, Role, UserRoles } from '../db/models';
+import { Permission, Permissions, Role, User, UserRoles } from '../db/models';
 import { RolePermission } from '../db/models/role-permissions.model';
+import { logger } from './winston-logger';
 
 export async function initialDbSeed() {
-    await createRoles();
-    await createPermissions();
-    await removeOldPermissionsForRoles();
-    await createPermissionsForRoles();
+    try {
+        logger.info('Trying to create initial data');
+        logger.info('Creating roles');
+        await createRoles();
+        logger.info('Creating permissions');
+        await createPermissions();
+        logger.info('Removing old permissions for roles');
+        await removeOldPermissionsForRoles();
+        logger.info('Creating new permissions for roles');
+        await createPermissionsForRoles();
+        logger.info('Creating admin user');
+        await createAdminUser();
+        logger.info('Initial data was successfully created');
+    }
+    catch (err) {
+        logger.error('Unable to add the initial data: ' + JSON.stringify(err));
+    }
 }
 
 async function createRoles() {
@@ -41,7 +57,7 @@ async function removeOldPermissionsForRoles() {
     await RolePermission.destroy({
         where: {},
         truncate: true
-    })
+    });
 }
 
 async function createPermissionsForRoles() {
@@ -70,5 +86,26 @@ async function createPermissionsForRoles() {
                 });
             }
         }
+    }
+}
+
+async function createAdminUser() {
+    const adminUser = await User.findOne({
+        where: {
+            login: appConfig.adminLogin,
+        }
+    });
+
+    if (isNil(adminUser)) {
+        logger.info('Admin user is not found, trying to create');
+        await ApiHelper.createUser({
+            login: appConfig.adminLogin,
+            password: appConfig.adminPassword,
+            email: 'admin@quantori.academy',
+            role: UserRoles.Admin
+        });
+    }
+    else {
+        logger.info('Admin user exists, nothing to do');
     }
 }

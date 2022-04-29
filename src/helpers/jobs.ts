@@ -1,15 +1,21 @@
 import cron from 'cron';
 import { Op } from 'sequelize';
-import config from '../../config/config';
+import appConfig from '../../config/app-config';
 import { JwtAuth } from '../db/models';
 import { logger } from './winston-logger';
 
-const removeOldTokens = new cron.CronJob('0 */30 * * * *', async function () {
+let oldTokensJobSchedule = '0 */30 * * * *';
+
+if (appConfig.env === 'production') {
+    oldTokensJobSchedule = '00 00 00 * * *';
+}
+
+const removeOldTokens = new cron.CronJob(oldTokensJobSchedule, async function () {
     const jobName = 'Remove outdated tokens';
     logger.info(`${jobName}: start`);
 
     try {
-        const expireHours = parseInt(config.jwtExpiresIn.replace('h', ''));
+        const expireHours = parseInt(appConfig.jwtExpiresIn.replace('h', ''));
         const currentDate = new Date();
         const result = await JwtAuth.destroy({
             where: {

@@ -1,4 +1,4 @@
-const config: {
+const appConfig: {
     env: string;
     host: string;
     database: string;
@@ -21,4 +21,4 @@ const config: {
     };
 };
 
-export default config;
+export default appConfig;

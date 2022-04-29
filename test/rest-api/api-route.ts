@@ -1,13 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { assign } from 'lodash';
 import { ApiRequest, ApiResponse } from './request-interfaces';
-import config from '../../config/config';
+import appConfig from '../../config/app-config';
 
 export class ApiRoute {
     private static instance: AxiosInstance;
 
     private static defaultConfig = {
-        baseURL: config.apiUrl,
+        baseURL: appConfig.apiUrl,
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
         withCredentials: true,
         validateStatus: (): boolean => true,

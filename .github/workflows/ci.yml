@@ -1,54 +1,64 @@
 name: Build backend image and start the app
 on:
-  push:
-    branches: [ test ]
+    push:
+        branches: [test]
 
 jobs:
-  build:
-    name: Build backend image (prod)
-    runs-on: ubuntu-latest
-    steps:
-    - name: Check out code
-      uses: actions/checkout@v2
-    
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+    build:
+        name: Build backend images (prod)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out code
+              uses: actions/checkout@v2
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: us-east-2
 
-    - name: Build, tag, and push image to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: online-school-backend
-        IMAGE_TAG: latest
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target production .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Install Docker Compose CLI
-      run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+            - name: Build nginx image
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  ECR_REPOSITORY: online-school-nginx
+                  IMAGE_TAG: latest
+              run: |
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./src/nginx
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Create env file from github secrets
-      run: |
-        touch .env
-        echo "POSTGRES_HOST=database.online-school-app.local" >> .env
-        echo "POSTGRES_DB=online-school-db-prod" >> .env
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-        echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
-        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+            - name: Build backend image
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  ECR_REPOSITORY: online-school-backend
+                  IMAGE_TAG: latest
+              run: |
+                  docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --target production .
+                  docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Start application
-      run: |
-        docker context create ecs ecs_context --from-env
-        docker context use ecs_context
-        docker compose -f docker-compose.prod.yml --env-file .env up
-        rm -f .env
+            - name: Install Docker Compose CLI
+              run: curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sh
+
+            - name: Create env file from github secrets
+              run: |
+                  touch .env
+                  echo "POSTGRES_HOST=database.online-school-app.local" >> .env
+                  echo "POSTGRES_DB=online-school-db-prod" >> .env
+                  echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+                  echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+                  echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+                  echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+                  echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+                  echo "ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }}" >> .env
+                  echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+
+            - name: Start application
+              run: |
+                  docker context create ecs ecs_context --from-env
+                  docker context use ecs_context
+                  docker compose -f docker-compose.prod.yml up
+                  rm -f .env

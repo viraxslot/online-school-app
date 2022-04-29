@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const config = require('../../../config/config');
+const config = require('../../../config/app-config');
 
 module.exports = {
     async up(queryInterface) {

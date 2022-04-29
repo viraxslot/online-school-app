@@ -56,7 +56,7 @@ describe('REST API: ban/unban users suite', () => {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to get banned users list for ${test.title}`, async () => {
-                const { userId, token } = await ApiHelper.createUser(test.role);
+                const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const result = await BanUserRoute.getBannedUsersList(token);
@@ -163,7 +163,7 @@ describe('REST API: ban/unban users suite', () => {
 
         negativeRoleTestCases.forEach(test => {
             it(`should not be possible to ban user for ${test.role}`, async () => {
-                const { userId, token } = await ApiHelper.createUser(test.role);
+                const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const banData = TestData.getBanUserData({ userId, ban: true, jwt: token });

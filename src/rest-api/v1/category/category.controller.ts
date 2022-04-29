@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { isNil, omit } from 'lodash';
 import { Category } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { DefaultResponse } from '../../shared/interfaces';
 import { CategoryListResponse, CategoryRequest, CategoryResponse, ChangeCategoryRequest } from './category.interfaces';
@@ -33,6 +34,7 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
 
         return res.status(200).json(result);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.noCategory + err });
     }
 }
@@ -70,6 +72,7 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
 
         return res.status(200).json(category);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.noCategory + ': ' + err });
     }
 }
@@ -107,6 +110,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
             return res.status(400).json({ errors: ApiMessages.category.uniqueFields });
         }
 
+        logger.error(JSON.stringify(err));
         return res.status(500).json({
             errors: ApiMessages.category.unableCreateCategory + err,
         });
@@ -148,6 +152,7 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
         const result: any = foundCategory.toJSON();
         return res.status(200).json(result);
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.unableChangeCategory + err });
     }
 }
@@ -179,6 +184,7 @@ export async function handleDeleteCategory(req: Request, res: DefaultResponse) {
         });
         return res.status(200).json({ result: ApiMessages.common.removeSuccess });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.unableRemoveCategory + err });
     }
 }

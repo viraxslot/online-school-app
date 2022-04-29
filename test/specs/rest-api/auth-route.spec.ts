@@ -1,4 +1,4 @@
-import config from '../../../config/config';
+import appConfig from '../../../config/app-config';
 import { ApiMessages } from '../../../src/rest-api/shared/api-messages';
 import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
 import { User } from '../../../src/db/models';
@@ -27,7 +27,7 @@ describe('REST API: auth route suite', function () {
         });
 
         it('should return correct response if api key were passed', async () => {
-            const apiKey = config.apiKey;
+            const apiKey = appConfig.apiKey;
             const result = await AuthRoute.getApiKeyAuth(apiKey);
             expect(result.status).toBe(200);
             expect(result.body.result).toBe(ApiMessages.auth.authPassed);
@@ -41,10 +41,10 @@ describe('REST API: auth route suite', function () {
             expect(result.status).toBe(401);
         });
 
-        it('should return correct response if no credentials passed', async () => {
-            const basicCredentials = JSON.parse(config.basicAuth);
-
+        it('should return correct response if credentials passed', async () => {
+            const basicCredentials = JSON.parse(appConfig.basicAuth);
             const result = await AuthRoute.getBasicAuth(basicCredentials[0].username, basicCredentials[0].password);
+
             expect(result.status).toBe(200);
             expect(result.body.result).toBe(ApiMessages.auth.authPassed);
             SchemaValidator.check(result.body, SchemasV1.DefaultResponse);
@@ -66,7 +66,7 @@ describe('REST API: auth route suite', function () {
         });
 
         it('should return 401 error if jwt is not found', async () => {
-            const fakeJwt = jwt.sign({ test: 'test' }, config.jwtSecret);
+            const fakeJwt = jwt.sign({ test: 'test' }, appConfig.jwtSecret);
             const result = await AuthRoute.getJwtAuth(fakeJwt);
             expect(result.status).toBe(401);
             expect(result.body.errors).toBe('Unauthorized');

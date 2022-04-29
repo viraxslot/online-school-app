@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { isNil } from "lodash";
 import { Like, LikeValue } from "../../../db/models";
+import { logger } from "../../../helpers/winston-logger";
 import { ApiMessages } from "../../shared/api-messages";
 import { DefaultResponse } from "../../shared/interfaces";
 import { Helper } from "../helper";
@@ -75,6 +76,7 @@ export async function handleChangeLikeRequest(req: Request, res: DefaultResponse
         }
     }
     catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.likes.unableToChangeLike });
     }
 }

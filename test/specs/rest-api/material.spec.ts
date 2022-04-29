@@ -55,7 +55,7 @@ describe('REST API: material suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get materials list by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const material1 = await ApiHelper.createMaterial(courseId, adminToken);
@@ -107,7 +107,7 @@ describe('REST API: material suite', function () {
 
         allRolesTestCases.forEach((test) => {
             it(`should be possible to get material by id with ${test.role} role`, async () => {
-                const { token, userId } = await ApiHelper.createUser(test.role);
+                const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
                 const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);

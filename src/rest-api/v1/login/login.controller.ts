@@ -2,8 +2,9 @@ import * as bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
 import { Op } from 'sequelize';
-import config from '../../../../config/config';
+import appConfig from '../../../../config/app-config';
 import { BannedUser, JwtAuth, User } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
 import { SessionRequest, SessionResponse } from './login.interfaces';
 
@@ -31,6 +32,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
     const { username, password } = req.body;
 
     let existentUser: any;
+    let bannedUser: any;
     try {
         existentUser = await User.findOne({
             raw: true,
@@ -45,20 +47,21 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
                 ],
             },
         });
+
+        if (isNil(existentUser)) {
+            return res.status(404).json({ errors: ApiMessages.user.noUser });
+        }
+
+        bannedUser = await BannedUser.findOne({
+            raw: true,
+            where: {
+                userId: existentUser.id
+            }
+        });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
     }
-
-    if (isNil(existentUser)) {
-        return res.status(404).json({ errors: ApiMessages.user.noUser });
-    }
-
-    const bannedUser = await BannedUser.findOne({
-        raw: true,
-        where: {
-            userId: existentUser.id
-        }
-    });
 
     if (!isNil(bannedUser)) {
         return res.status(200).json({ errors: ApiMessages.login.userBanned });
@@ -79,7 +82,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
         });
 
         if (!isNil(createdToken)) {
-            const valid = jwt.verify(createdToken.jwt, config.jwtSecret);
+            const valid = jwt.verify(createdToken.jwt, appConfig.jwtSecret);
             if (valid) {
                 return res.status(200).json({ accessToken: createdToken.jwt });
             }
@@ -92,14 +95,14 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
                 },
             });
         } else {
-            console.error({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
+            logger.error({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
     }
 
     let token: string;
     try {
-        token = jwt.sign({ userId: existentUser.id, roleId: existentUser.role }, config.jwtSecret, {
-            expiresIn: config.jwtExpiresIn,
+        token = jwt.sign({ userId: existentUser.id, roleId: existentUser.role }, appConfig.jwtSecret, {
+            expiresIn: appConfig.jwtExpiresIn,
         });
 
         await JwtAuth.create({
@@ -107,6 +110,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
             userId: existentUser?.id,
         });
     } catch (err) {
+        logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
     }
 

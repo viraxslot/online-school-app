@@ -8,14 +8,20 @@ export class TestData {
         return faker.random.alphaNumeric(amount ?? 5);
     }
 
-    static async getUserData(options?: { role: UserRoles; }): Promise<ApiUserRequest> {
-        const login = faker.internet.userName() + Date.now();
-        const email = faker.internet.email(login);
+    static getUserData(options?: {
+        role: UserRoles;
+        login?: string;
+        password?: string;
+        email?: string;
+    }): ApiUserRequest {
+        const login = options?.login ?? faker.internet.userName() + Date.now();
+        const email = options?.email ?? faker.internet.email(login);
+        const password = options?.password ?? faker.internet.password();
 
         const body = {
             login,
             email,
-            password: faker.internet.password(),
+            password,
             role: options?.role ?? UserRoles.Student,
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),

@@ -1,5 +1,4 @@
 import { User, UserRoles } from '../../src/db/models';
-import { logger } from '../../src/helpers/winston-logger';
 import { CategoryRoute } from '../rest-api/routes/category/category.route';
 import { CourseRoute } from '../rest-api/routes/course/course.route';
 import { LoginRoute } from '../rest-api/routes/login/login.route';
@@ -76,38 +75,33 @@ export class ApiHelper {
     }
 
     static async createStudent(): Promise<CreatedUser> {
-        return await this.createUser(UserRoles.Student);
+        return await this.createUser({ role: UserRoles.Student });
     }
 
     static async createTeacher(): Promise<CreatedUser> {
-        return await this.createUser(UserRoles.Teacher);
+        return await this.createUser({ role: UserRoles.Teacher });
     }
 
     static async createAdmin(): Promise<CreatedUser> {
-        return await this.createUser(UserRoles.Admin);
+        return await this.createUser({ role: UserRoles.Admin });
     }
 
-    static async createUser(role: UserRoles): Promise<CreatedUser> {
-        const user = await TestData.getUserData({
-            role,
+    static async createUser(options: { role: UserRoles; login?: string; password?: string; email?: string; }): Promise<CreatedUser> {
+        const user = TestData.getUserData({
+            login: options?.login,
+            email: options?.email,
+            password: options?.password,
+            role: options.role,
         });
 
-        expect(user.body.role).toBe(role);
-
-        let createdUser;
-        try {
-            createdUser = await User.create({
-                login: user.body.login,
-                email: user.body.email,
-                firstName: user.body?.firstName ?? null,
-                lastName: user.body?.lastName ?? null,
-                password: user.body.password,
-                role: user.body.role,
-            });
-        } catch (err) {
-            logger.error(err);
-            expect(err).toBeNull();
-        }
+        const createdUser = await User.create({
+            login: user.body.login,
+            email: user.body.email,
+            password: user.body.password,
+            role: user.body.role,
+            firstName: user.body?.firstName ?? null,
+            lastName: user.body?.lastName ?? null,
+        });
 
         const signInResponse = await LoginRoute.postSession({
             body: {

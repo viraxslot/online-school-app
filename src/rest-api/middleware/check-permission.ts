@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { isNil } from 'lodash';
 import { Op } from 'sequelize';
 import { Permissions, RolePermission } from '../../db/models';
+import { logger } from '../../helpers/winston-logger';
 import { ApiMessages } from '../shared/api-messages';
 import { DefaultResponse } from '../shared/interfaces';
 import { DbHelper } from '../v1/db-helper';
@@ -17,6 +18,7 @@ export function checkPermission(permission: Permissions) {
                 return res.status(500).json({ errors: ApiMessages.permission.noPermission });
             }
         } catch (err) {
+            logger.error(JSON.stringify(err));
             return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
 
@@ -37,6 +39,7 @@ export function checkPermission(permission: Permissions) {
                 },
             });
         } catch (err) {
+            logger.error(JSON.stringify(err));
             return res.status(500).json({ errors: ApiMessages.common.unexpectedError + `: ${err}` });
         }
 
