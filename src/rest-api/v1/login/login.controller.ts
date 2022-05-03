@@ -39,7 +39,7 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
             where: {
                 [Op.or]: [
                     {
-                        login: username,
+                        username,
                     },
                     {
                         email: username,

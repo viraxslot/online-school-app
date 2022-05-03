@@ -47,7 +47,7 @@ describe('REST API: login route suite', function () {
             const user = await TestData.getUserData();
             const signInResponse = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });
@@ -64,7 +64,7 @@ describe('REST API: login route suite', function () {
 
             const signInResponse = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password + '1',
                 },
             });
@@ -80,7 +80,7 @@ describe('REST API: login route suite', function () {
 
             const signInResponse1 = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });
@@ -89,7 +89,7 @@ describe('REST API: login route suite', function () {
 
             const signInResponse2 = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });
@@ -99,7 +99,7 @@ describe('REST API: login route suite', function () {
             expect(token1).toBe(token2);
         });
 
-        const positiveTestCases = [{ title: 'login' }, { title: 'email' }];
+        const positiveTestCases = [{ title: 'username' }, { title: 'email' }];
         positiveTestCases.forEach((test) => {
             it(`should return jwt token if credentials are correct (${test.title})`, async () => {
                 const user = await TestData.getUserData();
@@ -134,7 +134,7 @@ describe('REST API: login route suite', function () {
 
             const signInResponse = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });

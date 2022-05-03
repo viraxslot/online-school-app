@@ -4,6 +4,7 @@ import { Op } from 'sequelize';
 import { User, UserRoles } from '../../../db/models';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
+import { DbFieldsToOmit } from '../../shared/constants';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
@@ -56,7 +57,7 @@ export async function handlePostUser(req: UserRequest, res: UserResponse) {
 
     const oldUser = await User.findOne({
         where: {
-            [Op.or]: [{ login: body?.login }, { email: body?.email }],
+            [Op.or]: [{ username: body?.username }, { email: body?.email }],
         },
     });
 
@@ -66,7 +67,7 @@ export async function handlePostUser(req: UserRequest, res: UserResponse) {
 
     try {
         const newUser = await User.create({
-            login: body.login,
+            username: body.username,
             email: body.email,
             firstName: body?.firstName ?? null,
             lastName: body?.lastName ?? null,
@@ -74,7 +75,7 @@ export async function handlePostUser(req: UserRequest, res: UserResponse) {
             role: body.role,
         });
 
-        return res.json(omit(newUser.toJSON(), 'password') as any);
+        return res.json(omit(newUser.toJSON(), DbFieldsToOmit) as any);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.login.unableCreateUser + err });
@@ -112,7 +113,7 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
     });
 
     teachers.forEach((el: any) => {
-        Helper.removeRedundantFields(el, ['password', 'createdAt', 'updatedAt']);
+        Helper.removeRedundantFields(el, DbFieldsToOmit);
     });
 
     res.json(teachers);
@@ -164,7 +165,7 @@ export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse
         await teacher.update(valuesToChange);
 
         const result: any = teacher.toJSON();
-        Helper.removeRedundantFields(result, ['password', 'createdAt', 'updatedAt']);
+        Helper.removeRedundantFields(result, DbFieldsToOmit);
         return res.status(200).json(result);
     } catch (err: any) {
         if (err.toString().includes('SequelizeUniqueConstraintError')) {

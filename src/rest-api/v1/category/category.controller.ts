@@ -29,13 +29,12 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
     try {
         const categories: any = await Category.findAll({
             raw: true,
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
-        const result = categories.map((el: any) => {
-            return omit(el, DbFieldsToOmit);
-        });
-
-        return res.status(200).json(result);
+        return res.status(200).json(categories);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.noCategory + err });
@@ -67,15 +66,16 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
             where: {
                 id: categoryId,
             },
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
         if (isNil(category)) {
             return res.status(404).json({ errors: ApiMessages.category.noCategory });
         }
 
-        const result = omit(category, DbFieldsToOmit);
-
-        return res.status(200).json(result);
+        return res.status(200).json(category);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.noCategory + ': ' + err });
@@ -106,7 +106,7 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
 export async function handlePostCategory(req: CategoryRequest, res: CategoryResponse) {
     try {
         const { payload } = Helper.getJwtAndPayload(req);
-        const username = await DbHelper.getUserName(payload.userId);
+        const username = await DbHelper.getUserIdentifier(payload.userId);
 
         const createdCategory: any = await Category.create({
             title: req.body.title,
@@ -160,7 +160,7 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
         }
 
         const { payload } = Helper.getJwtAndPayload(req);
-        const username = await DbHelper.getUserName(payload.userId);
+        const username = await DbHelper.getUserIdentifier(payload.userId);
 
         await foundCategory.update({
             title: req.body.title,

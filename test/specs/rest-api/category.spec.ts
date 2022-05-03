@@ -51,6 +51,7 @@ describe('REST API: category suite', function () {
 
                 const categories = await CategoryRoute.getCategoriesList(token);
                 expect(categories.status).toBe(200);
+                SchemaValidator.check(categories.body, SchemasV1.CategoryListResponse);
             });
         });
 
@@ -110,6 +111,7 @@ describe('REST API: category suite', function () {
 
                 const createdCategory = await CategoryRoute.getCategory(categoryId, token);
                 expect(createdCategory.status).toBe(200);
+                SchemaValidator.check(createdCategory.body, SchemasV1.CategoryResponse);
             });
         });
 
@@ -280,7 +282,7 @@ describe('REST API: category suite', function () {
             expect(createdCategory).not.toBeNull();
 
             const payload = Helper.getTokenPayload(adminToken);
-            const username = await DbHelper.getUserName(payload.userId);
+            const username = await DbHelper.getUserIdentifier(payload.userId);
 
             expect(username).not.toBeNull();
             expect(createdCategory.createdBy).toBe(username);
@@ -401,6 +403,7 @@ describe('REST API: category suite', function () {
 
             const changeResult = await CategoryRoute.putCategory(newCategory, adminToken);
             expect(changeResult.status).toBe(200);
+            SchemaValidator.check(changeResult.body, SchemasV1.CategoryResponse);
             expect(changeResult.body.id).toBe(newCategory.body.id);
             expect(changeResult.body.title).toBe(newCategory.body.title);
 

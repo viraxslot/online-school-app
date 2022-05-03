@@ -5,7 +5,7 @@ import { Course } from './course.model';
 
 interface CategoryAttributes extends DbCommonAttributes {
     title: string;
-    createdBy: string | null;
+    createdBy: string;
     updatedBy: string | null;
 }
 
@@ -25,7 +25,7 @@ export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttribut
     createdBy: {
         type: DataTypes.STRING,
         unique: false,
-        allowNull: true
+        allowNull: false
     },
     updatedBy: {
         type: DataTypes.STRING,

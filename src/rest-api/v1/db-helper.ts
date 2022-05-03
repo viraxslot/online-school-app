@@ -34,18 +34,39 @@ export class DbHelper {
         return userPermission?.id ?? null;
     }
 
-    static async getUserName(id: number): Promise<string | null> {
-        const user: any = await User.findOne({
+    static async getUserData(id: number): Promise<{
+        login: string;
+        email: string;
+        firstName: string;
+        lastName: string;
+    }> {
+        const result: any = await User.findOne({
             raw: true,
             where: {
                 id,
             },
         });
 
-        if (isNil(user.firstName) && isNil(user.lastName)) {
-            return null;
+        return {
+            login: result.login,
+            email: result.email,
+            firstName: result.firstName,
+            lastName: result.lastName
+        };
+    }
+
+    /**
+     * Return firstName + lastName if they're not empty or login otherwise
+     * @param id 
+     */
+    static async getUserIdentifier(id: number): Promise<string> {
+        const user = await this.getUserData(id);
+
+        let username = user.login;
+        if (!isNil(user.firstName) || !isNil(user.lastName)) {
+            username = user.firstName + ' ' + user.lastName;
         }
 
-        return user.firstName + ' ' + user.lastName;
+        return username;
     }
 }

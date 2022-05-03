@@ -1,1 +1,1 @@
-export const DbFieldsToOmit = ['createdAt', 'updatedAt', 'createdBy', 'updatedBy'];
+export const DbFieldsToOmit = ['createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'password'];

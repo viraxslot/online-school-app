@@ -114,7 +114,7 @@ describe('REST API: user route suite', function () {
         it('should return validation error if user already exists', async () => {
             const user = await TestData.getUserData();
             const createdUser = await User.create({
-                login: user.body.login,
+                username: user.body.username,
                 email: user.body.email,
                 password: user.body.password,
                 role: user.body.role,
@@ -146,7 +146,7 @@ describe('REST API: user route suite', function () {
                 expect(result.status).toBe(200);
                 SchemaValidator.check(result.body, SchemasV1.UserResponse);
 
-                expect(result.body.login).toBe(user.body.login);
+                expect(result.body.username).toBe(user.body.username);
                 expect(result.body.email).toBe(user.body.email);
                 expect(result.body.password).not.toBe(user.body.password);
                 expect(result.body.firstName).toBe(user.body.firstName);
@@ -302,14 +302,14 @@ describe('REST API: user route suite', function () {
             SchemaValidator.check(result.body, SchemasV1.UserResponse);
 
             expect(result.body.id).toBe(teacherId);
-            expect(result.body.login).toBe(newUser.body.login);
+            expect(result.body.username).toBe(newUser.body.username);
             expect(result.body.email).toBe(newUser.body.email);
             expect(result.body.firstName).toBe(newUser.body.firstName);
             expect(result.body.lastName).toBe(newUser.body.lastName);
             expect(result.body.role).toBe(userBeforeChange?.getDataValue('role'));
         });
 
-        const uniqueFieldsTests = [{ field: 'login' }, { field: 'email' }];
+        const uniqueFieldsTests = [{ field: 'username' }, { field: 'email' }];
 
         uniqueFieldsTests.forEach((test) => {
             it(`should not be possible to change user data with existent ${test.field}`, async () => {

@@ -10,18 +10,18 @@ export class TestData {
 
     static getUserData(options?: {
         role: UserRoles;
-        login?: string;
+        username?: string;
         password?: string;
         firstName?: string;
         lastName?: string;
         email?: string;
     }): ApiUserRequest {
-        const login = options?.login ?? faker.internet.userName() + Date.now();
-        const email = options?.email ?? faker.internet.email(login);
+        const username = options?.username ?? faker.internet.userName() + Date.now();
+        const email = options?.email ?? faker.internet.email(username);
         const password = options?.password ?? faker.internet.password();
 
         const body = {
-            login,
+            username,
             email,
             password,
             role: options?.role ?? UserRoles.Student,

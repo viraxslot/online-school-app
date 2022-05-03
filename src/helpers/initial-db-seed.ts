@@ -92,14 +92,14 @@ async function createPermissionsForRoles() {
 async function createAdminUser() {
     const adminUser = await User.findOne({
         where: {
-            login: appConfig.adminLogin,
+            username: appConfig.adminLogin,
         }
     });
 
     if (isNil(adminUser)) {
         logger.info('Admin user is not found, trying to create');
         await ApiHelper.createUser({
-            login: appConfig.adminLogin,
+            username: appConfig.adminLogin,
             password: appConfig.adminPassword,
             email: 'admin@quantori.academy',
             role: UserRoles.Admin
