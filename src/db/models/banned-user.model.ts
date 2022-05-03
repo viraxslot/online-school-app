@@ -5,7 +5,7 @@ import sequelize from '../sequelize';
 interface BannedUserAttributes extends DbCommonAttributes {
     userId: number;
     reason: string;
-    bannedBy: string;
+    createdBy: string;
 }
 
 type BannedUserCreationAttributes = Optional<BannedUserAttributes, 'id'>;
@@ -26,7 +26,7 @@ export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAt
             type: DataTypes.STRING,
             allowNull: false
         },
-        bannedBy: {
+        createdBy: {
             type: DataTypes.STRING,
             allowNull: false,
         },

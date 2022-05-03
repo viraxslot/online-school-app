@@ -1,12 +1,12 @@
 import { Helper } from "../../../src/rest-api/v1/helper";
-import { Course, Like, LikeValue, User, UserRoles } from "../../../src/db/models";
+import { Category, Like, LikeValue, User, UserRoles } from "../../../src/db/models";
 import { CourseRoute } from "../../rest-api/routes/course/course.route";
 import { ApiHelper } from "../../helpers/api-helper";
 import { logger } from "../../../src/helpers/winston-logger";
 
 describe('REST API: likes suites', () => {
     const createdUserIds: number[] = [];
-    const createdCourseIds: number[] = [];
+    const createdCategoryIds: number[] = [];
 
     let courseId: number;
     let adminToken: string;
@@ -21,7 +21,7 @@ describe('REST API: likes suites', () => {
 
         const course = await ApiHelper.createCourse(adminToken);
         courseId = course.courseId;
-        createdCourseIds.push(courseId);
+        createdCategoryIds.push(course.categoryId);
     });
 
     describe('POST: change like', () => {
@@ -75,8 +75,8 @@ describe('REST API: likes suites', () => {
 
         testCases.forEach(test => {
             it(`should be possible to ${test.title} for student`, async () => {
-                const { courseId } = await ApiHelper.createCourse(adminToken);
-                createdCourseIds.push(courseId);
+                const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
+                createdCategoryIds.push(categoryId);
 
                 const result = await CourseRoute.changeLike(courseId, test.value, studentToken);
                 expect(result.status).toBe(200);
@@ -156,8 +156,8 @@ describe('REST API: likes suites', () => {
                     }
                 });
             }
-            for (const id of createdCourseIds) {
-                await Course.destroy({
+            for (const id of createdCategoryIds) {
+                await Category.destroy({
                     where: {
                         id
                     }

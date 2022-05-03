@@ -1,9 +1,11 @@
 import { Request } from 'express';
-import { isNil } from 'lodash';
+import { isNil, merge, omit } from 'lodash';
 import { CreatedCourses, Material } from '../../../db/models';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
+import { DbFieldsToOmit } from '../../shared/constants';
 import { DefaultResponse } from '../../shared/interfaces';
+import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
 import {
     ChangeMaterialRequest,
@@ -39,6 +41,9 @@ export async function handleGetMaterialsList(req: Request, res: MaterialListResp
             where: {
                 courseId: courseId,
             },
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
         return res.json(material);
@@ -74,6 +79,9 @@ export async function handleGetMaterialById(req: GetMaterialRequest, res: Materi
                 id: materialId,
                 courseId: courseId,
             },
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
         return res.json(material);
@@ -122,15 +130,17 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
             return res.status(403).json({ errors: ApiMessages.course.notOwnerError });
         }
 
+        const username = await DbHelper.getUserIdentifier(userId);
         const material = await Material.create({
             title: body.title,
             data: body.data,
             order: body.order ?? null,
             courseId: parseInt(courseId),
+            createdBy: username
         });
 
-        const result = material.toJSON();
-        return res.json(result as any);
+        const result = omit(material.toJSON(), DbFieldsToOmit);
+        return res.status(200).json(result as any);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.material.unableCreateMaterial + err });
@@ -187,8 +197,10 @@ export async function handlePutMaterial(req: ChangeMaterialRequest, res: Materia
             return res.status(404).json({ errors: ApiMessages.material.noMaterial });
         }
 
-        await createdMaterial.update(req.body);
-        const result: any = createdMaterial.toJSON();
+        const username = await DbHelper.getUserIdentifier(userId);
+        const updateData = merge(req.body, { updatedBy: username });
+        await createdMaterial.update(updateData);
+        const result: any = omit(createdMaterial.toJSON(), DbFieldsToOmit);
 
         return res.status(200).json(result);
     } catch (err) {

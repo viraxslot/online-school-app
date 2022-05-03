@@ -1,9 +1,10 @@
 import { Request } from 'express';
-import { isNil, omit } from 'lodash';
+import { isNil, merge, omit } from 'lodash';
 import { Category, Course, CreatedCourses, Like, LikeValue, StudentCourses, UserRoles } from '../../../db/models';
 import sequelize from '../../../db/sequelize';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
+import { DbFieldsToOmit } from '../../shared/constants';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
@@ -61,6 +62,9 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
         const courseId = parseInt(req.params.courseId);
         const course: any = await Course.findOne({
             raw: true,
+            attributes: {
+                exclude: DbFieldsToOmit
+            },
             where: {
                 id: courseId,
             },
@@ -73,7 +77,6 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
         const { likes, dislikes } = await countLikes(courseId);
         course.likes = likes;
         course.dislikes = dislikes;
-
         return res.status(200).json(course);
     } catch (err) {
         logger.error(JSON.stringify(err));
@@ -125,19 +128,18 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
                         )`),
                         'dislikes'
                     ],
-                ]
+                ],
+                exclude: DbFieldsToOmit
             },
         });
-        const result = courses.map((el: any) => {
-            return omit(el, ['createdAt', 'updatedAt']);
-        });
 
-        result.forEach((el: any) => {
+        courses.forEach((el: any) => {
             el.likes = parseInt(el.likes);
             el.dislikes = parseInt(el.dislikes);
+
         });
 
-        return res.status(200).json(result);
+        return res.status(200).json(courses);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.noCourse + err });
@@ -168,6 +170,9 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
                 raw: true,
                 where: {
                     userId: payload.userId,
+                },
+                attributes: {
+                    exclude: DbFieldsToOmit
                 }
             });
             return res.json(result);
@@ -183,6 +188,9 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
             raw: true,
             where: {
                 userId: payload.userId,
+            },
+            attributes: {
+                exclude: DbFieldsToOmit
             }
         });
         return res.json(result);
@@ -323,20 +331,24 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
             return res.status(400).json({ errors: ApiMessages.category.noCategory });
         }
 
+        const username = await DbHelper.getUserIdentifier(payload.userId);
         const createdCourse: any = await Course.create({
             title: body.title,
             categoryId: body.categoryId,
             description: body.description as string,
             visible: body.visible as boolean,
+            createdBy: username
         });
 
-        const result = createdCourse.toJSON();
+        let result = createdCourse.toJSON();
         await CreatedCourses.create({
             userId: payload.userId,
             courseId: result.id,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
+
+        result = omit(result, DbFieldsToOmit);
 
         res.status(200).json(result);
     } catch (err: any) {
@@ -381,7 +393,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
             where: {
                 userId,
                 courseId,
-            },
+            }
         });
 
         if (isNil(createdCourse)) {
@@ -393,9 +405,12 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
         if (isNil(foundCourse)) {
             return res.status(404).json({ errors: ApiMessages.course.noCourse });
         }
-        await foundCourse.update(req.body);
 
-        const result: any = foundCourse.toJSON();
+        const username = await DbHelper.getUserIdentifier(userId);
+        const updateData = merge(req.body, { updatedBy: username });
+        await foundCourse.update(updateData);
+
+        const result: any = omit(foundCourse.toJSON(), DbFieldsToOmit);
         return res.status(200).json(result);
     } catch (err) {
         logger.error(JSON.stringify(err));

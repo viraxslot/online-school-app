@@ -9,9 +9,11 @@ interface CourseAttributes extends DbCommonAttributes {
     description?: string;
     visible?: boolean;
     categoryId: number;
+    createdBy?: string;
+    updatedBy?: string | null;
 }
 
-type CourseCreationAttributes = Optional<CourseAttributes, 'id'>
+type CourseCreationAttributes = Optional<CourseAttributes, 'id'>;
 
 export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = sequelize.define('course', {
     id: {
@@ -36,6 +38,14 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    createdBy: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    updatedBy: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 });
 

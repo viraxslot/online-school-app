@@ -5,9 +5,11 @@ import { Course } from './course.model';
 
 interface CategoryAttributes extends DbCommonAttributes {
     title: string;
+    createdBy: string;
+    updatedBy: string | null;
 }
 
-type CategoryCreationAttributes = Optional<CategoryAttributes, 'id'>
+type CategoryCreationAttributes = Optional<CategoryAttributes, 'id'>;
 
 export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttributes> = sequelize.define('category', {
     id: {
@@ -19,6 +21,16 @@ export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttribut
         type: DataTypes.STRING,
         unique: true,
         allowNull: false
+    },
+    createdBy: {
+        type: DataTypes.STRING,
+        unique: false,
+        allowNull: false
+    },
+    updatedBy: {
+        type: DataTypes.STRING,
+        unique: false,
+        allowNull: true
     }
 });
 

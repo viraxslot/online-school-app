@@ -184,14 +184,14 @@ describe('REST API: ban/unban users suite', () => {
             expect(result.status).toBe(200);
 
             SchemaValidator.check(result.body, SchemasV1.ChangeUserBanResponse);
-            const adminName = await DbHelper.getUserName(admin.userId);
+            const adminName = await DbHelper.getUserIdentifier(admin.userId);
 
             const body = result.body;
             expect(body.userId).toBe(userId);
             expect(body.reason).toBe(banUserData.reason);
             expect(body.isBanned).toBe(true);
             expect(body.result).toBe('User successfully banned');
-            expect(body.bannedBy).toBe(adminName);
+            expect(body.createdBy).toBe(adminName);
 
             await checkUserBannedOrNot(userId, true);
         });
@@ -227,7 +227,7 @@ describe('REST API: ban/unban users suite', () => {
             expect(body.reason).toBe('empty');
             expect(body.isBanned).toBe(false);
             expect(body.result).toBe('User successfully unbanned');
-            expect(body.bannedBy).toBe('');
+            expect(body.createdBy).toBe('');
 
             await checkUserBannedOrNot(userId, false);
         });
@@ -269,7 +269,7 @@ describe('REST API: ban/unban users suite', () => {
             expect(body.isBanned).toBe(false);
             expect(body.reason).toBe('empty');
             expect(body.userId).toBe(userId);
-            expect(body.bannedBy).toBe('');
+            expect(body.createdBy).toBe('');
             expect(body.result).toBe('User was not banned');
         });
 
@@ -281,7 +281,7 @@ describe('REST API: ban/unban users suite', () => {
 
             const signInResponse = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });

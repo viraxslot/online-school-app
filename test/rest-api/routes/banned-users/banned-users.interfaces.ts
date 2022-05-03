@@ -1,6 +1,6 @@
 import { ErrorResponseData } from "../../../../src/rest-api/shared/interfaces";
 import {
-    BannedUser,
+    BannedUserResponse,
     ChangeUserBanRequestData,
     ChangeUserBanResponseData
 } from "../../../../src/rest-api/v1/ban-user/banned-users.interfaces";
@@ -15,5 +15,5 @@ export interface ApiBanUserResponse extends ApiResponse {
 }
 
 export interface ApiBannedUsersList extends ApiResponse {
-    body: BannedUser[] & ErrorResponseData;
+    body: BannedUserResponse[] & ErrorResponseData;
 }

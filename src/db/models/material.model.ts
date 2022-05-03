@@ -7,9 +7,11 @@ interface MaterialAttributes extends DbCommonAttributes {
     data: string;
     order: number | null;
     courseId: number;
+    createdBy?: string;
+    updatedBy?: string | null;
 }
 
-type MaterialCreationAttributes = Optional<MaterialAttributes, 'id'>
+type MaterialCreationAttributes = Optional<MaterialAttributes, 'id'>;
 
 export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttributes> = sequelize.define('material', {
     id: {
@@ -32,5 +34,13 @@ export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttribut
     courseId: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    createdBy: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    updatedBy: {
+        type: DataTypes.STRING,
+        allowNull: true,
     }
 });

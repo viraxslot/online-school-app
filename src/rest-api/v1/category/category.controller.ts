@@ -3,7 +3,10 @@ import { isNil, omit } from 'lodash';
 import { Category } from '../../../db/models';
 import { logger } from '../../../helpers/winston-logger';
 import { ApiMessages } from '../../shared/api-messages';
+import { DbFieldsToOmit } from '../../shared/constants';
 import { DefaultResponse } from '../../shared/interfaces';
+import { DbHelper } from '../db-helper';
+import { Helper } from '../helper';
 import { CategoryListResponse, CategoryRequest, CategoryResponse, ChangeCategoryRequest } from './category.interfaces';
 
 /**
@@ -26,13 +29,12 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
     try {
         const categories: any = await Category.findAll({
             raw: true,
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
-        const result = categories.map((el: any) => {
-            return omit(el, ['createdAt', 'updatedAt']);
-        });
-
-        return res.status(200).json(result);
+        return res.status(200).json(categories);
     } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.category.noCategory + err });
@@ -64,6 +66,9 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
             where: {
                 id: categoryId,
             },
+            attributes: {
+                exclude: DbFieldsToOmit
+            }
         });
 
         if (isNil(category)) {
@@ -100,11 +105,18 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
  */
 export async function handlePostCategory(req: CategoryRequest, res: CategoryResponse) {
     try {
+        const { payload } = Helper.getJwtAndPayload(req);
+        const username = await DbHelper.getUserIdentifier(payload.userId);
+
         const createdCategory: any = await Category.create({
             title: req.body.title,
+            createdBy: username,
+            updatedBy: null
         });
 
-        res.status(200).json(createdCategory.toJSON());
+        const result = omit(createdCategory.toJSON(), DbFieldsToOmit);
+
+        res.status(200).json(result);
     } catch (err: any) {
         if (err.toString().includes('SequelizeUniqueConstraintError')) {
             return res.status(400).json({ errors: ApiMessages.category.uniqueFields });
@@ -147,9 +159,15 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
             return res.status(404).json({ errors: ApiMessages.category.noCategory });
         }
 
-        await foundCategory.update(req.body);
+        const { payload } = Helper.getJwtAndPayload(req);
+        const username = await DbHelper.getUserIdentifier(payload.userId);
 
-        const result: any = foundCategory.toJSON();
+        await foundCategory.update({
+            title: req.body.title,
+            updatedBy: username
+        });
+
+        const result: any = omit(foundCategory.toJSON(), DbFieldsToOmit);
         return res.status(200).json(result);
     } catch (err) {
         logger.error(JSON.stringify(err));

@@ -1,6 +1,6 @@
 const SharedFields = {
     User: {
-        login: {
+        username: {
             type: 'string',
         },
         email: {
@@ -28,7 +28,7 @@ const UserSchemas = {
                 maxLength: 20,
             },
         },
-        required: ['login', 'email', 'password', 'role'],
+        required: ['username', 'email', 'password', 'role'],
         type: 'object',
     },
 
@@ -44,14 +44,15 @@ const UserSchemas = {
     },
 
     UserResponse: {
+        type: 'object',
         properties: {
             id: {
                 type: 'number',
             },
             ...SharedFields.User,
         },
-        required: ['id', 'login', 'email', 'role', 'firstName', 'lastName'],
-        type: 'object',
+        required: ['id', 'username', 'email', 'role', 'firstName', 'lastName'],
+        additionalProperties: false
     },
 };
 
@@ -89,9 +90,10 @@ const CategorySchemas = {
             },
             title: {
                 type: 'string',
-            },
+            }
         },
         required: ['id', 'title'],
+        additionalProperties: false
     },
 };
 
@@ -175,6 +177,7 @@ const CourseSchemas = {
             }
         },
         required: ['id', 'title', 'description', 'visible', 'categoryId'],
+        additionalProperties: false
     },
 
     UserCourseListResponse: {
@@ -187,15 +190,10 @@ const CourseSchemas = {
                 },
                 courseId: {
                     type: 'number'
-                },
-                createdAt: {
-                    type: 'string'
-                },
-                updatedAt: {
-                    type: 'string'
                 }
             },
-            required: ['userId', 'courseId', 'createdAt', 'updatedAt']
+            required: ['userId', 'courseId'],
+            additionalProperties: false
         }
     }
 };
@@ -268,6 +266,7 @@ const MaterialSchemas = {
             },
         },
         required: ['id', 'title', 'data', 'order'],
+        additionalProperties: false
     },
 };
 
@@ -292,6 +291,7 @@ const LoginSchemas = {
             },
         },
         required: ['accessToken'],
+        additionalProperties: false
     },
 };
 
@@ -310,6 +310,9 @@ const BanUserSchemas = {
     ChangeUserBanResponse: {
         type: 'object',
         properties: {
+            result: {
+                type: 'string',
+            },
             userId: {
                 type: 'number'
             },
@@ -321,15 +324,19 @@ const BanUserSchemas = {
                 minLength: 5,
                 maxLength: 200,
             },
-            bannedBy: {
+            createdBy: {
                 type: 'string'
             }
         },
-        required: ['userId', 'isBanned', 'reason', 'bannedBy'],
+        required: ['result', 'userId', 'isBanned', 'reason'],
+        additionalProperties: false
     },
-    BannedUser: {
+    BannedUserResponse: {
         type: 'object',
         properties: {
+            id: {
+                type: 'number'
+            },
             userId: {
                 type: 'number'
             },
@@ -338,25 +345,28 @@ const BanUserSchemas = {
                 minLength: 5,
                 maxLength: 200,
             },
-            bannedBy: {
+            createdBy: {
                 type: 'string'
             }
         },
-        required: ['userId', 'reason', 'bannedBy'],
+        required: ['userId', 'reason', 'createdBy'],
+        additionalProperties: false
     },
 };
 
 export const SchemasV1 = {
     DefaultResponse: {
+        type: 'object',
         properties: {
             result: {
                 type: 'string',
             },
         },
         required: ['result'],
-        type: 'object',
+        additionalProperties: false
     },
     HealthResponse: {
+        type: 'object',
         properties: {
             result: {
                 type: 'object',
@@ -371,7 +381,7 @@ export const SchemasV1 = {
             },
         },
         required: ['result'],
-        type: 'object',
+        additionalProperties: false
     },
     ...LoginSchemas,
     ...UserSchemas,
@@ -397,6 +407,6 @@ export const SchemasV1 = {
     ...BanUserSchemas,
     BannedUsersListResponse: {
         type: 'array',
-        items: BanUserSchemas.BannedUser
+        items: BanUserSchemas.BannedUserResponse
     }
 };

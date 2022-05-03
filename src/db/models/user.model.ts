@@ -13,7 +13,7 @@ export enum UserRoles {
     Admin = 'admin',
 }
 export interface UserAttributes extends DbCommonAttributes {
-    login: string;
+    username: string;
     email: string;
     password: string;
     role: UserRoles | number;
@@ -29,7 +29,7 @@ export const User: ModelDefined<UserAttributes, UserCreationAttributes> = sequel
         autoIncrement: true,
         primaryKey: true,
     },
-    login: {
+    username: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,

@@ -7,6 +7,9 @@ import { CategoryRoute } from '../../rest-api/routes/category/category.route';
 import { ApiHelper } from '../../helpers/api-helper';
 import { SchemaValidator } from '../../helpers/schema-validator';
 import { TestData } from '../../helpers/test-data';
+import { DbHelper } from '../../../src/rest-api/v1/db-helper';
+import { Helper } from '../../../src/rest-api/v1/helper';
+import { cloneDeep } from 'lodash';
 
 describe('REST API: category suite', function () {
     const createdUserIds: number[] = [];
@@ -41,19 +44,20 @@ describe('REST API: category suite', function () {
                 const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
-                const category: ApiCategoryRequest = await TestData.getCategory();
+                const category: ApiCategoryRequest = TestData.getCategory();
                 const result = await CategoryRoute.postCategory(category, adminToken);
                 expect(result.status).toBe(200);
                 createdCategoryIds.push(result.body.id);
 
                 const categories = await CategoryRoute.getCategoriesList(token);
                 expect(categories.status).toBe(200);
+                SchemaValidator.check(categories.body, SchemasV1.CategoryListResponse);
             });
         });
 
         it('should return categories list', async () => {
-            const category1: ApiCategoryRequest = await TestData.getCategory();
-            const category2: ApiCategoryRequest = await TestData.getCategory();
+            const category1: ApiCategoryRequest = TestData.getCategory();
+            const category2: ApiCategoryRequest = TestData.getCategory();
 
             const result1 = await CategoryRoute.postCategory(category1, adminToken);
             const result2 = await CategoryRoute.postCategory(category2, adminToken);
@@ -99,7 +103,7 @@ describe('REST API: category suite', function () {
                 const { token, userId } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
 
-                const category = await TestData.getCategory();
+                const category = TestData.getCategory();
                 const result = await CategoryRoute.postCategory(category, adminToken);
                 expect(result.status).toBe(200);
                 const categoryId = result.body.id;
@@ -107,11 +111,12 @@ describe('REST API: category suite', function () {
 
                 const createdCategory = await CategoryRoute.getCategory(categoryId, token);
                 expect(createdCategory.status).toBe(200);
+                SchemaValidator.check(createdCategory.body, SchemasV1.CategoryResponse);
             });
         });
 
         it('should be possible to get category', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
 
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
@@ -129,7 +134,7 @@ describe('REST API: category suite', function () {
 
     describe('POST, add category', function () {
         it('should return 401 error if no token passed', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category);
             expect(result.status).toBe(401);
         });
@@ -167,7 +172,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return validation error if title has less than minimum length', async () => {
-            const data = await TestData.getCategory({
+            const data = TestData.getCategory({
                 titleLength: SchemasV1.CategoryRequest.properties.title.minLength - 1,
             });
 
@@ -183,7 +188,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return validation error if title has greater than maximum length', async () => {
-            const data = await TestData.getCategory({
+            const data = TestData.getCategory({
                 titleLength: SchemasV1.CategoryRequest.properties.title.maxLength + 1,
             });
             const result = await CategoryRoute.postCategory(data);
@@ -198,7 +203,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to create category with student role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, studentToken);
 
             expect(result.status).toBe(403);
@@ -206,7 +211,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to create category with teacher role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, teacherToken);
 
             expect(result.status).toBe(403);
@@ -214,7 +219,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should not be possible to create category with the same title', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
 
             const result1 = await CategoryRoute.postCategory(category, adminToken);
             const categoryId1 = result1.body.id;
@@ -248,16 +253,40 @@ describe('REST API: category suite', function () {
                 SchemaValidator.check(result.body, SchemasV1.CategoryResponse);
                 expect(typeof result.body.id).toBe('number');
                 expect(result.body.title).toBe(category.body.title);
-                expect(typeof result.body.createdAt).toBe('string');
-                expect(typeof result.body.updatedAt).toBe('string');
 
                 const createdCategory = await Category.findOne({
+                    raw: true,
                     where: {
                         id: categoryId,
                     },
                 });
+
                 expect(createdCategory).not.toBeNull();
             });
+        });
+
+        it('should fill createdBy field correctly', async () => {
+            const category = TestData.getCategory();
+            const result = await CategoryRoute.postCategory(category, adminToken);
+            expect(result.status).toBe(200);
+
+            const categoryId = result.body.id;
+            createdCategoryIds.push(categoryId);
+            const createdCategory: any = await Category.findOne({
+                raw: true,
+                where: {
+                    id: categoryId,
+                },
+            });
+
+            expect(createdCategory).not.toBeNull();
+
+            const payload = Helper.getTokenPayload(adminToken);
+            const username = await DbHelper.getUserIdentifier(payload.userId);
+
+            expect(username).not.toBeNull();
+            expect(createdCategory.createdBy).toBe(username);
+            expect(createdCategory.updatedBy).toBeNull();
         });
     });
 
@@ -328,14 +357,14 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to change category with student role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
                 categoryId,
             });
             const changeResult = await CategoryRoute.putCategory(newCategory, studentToken);
@@ -344,14 +373,14 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to change category with teacher role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
                 categoryId,
             });
             const changeResult = await CategoryRoute.putCategory(newCategory, teacherToken);
@@ -360,20 +389,21 @@ describe('REST API: category suite', function () {
         });
 
         it('should be possible to change category', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const createResult = await CategoryRoute.postCategory(category, adminToken);
             expect(createResult.status).toBe(200);
 
             const categoryId = createResult.body.id;
             createdCategoryIds.push(categoryId);
 
-            const newCategory: ApiChangeCategoryRequest = await TestData.getCategory({
+            const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
                 categoryId,
             });
             expect(category.body.title).not.toBe(newCategory.body.title);
 
             const changeResult = await CategoryRoute.putCategory(newCategory, adminToken);
             expect(changeResult.status).toBe(200);
+            SchemaValidator.check(changeResult.body, SchemasV1.CategoryResponse);
             expect(changeResult.body.id).toBe(newCategory.body.id);
             expect(changeResult.body.title).toBe(newCategory.body.title);
 
@@ -385,6 +415,48 @@ describe('REST API: category suite', function () {
             });
 
             expect(dbRecord.title).toBe(newCategory.body.title);
+        });
+
+        it('should fill updatedBy field correctly', async () => {
+            const category = TestData.getCategory();
+            const createResponse = await CategoryRoute.postCategory(category, adminToken);
+            expect(createResponse.status).toBe(200);
+
+            const categoryId = createResponse.body.id;
+            createdCategoryIds.push(categoryId);
+            const createdCategory: any = await Category.findOne({
+                raw: true,
+                where: {
+                    id: categoryId,
+                },
+            });
+
+            expect(createdCategory.createdBy).not.toBeNull();
+            expect(createdCategory.updatedBy).toBeNull();
+
+            const user = TestData.getUserData();
+            const newAdmin = await ApiHelper.createUser({
+                role: UserRoles.Admin,
+                firstName: user.body.firstName,
+                lastName: user.body.lastName
+            });
+            createdUserIds.push(newAdmin.userId);
+
+            const newCategory = cloneDeep(category);
+            newCategory.body.id = categoryId;
+
+            const changeResponse = await CategoryRoute.putCategory(newCategory, newAdmin.token);
+            expect(changeResponse.status).toBe(200);
+            const changedCategory: any = await Category.findOne({
+                raw: true,
+                where: {
+                    id: categoryId,
+                },
+            });
+
+            expect(changedCategory).not.toBeNull();
+            expect(changedCategory.createdBy).toBe(createdCategory.createdBy);
+            expect(changedCategory.updatedBy).toBe(user.body.firstName + ' ' + user.body.lastName);
         });
     });
 
@@ -405,7 +477,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to delete category with student role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 
@@ -418,7 +490,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return 403 error if trying to delete category with teacher role', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 
@@ -431,7 +503,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should be possible to remove category', async () => {
-            const category = await TestData.getCategory();
+            const category = TestData.getCategory();
             const result = await CategoryRoute.postCategory(category, adminToken);
             expect(result.status).toBe(200);
 

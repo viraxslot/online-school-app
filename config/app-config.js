@@ -11,7 +11,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
 const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
 dotenv.config({ path: envPath });
 
-const keepDbHost = (env === 'development' && !isNil(process.env.JEST_RUN)) ? false : true;
+const keepDbHost = (env === 'development' && !isNil(process.env.LOCAL_RUN)) ? false : true;
 module.exports = {
     env,
     host: keepDbHost ? process.env.POSTGRES_HOST : 'localhost',

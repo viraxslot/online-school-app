@@ -80,7 +80,7 @@ describe('REST API: auth route suite', function () {
 
             const signInResponse = await LoginRoute.postSession({
                 body: {
-                    username: user.body.login,
+                    username: user.body.username,
                     password: user.body.password,
                 },
             });
