@@ -92,7 +92,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
                 body.result = ApiMessages.bannedUsers.bannedSuccessfully;
                 body.isBanned = true;
                 body.reason = reason;
-                body.bannedBy = adminName;
+                body.bannedBy = adminName as any;
             }
             else {
                 body.result = ApiMessages.bannedUsers.wasNotBanned;

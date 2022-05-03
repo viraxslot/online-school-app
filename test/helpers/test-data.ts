@@ -12,6 +12,8 @@ export class TestData {
         role: UserRoles;
         login?: string;
         password?: string;
+        firstName?: string;
+        lastName?: string;
         email?: string;
     }): ApiUserRequest {
         const login = options?.login ?? faker.internet.userName() + Date.now();
@@ -23,14 +25,14 @@ export class TestData {
             email,
             password,
             role: options?.role ?? UserRoles.Student,
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
+            firstName: options?.firstName ?? faker.name.firstName(),
+            lastName: options?.lastName ?? faker.name.lastName(),
         };
 
         return { body };
     }
 
-    static async getCategory(options?: { titleLength?: number; categoryId?: number; }): Promise<any> {
+    static getCategory(options?: { titleLength?: number; categoryId?: number; }): any {
         let title: string;
 
         if (options?.titleLength) {

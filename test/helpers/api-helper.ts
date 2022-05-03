@@ -86,11 +86,20 @@ export class ApiHelper {
         return await this.createUser({ role: UserRoles.Admin });
     }
 
-    static async createUser(options: { role: UserRoles; login?: string; password?: string; email?: string; }): Promise<CreatedUser> {
+    static async createUser(options: {
+        role: UserRoles;
+        login?: string;
+        password?: string;
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+    }): Promise<CreatedUser> {
         const user = TestData.getUserData({
             login: options?.login,
             email: options?.email,
             password: options?.password,
+            firstName: options?.firstName,
+            lastName: options?.lastName,
             role: options.role,
         });
 

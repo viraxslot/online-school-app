@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import { Permission, Permissions, Role, User, UserRoles } from '../../db/models';
 export class DbHelper {
     static async getRoleId(role: UserRoles): Promise<number | null> {
@@ -33,13 +34,17 @@ export class DbHelper {
         return userPermission?.id ?? null;
     }
 
-    static async getUserName(id: number): Promise<string> {
+    static async getUserName(id: number): Promise<string | null> {
         const user: any = await User.findOne({
             raw: true,
             where: {
                 id,
             },
         });
+
+        if (isNil(user.firstName) && isNil(user.lastName)) {
+            return null;
+        }
 
         return user.firstName + ' ' + user.lastName;
     }

@@ -7,16 +7,16 @@
         "lint:hook": "npx eslint --max-warnings 0",
         "lint": "DEBUG=eslint:linter npx eslint --max-warnings 0 ./src/** ./test/**",
         "build": "rimraf build && tsc -p .",
-        "test": "JEST_RUN=1 jest --watch",
-        "test:nowatch": "JEST_RUN=1 jest --silent --forceExit",
+        "test": "LOCAL_RUN=1 jest --watch",
+        "test:nowatch": "LOCAL_RUN=1 jest --silent --forceExit",
         "dev": "NODE_ENV=development nodemon src/app.ts --ignore \"test/specs/**\"",
         "dc:dev": "docker-compose --env-file ./env/.env.development up",
         "dc:prod": "docker-compose -f docker-compose.prod.yml --env-file ./env/.env.production up",
         "dc:down": "docker-compose down",
-        "db:migrate:dev": "NODE_ENV=development npx sequelize-cli db:migrate",
-        "db:undo:dev": "NODE_ENV=development npx sequelize-cli db:migrate:undo",
-        "db:seed:all": "NODE_ENV=development npx sequelize-cli db:seed:all",
-        "db:seed:undo": "NODE_ENV=development npx sequelize-cli db:seed:undo:all"
+        "db:migrate:dev": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate",
+        "db:undo:dev": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate:undo",
+        "db:seed:all": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:seed:all",
+        "db:seed:undo": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:seed:undo:all"
     },
     "lint-staged": {
         "src/**/*.(ts)": [

@@ -52,7 +52,7 @@ describe('REST API: course suite', function () {
         it('should return 404 error if no course found', async () => {
             const maxId: number = await Course.max('id');
 
-            const result = await CourseRoute.getCourse(maxId + 1, studentToken);
+            const result = await CourseRoute.getCourse(maxId + 10, studentToken);
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find course record(s)');
         });
