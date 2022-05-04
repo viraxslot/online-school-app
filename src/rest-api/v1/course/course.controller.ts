@@ -408,7 +408,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
 
         const username = await DbHelper.getUserIdentifier(userId);
         const updateData = merge(req.body, { updatedBy: username });
-        await foundCourse.update(updateData);
+        await foundCourse.update(omit(updateData, 'id'));
 
         const result: any = omit(foundCourse.toJSON(), DbFieldsToOmit);
         return res.status(200).json(result);

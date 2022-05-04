@@ -157,8 +157,11 @@ courseRouter.put(
         SchemasV1.ChangeCourseRequest.required,
         ApiMessages.common.requiredFields(SchemasV1.ChangeCourseRequest.required.toString())
     ).exists(),
-    body('id').isNumeric().withMessage(ApiMessages.common.numericParameter),
+    body('id')
+        .isNumeric()
+        .withMessage(ApiMessages.common.numericParameter),
     body('title')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
@@ -170,6 +173,7 @@ courseRouter.put(
         })
         .withMessage(ApiMessages.course.wrongMaxCourseTitleLength),
     body('description')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
@@ -180,8 +184,12 @@ courseRouter.put(
             max: SchemasV1.CourseRequest.properties.description.maxLength,
         })
         .withMessage(ApiMessages.course.wrongMaxCourseDescriptionLength),
-    body('visible').isBoolean().withMessage(ApiMessages.common.booleanParameter),
+    body('visible')
+        .optional()
+        .isBoolean()
+        .withMessage(ApiMessages.common.booleanParameter),
     body('categoryId')
+        .optional()
         .isNumeric()
         .withMessage(ApiMessages.common.numericParameter)
         .custom(async (categoryId: number) => {
@@ -331,6 +339,7 @@ courseRouter.put(
             return true;
         }),
     body('title')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.title.minLength })
@@ -338,6 +347,7 @@ courseRouter.put(
         .isLength({ max: SchemasV1.ChangeMaterialRequest.properties.title.maxLength })
         .withMessage(ApiMessages.material.wrongMaxMaterialTitleLength),
     body('data')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.data.minLength })

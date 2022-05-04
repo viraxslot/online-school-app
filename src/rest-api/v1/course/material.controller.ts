@@ -199,7 +199,7 @@ export async function handlePutMaterial(req: ChangeMaterialRequest, res: Materia
 
         const username = await DbHelper.getUserIdentifier(userId);
         const updateData = merge(req.body, { updatedBy: username });
-        await createdMaterial.update(updateData);
+        await createdMaterial.update(omit(updateData, 'id'));
         const result: any = omit(createdMaterial.toJSON(), DbFieldsToOmit);
 
         return res.status(200).json(result);
