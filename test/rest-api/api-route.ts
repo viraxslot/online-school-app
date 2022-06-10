@@ -26,8 +26,13 @@ export class ApiRoute {
             case 'POST':
                 response = await this.instance.post(parameters.path ?? '', parameters.body);
                 break;
+
             case 'PUT':
                 response = await this.instance.put(parameters.path ?? '', parameters.body);
+                break;
+
+            case 'PATCH':
+                response = await this.instance.patch(parameters.path ?? '', parameters.body);
                 break;
 
             case 'DELETE':
@@ -48,6 +53,10 @@ export class ApiRoute {
 
     public static async putMethod(parameters: ApiRequest): Promise<ApiResponse> {
         return this.commonHttpMethod('PUT', parameters);
+    }
+
+    public static async patchMethod(parameters: ApiRequest): Promise<ApiResponse> {
+        return this.commonHttpMethod('PATCH', parameters);
     }
 
     public static async deleteMethod(parameters: ApiRequest): Promise<ApiResponse> {

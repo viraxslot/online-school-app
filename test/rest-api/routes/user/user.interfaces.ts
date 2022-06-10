@@ -1,7 +1,8 @@
 import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
-    ChangeUserRequestData, UserRequestData,
-    UserResponseData
+    ChangeUserRequestData,
+    UserRequestData,
+    UserResponseData,
 } from '../../../../src/rest-api/v1/user/user.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 

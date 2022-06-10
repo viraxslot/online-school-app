@@ -32,7 +32,7 @@ export class TestData {
         return { body };
     }
 
-    static getCategory(options?: { titleLength?: number; categoryId?: number; }): any {
+    static getCategory(options?: { titleLength?: number; categoryId?: number }): any {
         let title: string;
 
         if (options?.titleLength) {
@@ -51,7 +51,7 @@ export class TestData {
         return { body };
     }
 
-    static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number; }): any {
+    static getCourse(options?: { visible?: boolean; categoryId?: number; courseId?: number }): any {
         const body: any = {
             title: faker.lorem.words(5) + Date.now(),
             description: faker.lorem.words(10) + Date.now(),
@@ -68,7 +68,7 @@ export class TestData {
         };
     }
 
-    static getMaterial(options?: { materialId?: number; }) {
+    static getMaterial(options?: { materialId?: number }) {
         const body: any = {
             title: faker.lorem.words(5) + Date.now(),
             data: faker.lorem.words(10) + Date.now(),
@@ -84,17 +84,12 @@ export class TestData {
         };
     }
 
-    static getBanUserData(options?: {
-        userId?: number;
-        reason?: string | null;
-        ban?: boolean;
-        jwt?: string;
-    }): any {
+    static getBanUserData(options?: { userId?: number; reason?: string | null; ban?: boolean; jwt?: string }): any {
         return {
             userId: options?.userId ?? null,
             reason: options?.reason ?? faker.lorem.words(3),
             ban: options?.ban ?? null,
-            jwt: options?.jwt ?? null
+            jwt: options?.jwt ?? null,
         };
     }
 }

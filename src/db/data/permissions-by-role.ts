@@ -30,18 +30,14 @@ const PermissionsByRole = {
         Permissions.CreateMaterial,
         Permissions.ChangeMaterial,
         Permissions.RemoveMaterial,
-        Permissions.GetMineCourseList
+        Permissions.GetMineCourseList,
     ],
     [UserRoles.Admin]: [...Object.values(Permissions)],
 };
 
 // remove roles
-PermissionsByRole[UserRoles.Admin] = PermissionsByRole[UserRoles.Admin].filter(p => {
-    return ![
-        Permissions.EnrollCourse,
-        Permissions.LeaveCourse,
-        Permissions.ChangeLike
-    ].includes(p);
+PermissionsByRole[UserRoles.Admin] = PermissionsByRole[UserRoles.Admin].filter((p) => {
+    return ![Permissions.EnrollCourse, Permissions.LeaveCourse, Permissions.ChangeLike].includes(p);
 });
 
 export { PermissionsByRole };

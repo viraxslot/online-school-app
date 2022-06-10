@@ -12,7 +12,7 @@ import {
     GetMaterialRequest,
     MaterialListResponse,
     MaterialRequest,
-    MaterialResponse
+    MaterialResponse,
 } from './material.interfaces';
 // import { MaterialRequest, MaterialResponse } from './material.interfaces';
 
@@ -42,8 +42,8 @@ export async function handleGetMaterialsList(req: Request, res: MaterialListResp
                 courseId: courseId,
             },
             attributes: {
-                exclude: DbFieldsToOmit
-            }
+                exclude: DbFieldsToOmit,
+            },
         });
 
         return res.json(material);
@@ -80,8 +80,8 @@ export async function handleGetMaterialById(req: GetMaterialRequest, res: Materi
                 courseId: courseId,
             },
             attributes: {
-                exclude: DbFieldsToOmit
-            }
+                exclude: DbFieldsToOmit,
+            },
         });
 
         return res.json(material);
@@ -136,7 +136,7 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
             data: body.data,
             order: body.order ?? null,
             courseId: parseInt(courseId),
-            createdBy: username
+            createdBy: username,
         });
 
         const result = omit(material.toJSON(), DbFieldsToOmit);
@@ -150,7 +150,7 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
 /**
  * @swagger
  * /api/v1/courses/{courseId}/materials:
- *   put:
+ *   patch:
  *     tags:
  *       - Course materials
  *     summary: Allow to change material
@@ -168,7 +168,7 @@ export async function handlePostMaterial(req: MaterialRequest, res: MaterialResp
  *               $ref: '#/components/schemas/MaterialResponse'
  *         description: Return changed material information
  */
-export async function handlePutMaterial(req: ChangeMaterialRequest, res: MaterialResponse) {
+export async function handlePatchMaterial(req: ChangeMaterialRequest, res: MaterialResponse) {
     const courseId = req.params.courseId;
     const materialId = req.body.id;
     const { payload } = Helper.getJwtAndPayload(req);
@@ -199,7 +199,7 @@ export async function handlePutMaterial(req: ChangeMaterialRequest, res: Materia
 
         const username = await DbHelper.getUserIdentifier(userId);
         const updateData = merge(req.body, { updatedBy: username });
-        await createdMaterial.update(updateData);
+        await createdMaterial.update(omit(updateData, 'id'));
         const result: any = omit(createdMaterial.toJSON(), DbFieldsToOmit);
 
         return res.status(200).json(result);

@@ -51,13 +51,13 @@ export class DbHelper {
             login: result.login,
             email: result.email,
             firstName: result.firstName,
-            lastName: result.lastName
+            lastName: result.lastName,
         };
     }
 
     /**
      * Return firstName + lastName if they're not empty or login otherwise
-     * @param id 
+     * @param id
      */
     static async getUserIdentifier(id: number): Promise<string> {
         const user = await this.getUserData(id);

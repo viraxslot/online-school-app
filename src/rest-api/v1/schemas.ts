@@ -52,7 +52,7 @@ const UserSchemas = {
             ...SharedFields.User,
         },
         required: ['id', 'username', 'email', 'role', 'firstName', 'lastName'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 };
 
@@ -90,10 +90,10 @@ const CategorySchemas = {
             },
             title: {
                 type: 'string',
-            }
+            },
         },
         required: ['id', 'title'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 };
 
@@ -170,14 +170,14 @@ const CourseSchemas = {
                 type: 'number',
             },
             likes: {
-                type: 'number'
+                type: 'number',
             },
             dislikes: {
-                type: 'number'
-            }
+                type: 'number',
+            },
         },
         required: ['id', 'title', 'description', 'visible', 'categoryId'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 
     UserCourseListResponse: {
@@ -186,16 +186,16 @@ const CourseSchemas = {
             type: 'object',
             properties: {
                 userId: {
-                    type: 'number'
+                    type: 'number',
                 },
                 courseId: {
-                    type: 'number'
-                }
+                    type: 'number',
+                },
             },
             required: ['userId', 'courseId'],
-            additionalProperties: false
-        }
-    }
+            additionalProperties: false,
+        },
+    },
 };
 
 const MaterialSchemas = {
@@ -266,7 +266,7 @@ const MaterialSchemas = {
             },
         },
         required: ['id', 'title', 'data', 'order'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 };
 
@@ -287,11 +287,11 @@ const LoginSchemas = {
         type: 'object',
         properties: {
             accessToken: {
-                type: 'string'
+                type: 'string',
             },
         },
         required: ['accessToken'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 };
 
@@ -303,7 +303,7 @@ const BanUserSchemas = {
                 type: 'string',
                 minLength: 5,
                 maxLength: 200,
-            }
+            },
         },
         required: ['reason'],
     },
@@ -314,10 +314,10 @@ const BanUserSchemas = {
                 type: 'string',
             },
             userId: {
-                type: 'number'
+                type: 'number',
             },
             isBanned: {
-                type: 'boolean'
+                type: 'boolean',
             },
             reason: {
                 type: 'string',
@@ -325,20 +325,20 @@ const BanUserSchemas = {
                 maxLength: 200,
             },
             createdBy: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
         required: ['result', 'userId', 'isBanned', 'reason'],
-        additionalProperties: false
+        additionalProperties: false,
     },
     BannedUserResponse: {
         type: 'object',
         properties: {
             id: {
-                type: 'number'
+                type: 'number',
             },
             userId: {
-                type: 'number'
+                type: 'number',
             },
             reason: {
                 type: 'string',
@@ -346,11 +346,11 @@ const BanUserSchemas = {
                 maxLength: 200,
             },
             createdBy: {
-                type: 'string'
-            }
+                type: 'string',
+            },
         },
         required: ['userId', 'reason', 'createdBy'],
-        additionalProperties: false
+        additionalProperties: false,
     },
 };
 
@@ -363,7 +363,7 @@ export const SchemasV1 = {
             },
         },
         required: ['result'],
-        additionalProperties: false
+        additionalProperties: false,
     },
     HealthResponse: {
         type: 'object',
@@ -381,7 +381,7 @@ export const SchemasV1 = {
             },
         },
         required: ['result'],
-        additionalProperties: false
+        additionalProperties: false,
     },
     ...LoginSchemas,
     ...UserSchemas,
@@ -407,6 +407,6 @@ export const SchemasV1 = {
     ...BanUserSchemas,
     BannedUsersListResponse: {
         type: 'array',
-        items: BanUserSchemas.BannedUserResponse
-    }
+        items: BanUserSchemas.BannedUserResponse,
+    },
 };

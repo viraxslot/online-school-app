@@ -16,7 +16,7 @@ import {
     handleGetMineCourses,
     handleLeaveCourse,
     handlePostCourse,
-    handlePutCourse
+    handlePatchCourse,
 } from './course.controller';
 import { handleChangeLikeRequest } from './likes.controller';
 import {
@@ -24,7 +24,7 @@ import {
     handleGetMaterialById,
     handleGetMaterialsList,
     handlePostMaterial,
-    handlePutMaterial
+    handlePatchMaterial,
 } from './material.controller';
 const courseRouter = express.Router();
 
@@ -113,8 +113,8 @@ courseRouter.post(
             const course: any = await Course.findOne({
                 raw: true,
                 where: {
-                    id: courseId
-                }
+                    id: courseId,
+                },
             });
 
             if (isNil(course)) {
@@ -151,7 +151,7 @@ courseRouter.post(
     handleLeaveCourse
 );
 
-courseRouter.put(
+courseRouter.patch(
     '/' + v1Methods.course.courses,
     body(
         SchemasV1.ChangeCourseRequest.required,
@@ -159,6 +159,7 @@ courseRouter.put(
     ).exists(),
     body('id').isNumeric().withMessage(ApiMessages.common.numericParameter),
     body('title')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
@@ -170,6 +171,7 @@ courseRouter.put(
         })
         .withMessage(ApiMessages.course.wrongMaxCourseTitleLength),
     body('description')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
@@ -180,8 +182,9 @@ courseRouter.put(
             max: SchemasV1.CourseRequest.properties.description.maxLength,
         })
         .withMessage(ApiMessages.course.wrongMaxCourseDescriptionLength),
-    body('visible').isBoolean().withMessage(ApiMessages.common.booleanParameter),
+    body('visible').optional().isBoolean().withMessage(ApiMessages.common.booleanParameter),
     body('categoryId')
+        .optional()
         .isNumeric()
         .withMessage(ApiMessages.common.numericParameter)
         .custom(async (categoryId: number) => {
@@ -194,7 +197,7 @@ courseRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCourse),
-    handlePutCourse
+    handlePatchCourse
 );
 
 courseRouter.delete(
@@ -303,7 +306,7 @@ courseRouter.post(
     handlePostMaterial
 );
 
-courseRouter.put(
+courseRouter.patch(
     '/' + v1Methods.course.materials,
     body(
         SchemasV1.ChangeMaterialRequest.required,
@@ -331,6 +334,7 @@ courseRouter.put(
             return true;
         }),
     body('title')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.title.minLength })
@@ -338,6 +342,7 @@ courseRouter.put(
         .isLength({ max: SchemasV1.ChangeMaterialRequest.properties.title.maxLength })
         .withMessage(ApiMessages.material.wrongMaxMaterialTitleLength),
     body('data')
+        .optional()
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({ min: SchemasV1.ChangeMaterialRequest.properties.data.minLength })
@@ -347,7 +352,7 @@ courseRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeMaterial),
-    handlePutMaterial
+    handlePatchMaterial
 );
 
 courseRouter.delete(
@@ -394,14 +399,13 @@ courseRouter.post(
             }
             return true;
         }),
-    param('like')
-        .custom(async (like: string) => {
-            if (!Object.values(LikeValue).includes(like as any)) {
-                throw new Error(ApiMessages.course.likeValues);
-            }
+    param('like').custom(async (like: string) => {
+        if (!Object.values(LikeValue).includes(like as any)) {
+            throw new Error(ApiMessages.course.likeValues);
+        }
 
-            return true;
-        }),
+        return true;
+    }),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeLike),

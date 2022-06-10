@@ -21,19 +21,19 @@ export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttribut
     },
     title: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     data: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     order: {
         type: DataTypes.INTEGER,
-        allowNull: true
+        allowNull: true,
     },
     courseId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     createdBy: {
         type: DataTypes.STRING,
@@ -42,5 +42,5 @@ export const Material: ModelDefined<MaterialAttributes, MaterialCreationAttribut
     updatedBy: {
         type: DataTypes.STRING,
         allowNull: true,
-    }
+    },
 });

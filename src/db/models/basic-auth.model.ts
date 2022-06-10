@@ -7,7 +7,7 @@ interface BasicAuthAttributes extends DbCommonAttributes {
     password: string;
 }
 
-type BasicAuthAttributesCreationAttributes = Optional<BasicAuthAttributes, 'id'>
+type BasicAuthAttributesCreationAttributes = Optional<BasicAuthAttributes, 'id'>;
 
 export const BasicAuth: ModelDefined<BasicAuthAttributes, BasicAuthAttributesCreationAttributes> = sequelize.define(
     'basicAuth',
@@ -25,7 +25,7 @@ export const BasicAuth: ModelDefined<BasicAuthAttributes, BasicAuthAttributesCre
         password: {
             type: DataTypes.STRING,
             allowNull: false,
-        }
+        },
     },
     {
         freezeTableName: true,

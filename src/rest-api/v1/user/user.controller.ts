@@ -122,7 +122,7 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
 /**
  * @swagger
  * /api/v1/teachers:
- *   put:
+ *   patch:
  *     tags:
  *       - User
  *     summary: Allow to change teacher data by id
@@ -141,7 +141,7 @@ export async function handleGetTeachers(req: Request, res: UserListResponse) {
  *               $ref: '#/components/schemas/UserResponse'
  *         description: Return changed information about the teacher
  */
-export async function handlePutTeacher(req: ChangeUserRequest, res: UserResponse) {
+export async function handlePatchTeacher(req: ChangeUserRequest, res: UserResponse) {
     const body = req.body;
     const teacherId = body.id;
     const { payload } = Helper.getJwtAndPayload(req);

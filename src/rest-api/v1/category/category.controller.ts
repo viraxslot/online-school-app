@@ -30,8 +30,8 @@ export async function handleGetCategoriesList(req: Request, res: CategoryListRes
         const categories: any = await Category.findAll({
             raw: true,
             attributes: {
-                exclude: DbFieldsToOmit
-            }
+                exclude: DbFieldsToOmit,
+            },
         });
 
         return res.status(200).json(categories);
@@ -67,8 +67,8 @@ export async function handleGetCategoryById(req: Request, res: CategoryResponse)
                 id: categoryId,
             },
             attributes: {
-                exclude: DbFieldsToOmit
-            }
+                exclude: DbFieldsToOmit,
+            },
         });
 
         if (isNil(category)) {
@@ -111,7 +111,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
         const createdCategory: any = await Category.create({
             title: req.body.title,
             createdBy: username,
-            updatedBy: null
+            updatedBy: null,
         });
 
         const result = omit(createdCategory.toJSON(), DbFieldsToOmit);
@@ -132,16 +132,16 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
 /**
  * @swagger
  * /api/v1/categories:
- *   put:
+ *   patch:
  *     tags:
  *       - Category
- *     summary: Allow to change category
+ *     summary: Allow to change the category
  *     description: "Allow to change category. Available for roles: admin"
  *     requestBody:
  *       content:
  *         json:
  *           schema:
- *             $ref: '#/components/schemas/CategoryRequest'
+ *             $ref: '#/components/schemas/ChangeCategoryRequest'
  *     responses:
  *       200:
  *         content:
@@ -150,7 +150,7 @@ export async function handlePostCategory(req: CategoryRequest, res: CategoryResp
  *               $ref: '#/components/schemas/CategoryResponse'
  *         description: Return changed category information
  */
-export async function handlePutCategory(req: ChangeCategoryRequest, res: CategoryResponse) {
+export async function handlePatchCategory(req: ChangeCategoryRequest, res: CategoryResponse) {
     const categoryId = req.body.id;
     try {
         const foundCategory = await Category.findByPk(categoryId);
@@ -164,7 +164,7 @@ export async function handlePutCategory(req: ChangeCategoryRequest, res: Categor
 
         await foundCategory.update({
             title: req.body.title,
-            updatedBy: username
+            updatedBy: username,
         });
 
         const result: any = omit(foundCategory.toJSON(), DbFieldsToOmit);

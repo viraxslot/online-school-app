@@ -15,11 +15,7 @@ describe('REST API: course suite', function () {
     const createdUserIds: number[] = [];
     const createdCategoryIds: number[] = [];
 
-    const allRolesTestCases = [
-        { role: UserRoles.Student },
-        // { role: UserRoles.Teacher }, 
-        // { role: UserRoles.Admin }
-    ];
+    const allRolesTestCases = [{ role: UserRoles.Student }, { role: UserRoles.Teacher }, { role: UserRoles.Admin }];
     const teacherAdminTestCases = [{ role: UserRoles.Teacher }, { role: UserRoles.Admin }];
 
     let studentToken: string;
@@ -142,7 +138,7 @@ describe('REST API: course suite', function () {
             const coursesList = await CourseRoute.getCourseList(student1.token);
             expect(coursesList.status).toBe(200);
 
-            const course = coursesList.body.find(el => el.id === courseId);
+            const course = coursesList.body.find((el) => el.id === courseId);
             expect(course).not.toBeNull();
             expect(course?.likes).toBe(2);
             expect(course?.dislikes).toBe(0);
@@ -194,7 +190,11 @@ describe('REST API: course suite', function () {
 
     const negativeRoleTestCases = [
         { title: 'admin role', role: UserRoles.Admin, expectedMessage: 'This action is forbidden for role admin' },
-        { title: 'teacher role', role: UserRoles.Teacher, expectedMessage: 'This action is forbidden for role teacher' },
+        {
+            title: 'teacher role',
+            role: UserRoles.Teacher,
+            expectedMessage: 'This action is forbidden for role teacher',
+        },
     ];
 
     describe('POST: enroll the course', function () {
@@ -226,7 +226,7 @@ describe('REST API: course suite', function () {
         it('should not be possible to join hidden course', async () => {
             const courseData = TestData.getCourse({
                 categoryId,
-                visible: false
+                visible: false,
             });
             expect(courseData.body.visible).toBe(false);
 
@@ -243,7 +243,7 @@ describe('REST API: course suite', function () {
             expect(error.value).toBe(courseId.toString());
         });
 
-        negativeRoleTestCases.forEach(test => {
+        negativeRoleTestCases.forEach((test) => {
             it(`should not be possible to enroll course for ${test.title}`, async () => {
                 const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
@@ -260,22 +260,22 @@ describe('REST API: course suite', function () {
                 raw: true,
                 where: {
                     userId: payload.userId,
-                    courseId
-                }
+                    courseId,
+                },
             });
 
             expect(enrolledCourse).toBeNull();
             const result = await CourseRoute.enrollCourse(courseId, studentToken);
 
             expect(result.status).toBe(200);
-            expect(result.body.result).toBe('You\'ve successfully enrolled the course');
+            expect(result.body.result).toBe("You've successfully enrolled the course");
 
             enrolledCourse = await StudentCourses.findOne({
                 raw: true,
                 where: {
                     userId: payload.userId,
-                    courseId
-                }
+                    courseId,
+                },
             });
             expect(enrolledCourse).not.toBeNull();
         });
@@ -290,14 +290,14 @@ describe('REST API: course suite', function () {
                 raw: true,
                 where: {
                     userId: payload.userId,
-                    courseId
-                }
+                    courseId,
+                },
             });
             expect(enrolledCourse).not.toBeNull();
 
             const secondEnroll = await CourseRoute.enrollCourse(courseId, studentToken);
             expect(secondEnroll.status).toBe(200);
-            expect(secondEnroll.body.result).toBe('You\'ve already enrolled to this course');
+            expect(secondEnroll.body.result).toBe("You've already enrolled to this course");
         });
     });
 
@@ -327,7 +327,7 @@ describe('REST API: course suite', function () {
             expect(result.status).toBe(401);
         });
 
-        negativeRoleTestCases.forEach(test => {
+        negativeRoleTestCases.forEach((test) => {
             it(`should not be possible to leave the course for ${test.title}`, async () => {
                 const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
@@ -344,7 +344,7 @@ describe('REST API: course suite', function () {
 
             const leaveResponse = await CourseRoute.leaveCourse(courseId, token);
             expect(leaveResponse.status).toBe(404);
-            expect(leaveResponse.body.errors).toBe('You didn\'t enroll this course');
+            expect(leaveResponse.body.errors).toBe("You didn't enroll this course");
         });
 
         it('should be possible to leave the course', async () => {
@@ -357,20 +357,20 @@ describe('REST API: course suite', function () {
                 raw: true,
                 where: {
                     userId: payload.userId,
-                    courseId
-                }
+                    courseId,
+                },
             });
             expect(enrolledCourse).not.toBeNull();
             const leaveResponse = await CourseRoute.leaveCourse(courseId, studentToken);
             expect(leaveResponse.status).toBe(200);
-            expect(leaveResponse.body.result).toBe('You\'ve successfully left the course');
+            expect(leaveResponse.body.result).toBe("You've successfully left the course");
 
             enrolledCourse = await StudentCourses.findOne({
                 raw: true,
                 where: {
                     userId: payload.userId,
-                    courseId
-                }
+                    courseId,
+                },
             });
             expect(enrolledCourse).toBeNull();
         });
@@ -515,11 +515,11 @@ describe('REST API: course suite', function () {
         });
     });
 
-    describe('PUT: change course', function () {
+    describe('PATCH: change course', function () {
         it('should return 400 error if required input parameters are not set', async () => {
             const courseData = TestData.getCourse({ categoryId });
 
-            const result = await CourseRoute.putCourse(courseData);
+            const result = await CourseRoute.patchCourse(courseData);
             expect(result.status).toBe(400);
 
             const errors = result.body.errors;
@@ -534,7 +534,7 @@ describe('REST API: course suite', function () {
         it('should return 401 error if token is not passed', async () => {
             const courseData = TestData.getCourse({ courseId: -1, categoryId });
 
-            const result = await CourseRoute.putCourse(courseData);
+            const result = await CourseRoute.patchCourse(courseData);
             expect(result.status).toBe(401);
             expect(result.body.errors).toBe('Unauthorized');
         });
@@ -564,7 +564,7 @@ describe('REST API: course suite', function () {
                 newCourseData.body[test.field] =
                     test.field !== 'visible' ? test.newValue + TestData.getRandomPrefix() : test.newValue;
                 newCourseData.body.id = courseId;
-                const changeResponse: any = await CourseRoute.putCourse(newCourseData, token);
+                const changeResponse: any = await CourseRoute.patchCourse(newCourseData, token);
 
                 expect(changeResponse.status).toBe(200);
                 SchemaValidator.check(changeResponse.body, SchemasV1.CourseResponse);
@@ -585,7 +585,7 @@ describe('REST API: course suite', function () {
             const courseData = TestData.getCourse();
             courseData.body.id = courseId;
             courseData.body.categoryId = -1;
-            const changeResponse = await CourseRoute.putCourse(courseData, adminToken);
+            const changeResponse = await CourseRoute.patchCourse(courseData, adminToken);
 
             expect(changeResponse.status).toBe(400);
             const error = changeResponse.body.errors[0];
@@ -605,7 +605,7 @@ describe('REST API: course suite', function () {
             courseData.body.id = courseId;
             courseData.body.categoryId = newCategory.categoryId;
 
-            const changeResponse = await CourseRoute.putCourse(courseData, adminToken);
+            const changeResponse = await CourseRoute.patchCourse(courseData, adminToken);
 
             expect(changeResponse.status).toBe(200);
             expect(changeResponse.body.id).toBe(courseId);

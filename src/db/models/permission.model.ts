@@ -32,7 +32,7 @@ export enum Permissions {
     GetBannedUsersList = 'Get banned users list',
     ChangeUserBan = 'Ban or unban user',
     // likes permissions
-    ChangeLike = 'Add or remove like'
+    ChangeLike = 'Add or remove like',
 }
 
 interface PermissionAttributes extends DbCommonAttributes {

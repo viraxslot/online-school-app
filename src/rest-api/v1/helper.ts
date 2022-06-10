@@ -14,11 +14,11 @@ export class Helper {
     }
 
     /**
-     * Get jwt and its payload from Autorization header from express request 
-     * @param req 
-     * @returns 
+     * Get jwt and its payload from Autorization header from express request
+     * @param req
+     * @returns
      */
-    static getJwtAndPayload(req: RequestBody<any, any>): { token: string; payload: TokenPayload; } {
+    static getJwtAndPayload(req: RequestBody<any, any>): { token: string; payload: TokenPayload } {
         const authHeader = req.headers.authorization?.replace('Bearer ', '') as string;
         const decoded = Helper.getTokenPayload(authHeader);
 

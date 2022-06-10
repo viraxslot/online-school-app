@@ -55,8 +55,8 @@ export async function handlePostSession(req: SessionRequest, res: SessionRespons
         bannedUser = await BannedUser.findOne({
             raw: true,
             where: {
-                userId: existentUser.id
-            }
+                userId: existentUser.id,
+            },
         });
     } catch (err) {
         logger.error(JSON.stringify(err));

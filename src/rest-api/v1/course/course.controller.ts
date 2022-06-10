@@ -8,35 +8,37 @@ import { DbFieldsToOmit } from '../../shared/constants';
 import { DefaultResponse } from '../../shared/interfaces';
 import { DbHelper } from '../db-helper';
 import { Helper } from '../helper';
-import { ChangeCourseRequest, CourseListResponse, CourseRequest, CourseResponse, UserCourseListResponse } from './course.interfaces';
+import {
+    ChangeCourseRequest,
+    CourseListResponse,
+    CourseRequest,
+    CourseResponse,
+    UserCourseListResponse,
+} from './course.interfaces';
 
-async function countLikes(courseId: number): Promise<{ likes: number; dislikes: number; }> {
+async function countLikes(courseId: number): Promise<{ likes: number; dislikes: number }> {
     const likes = await Like.count({
         where: {
             courseId,
             like: LikeValue.Yes,
         },
         attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.col('like')), 'n_likes']
-            ]
-        }
+            include: [[sequelize.fn('COUNT', sequelize.col('like')), 'n_likes']],
+        },
     });
     const dislikes = await Like.count({
         where: {
             courseId,
-            like: LikeValue.No
+            like: LikeValue.No,
         },
         attributes: {
-            include: [
-                [sequelize.fn('COUNT', sequelize.col('like')), 'n_dislikes']
-            ]
-        }
+            include: [[sequelize.fn('COUNT', sequelize.col('like')), 'n_dislikes']],
+        },
     });
 
     return {
         likes,
-        dislikes
+        dislikes,
     };
 }
 
@@ -57,13 +59,12 @@ async function countLikes(courseId: number): Promise<{ likes: number; dislikes: 
  *         description:
  */
 export async function handleCourseById(req: Request, res: CourseResponse) {
-
     try {
         const courseId = parseInt(req.params.courseId);
         const course: any = await Course.findOne({
             raw: true,
             attributes: {
-                exclude: DbFieldsToOmit
+                exclude: DbFieldsToOmit,
             },
             where: {
                 id: courseId,
@@ -115,7 +116,7 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
                                 AND
                                 l.like = 'yes'
                         )`),
-                        'likes'
+                        'likes',
                     ],
                     [
                         sequelize.literal(`(
@@ -126,17 +127,16 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
                                 AND
                                 l.like = 'no'
                         )`),
-                        'dislikes'
+                        'dislikes',
                     ],
                 ],
-                exclude: DbFieldsToOmit
+                exclude: DbFieldsToOmit,
             },
         });
 
         courses.forEach((el: any) => {
             el.likes = parseInt(el.likes);
             el.dislikes = parseInt(el.dislikes);
-
         });
 
         return res.status(200).json(courses);
@@ -172,12 +172,11 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
                     userId: payload.userId,
                 },
                 attributes: {
-                    exclude: DbFieldsToOmit
-                }
+                    exclude: DbFieldsToOmit,
+                },
             });
             return res.json(result);
-        }
-        catch (err) {
+        } catch (err) {
             logger.error(JSON.stringify(err));
             return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
         }
@@ -190,16 +189,14 @@ export async function handleGetMineCourses(req: Request, res: UserCourseListResp
                 userId: payload.userId,
             },
             attributes: {
-                exclude: DbFieldsToOmit
-            }
+                exclude: DbFieldsToOmit,
+            },
         });
         return res.json(result);
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.course.unableFindCourse });
     }
-
 }
 
 /**
@@ -225,8 +222,8 @@ export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
         raw: true,
         where: {
             userId: payload.userId,
-            courseId
-        }
+            courseId,
+        },
     });
 
     if (!isNil(enrollRecord)) {
@@ -242,8 +239,7 @@ export async function handleEnrollCourse(req: Request, res: DefaultResponse) {
         });
 
         return res.status(200).json({ result: ApiMessages.course.successEnroll });
-    }
-    catch (err: any) {
+    } catch (err: any) {
         logger.error(err);
         return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
     }
@@ -273,8 +269,8 @@ export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
             raw: true,
             where: {
                 userId: payload.userId,
-                courseId
-            }
+                courseId,
+            },
         });
 
         if (isNil(enrolledCourse)) {
@@ -284,13 +280,12 @@ export async function handleLeaveCourse(req: Request, res: DefaultResponse) {
         await StudentCourses.destroy({
             where: {
                 userId: payload.userId,
-                courseId: parseInt(courseId)
-            }
+                courseId: parseInt(courseId),
+            },
         });
 
         return res.status(200).json({ result: ApiMessages.course.successLeave });
-    }
-    catch (err: any) {
+    } catch (err: any) {
         logger.error(err);
         return res.status(500).json({ errors: ApiMessages.course.unableEnrollCourse + JSON.stringify(err) });
     }
@@ -337,7 +332,7 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
             categoryId: body.categoryId,
             description: body.description as string,
             visible: body.visible as boolean,
-            createdBy: username
+            createdBy: username,
         });
 
         let result = createdCourse.toJSON();
@@ -365,7 +360,7 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
 /**
  * @swagger
  * /api/v1/courses:
- *   put:
+ *   patch:
  *     tags:
  *       - Course
  *     summary: Allow to change a course
@@ -383,7 +378,7 @@ export async function handlePostCourse(req: CourseRequest, res: CourseResponse) 
  *               $ref: '#/components/schemas/CourseResponse'
  *         description:
  */
-export async function handlePutCourse(req: ChangeCourseRequest, res: CourseResponse) {
+export async function handlePatchCourse(req: ChangeCourseRequest, res: CourseResponse) {
     const courseId = req.body.id;
     const { payload } = Helper.getJwtAndPayload(req);
     const userId = payload.userId;
@@ -393,7 +388,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
             where: {
                 userId,
                 courseId,
-            }
+            },
         });
 
         if (isNil(createdCourse)) {
@@ -408,7 +403,7 @@ export async function handlePutCourse(req: ChangeCourseRequest, res: CourseRespo
 
         const username = await DbHelper.getUserIdentifier(userId);
         const updateData = merge(req.body, { updatedBy: username });
-        await foundCourse.update(updateData);
+        await foundCourse.update(omit(updateData, 'id'));
 
         const result: any = omit(foundCourse.toJSON(), DbFieldsToOmit);
         return res.status(200).json(result);

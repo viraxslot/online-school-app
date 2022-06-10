@@ -1,6 +1,6 @@
-import { Request } from "express";
-import { DefaultResponse } from "../../../shared/interfaces";
-import { ApiMessages } from "../../../shared/api-messages";
+import { Request } from 'express';
+import { DefaultResponse } from '../../../shared/interfaces';
+import { ApiMessages } from '../../../shared/api-messages';
 
 /**
  * @swagger

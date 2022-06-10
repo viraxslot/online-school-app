@@ -14,8 +14,8 @@ passport.use(
         try {
             const foundKey = await ApiKey.findOne({
                 where: {
-                    apiKey: apiKey
-                }
+                    apiKey: apiKey,
+                },
             });
 
             if (!foundKey) {
@@ -23,14 +23,17 @@ passport.use(
             }
 
             return cb(null, foundKey);
-        }
-        catch (err) {
+        } catch (err) {
             logger.error(ApiMessages.auth.unableToFindAPIKey);
         }
         return cb(null, false);
     })
 );
 
-apiKeyRouter.use('/' + v1Methods.auth.apiKey, passport.authenticate('headerapikey', { session: false }), handleApiKeyAuth);
+apiKeyRouter.use(
+    '/' + v1Methods.auth.apiKey,
+    passport.authenticate('headerapikey', { session: false }),
+    handleApiKeyAuth
+);
 
 export default apiKeyRouter;

@@ -4,7 +4,7 @@ import appConfig from '../../config/app-config';
 export class DbInstance {
     readonly sequelize: Sequelize;
 
-    constructor(options?: { host: string; db: string; username: string; password: string; dialect?: string; }) {
+    constructor(options?: { host: string; db: string; username: string; password: string; dialect?: string }) {
         const host = options?.host ?? appConfig.host;
         const database = options?.db ?? appConfig.database;
         const username = options?.username ?? appConfig.username;

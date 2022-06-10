@@ -1,8 +1,8 @@
-import { Helper } from "../../../src/rest-api/v1/helper";
-import { Category, Like, LikeValue, User, UserRoles } from "../../../src/db/models";
-import { CourseRoute } from "../../rest-api/routes/course/course.route";
-import { ApiHelper } from "../../helpers/api-helper";
-import { logger } from "../../../src/helpers/winston-logger";
+import { Helper } from '../../../src/rest-api/v1/helper';
+import { Category, Like, LikeValue, User, UserRoles } from '../../../src/db/models';
+import { CourseRoute } from '../../rest-api/routes/course/course.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { logger } from '../../../src/helpers/winston-logger';
 
 describe('REST API: likes suites', () => {
     const createdUserIds: number[] = [];
@@ -63,17 +63,17 @@ describe('REST API: likes suites', () => {
         const testCases = [
             {
                 title: 'like a course',
-                expectedMessage: 'You\'ve liked the course',
-                value: LikeValue.Yes
+                expectedMessage: "You've liked the course",
+                value: LikeValue.Yes,
             },
             {
                 title: 'dislike a course',
-                expectedMessage: 'You\'ve disliked the course',
-                value: LikeValue.No
-            }
+                expectedMessage: "You've disliked the course",
+                value: LikeValue.No,
+            },
         ];
 
-        testCases.forEach(test => {
+        testCases.forEach((test) => {
             it(`should be possible to ${test.title} for student`, async () => {
                 const { categoryId, courseId } = await ApiHelper.createCourse(adminToken);
                 createdCategoryIds.push(categoryId);
@@ -88,7 +88,7 @@ describe('REST API: likes suites', () => {
                     where: {
                         userId: payload.userId,
                         courseId,
-                    }
+                    },
                 });
 
                 expect(likedCourse).not.toBeNull();
@@ -106,7 +106,7 @@ describe('REST API: likes suites', () => {
                 where: {
                     userId: payload.userId,
                     courseId,
-                }
+                },
             });
             expect(likedCourse).not.toBeNull();
 
@@ -118,7 +118,7 @@ describe('REST API: likes suites', () => {
                 where: {
                     userId: payload.userId,
                     courseId,
-                }
+                },
             });
             expect(likedCourse2).toBeNull();
         });
@@ -127,16 +127,16 @@ describe('REST API: likes suites', () => {
             {
                 title: 'teacher role',
                 role: UserRoles.Teacher,
-                expectedMessage: 'This action is forbidden for role teacher'
+                expectedMessage: 'This action is forbidden for role teacher',
             },
             {
                 title: 'admin role',
                 role: UserRoles.Admin,
-                expectedMessage: 'This action is forbidden for role admin'
-            }
+                expectedMessage: 'This action is forbidden for role admin',
+            },
         ];
 
-        negativeRoleTestCases.forEach(test => {
+        negativeRoleTestCases.forEach((test) => {
             it(`should not be possible to change like for ${test.title}`, async () => {
                 const { token } = await ApiHelper.createUser({ role: test.role });
 
@@ -152,19 +152,18 @@ describe('REST API: likes suites', () => {
             for (const id of createdUserIds) {
                 await User.destroy({
                     where: {
-                        id
-                    }
+                        id,
+                    },
                 });
             }
             for (const id of createdCategoryIds) {
                 await Category.destroy({
                     where: {
-                        id
-                    }
+                        id,
+                    },
                 });
             }
-        }
-        catch (err: any) {
+        } catch (err: any) {
             logger.info(JSON.stringify(err));
         }
     });
