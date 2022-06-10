@@ -198,15 +198,15 @@ describe('REST API: user route suite', function () {
         });
     });
 
-    describe('PUT, change teacher data:', function () {
+    describe('PATCH, change teacher data', function () {
         it('should return 401 error if token is not passed', async () => {
-            const result = await UserRoute.putTeacher({ body: { id: 1 } as any });
+            const result = await UserRoute.patchTeacher({ body: { id: 1 } as any });
             expect(result.status).toBe(401);
             expect(result.body.errors).toBe('Unauthorized');
         });
 
         it('should return validation error if no id passed', async () => {
-            const result = await UserRoute.putTeacher();
+            const result = await UserRoute.patchTeacher();
 
             expect(result.status).toBe(400);
             const error = result.body.errors.find(
@@ -216,7 +216,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should return validation error if id is not a number', async () => {
-            const result = await UserRoute.putTeacher({ body: { id: 'test' } as any });
+            const result = await UserRoute.patchTeacher({ body: { id: 'test' } as any });
 
             expect(result.status).toBe(400);
             const error = result.body.errors.find((el: any) => el.msg === 'Parameter should be numeric');
@@ -237,13 +237,13 @@ describe('REST API: user route suite', function () {
                     firstName: 'test',
                 },
             };
-            const changeResponse = await UserRoute.putTeacher(changeUserData, teacherToken);
+            const changeResponse = await UserRoute.patchTeacher(changeUserData, teacherToken);
             expect(changeResponse.status).toBe(403);
             expect(changeResponse.body.errors).toBe('This action is forbidden for this user');
         });
 
         it('should return 404 error if teacher record is not found', async () => {
-            const result = await UserRoute.putTeacher({ body: { id: -1 } }, adminToken);
+            const result = await UserRoute.patchTeacher({ body: { id: -1 } }, adminToken);
 
             expect(result.status).toBe(404);
             expect(result.body.errors).toBe('Unable to find teacher record');
@@ -261,7 +261,7 @@ describe('REST API: user route suite', function () {
 
             const newUser = await TestData.getUserData({ role: UserRoles.Student });
             // intentionally added "password" parameter
-            const result = await UserRoute.putTeacher(
+            const result = await UserRoute.patchTeacher(
                 {
                     body: { id: teacherId, email: newUser.body.email, password: newUser.body.password } as any,
                 },
@@ -291,7 +291,7 @@ describe('REST API: user route suite', function () {
             });
 
             const newUser = await TestData.getUserData();
-            const result = await UserRoute.putTeacher(
+            const result = await UserRoute.patchTeacher(
                 {
                     body: { id: teacherId, ...newUser.body } as any,
                 },
@@ -317,7 +317,7 @@ describe('REST API: user route suite', function () {
                 const { studentId, teacherId } = await SeedData.createTwoUsers({ studentData: studentData });
                 createdUserIds.push(studentId, teacherId);
 
-                const result = await UserRoute.putTeacher(
+                const result = await UserRoute.patchTeacher(
                     {
                         body: { id: teacherId, [test.field]: (studentData.body as any)[test.field] },
                     },

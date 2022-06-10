@@ -9,9 +9,9 @@ export class UserRoute extends ApiRoute {
             path: v1Methods.user.teachers,
             options: {
                 headers: {
-                    Authorization: jwt ? `Bearer ${jwt}` : ''
-                }
-            }
+                    Authorization: jwt ? `Bearer ${jwt}` : '',
+                },
+            },
         });
     }
 
@@ -21,21 +21,21 @@ export class UserRoute extends ApiRoute {
             body: reqBody.body,
             options: {
                 headers: {
-                    Authorization: jwt ? `Bearer ${jwt}` : ''
-                }
-            }
+                    Authorization: jwt ? `Bearer ${jwt}` : '',
+                },
+            },
         });
     }
 
-    static async putTeacher(req?: ApiChangeUserRequest, jwt?: string): Promise<ApiUserResponse> {
-        return this.putMethod({
+    static async patchTeacher(req?: ApiChangeUserRequest, jwt?: string): Promise<ApiUserResponse> {
+        return this.patchMethod({
             path: v1Methods.user.teachers,
             body: req?.body,
             options: {
                 headers: {
-                    Authorization: jwt ? `Bearer ${jwt}` : ''
-                }
-            }
+                    Authorization: jwt ? `Bearer ${jwt}` : '',
+                },
+            },
         });
     }
 
@@ -44,9 +44,9 @@ export class UserRoute extends ApiRoute {
             path: v1Methods.user.teachersById.replace(':id', id ? id.toString() : ''),
             options: {
                 headers: {
-                    Authorization: jwt ? `Bearer ${jwt}` : ''
-                }
-            }
+                    Authorization: jwt ? `Bearer ${jwt}` : '',
+                },
+            },
         });
     }
 }

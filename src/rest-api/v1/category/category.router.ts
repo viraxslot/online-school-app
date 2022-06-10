@@ -12,7 +12,7 @@ import {
     handleGetCategoriesList,
     handleGetCategoryById,
     handlePostCategory,
-    handlePutCategory,
+    handlePatchCategory,
 } from './category.controller';
 const categoryRouter = express.Router();
 
@@ -62,7 +62,7 @@ categoryRouter.post(
     handlePostCategory
 );
 
-categoryRouter.put(
+categoryRouter.patch(
     '/' + v1Methods.category.categories,
     body(SchemasV1.ChangeCategoryRequest.required)
         .exists()
@@ -72,7 +72,7 @@ categoryRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCategory),
-    handlePutCategory
+    handlePatchCategory
 );
 
 categoryRouter.delete(

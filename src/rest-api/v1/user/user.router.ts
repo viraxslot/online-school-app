@@ -7,7 +7,7 @@ import { checkValidation } from '../../middleware/check-validation';
 import { ApiMessages } from '../../shared/api-messages';
 import { v1Methods } from '../endpoints';
 import { SchemasV1 } from '../schemas';
-import { handleDeleteTeacher, handleGetTeachers, handlePostUser, handlePutTeacher } from './user.controller';
+import { handleDeleteTeacher, handleGetTeachers, handlePostUser, handlePatchTeacher } from './user.controller';
 const userRouter = express.Router();
 
 userRouter.get(
@@ -39,7 +39,7 @@ userRouter.post(
     handlePostUser
 );
 
-userRouter.put(
+userRouter.patch(
     '/' + v1Methods.user.teachers,
     body('id')
         .exists()
@@ -49,7 +49,7 @@ userRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeTeacher),
-    handlePutTeacher
+    handlePatchTeacher
 );
 
 userRouter.delete(

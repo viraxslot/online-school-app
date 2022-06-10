@@ -240,9 +240,9 @@ describe('REST API: material suite', function () {
         });
     });
 
-    describe('PUT: change material', function () {
+    describe('PATCH: change material', function () {
         it('should validate required fields in the request body', async () => {
-            const result = await CourseRoute.putMaterial(-1, { body: {} as any });
+            const result = await CourseRoute.patchMaterial(-1, { body: {} as any });
 
             expect(result.status).toBe(400);
 
@@ -253,7 +253,7 @@ describe('REST API: material suite', function () {
         });
 
         it('should validate courseId in the query parameters', async () => {
-            const result = await CourseRoute.putMaterial(-1, { body: { id: -1 } });
+            const result = await CourseRoute.patchMaterial(-1, { body: { id: -1 } });
 
             expect(result.status).toBe(400);
             const error = result.body.errors[0];
@@ -263,7 +263,7 @@ describe('REST API: material suite', function () {
         });
 
         it('should validate material id in body', async () => {
-            const result = await CourseRoute.putMaterial(courseId, { body: { id: -1 } });
+            const result = await CourseRoute.patchMaterial(courseId, { body: { id: -1 } });
 
             expect(result.status).toBe(400);
             const error = result.body.errors[0];
@@ -305,7 +305,7 @@ describe('REST API: material suite', function () {
 
                 const materialData = { body: { id: materialId, title: 'test', data: 'test' } as any };
                 materialData.body[test.field] = test.data;
-                const result = await CourseRoute.putMaterial(courseId, materialData);
+                const result = await CourseRoute.patchMaterial(courseId, materialData);
 
                 expect(result.status).toBe(400);
 
@@ -320,7 +320,7 @@ describe('REST API: material suite', function () {
             const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
             const materialData = { body: { id: materialId, title: 'test', data: 'a'.repeat(10) } };
 
-            const result = await CourseRoute.putMaterial(courseId, materialData);
+            const result = await CourseRoute.patchMaterial(courseId, materialData);
             expect(result.status).toBe(401);
         });
 
@@ -328,7 +328,7 @@ describe('REST API: material suite', function () {
             const { materialId } = await ApiHelper.createMaterial(courseId, adminToken);
             const materialData = { body: { id: materialId, title: 'test', data: 'a'.repeat(10) } };
 
-            const result = await CourseRoute.putMaterial(courseId, materialData, studentToken);
+            const result = await CourseRoute.patchMaterial(courseId, materialData, studentToken);
             expect(result.status).toBe(403);
             expect(result.body.errors).toBe('This action is forbidden for role student');
         });
@@ -353,7 +353,7 @@ describe('REST API: material suite', function () {
             newMaterial.body.title = 'new awesome title';
             newMaterial.body.order = 10;
 
-            const result = await CourseRoute.putMaterial(courseId, newMaterial, teacherToken);
+            const result = await CourseRoute.patchMaterial(courseId, newMaterial, teacherToken);
             expect(result.status).toBe(200);
             SchemaValidator.check(result.body, SchemasV1.ChangeMaterialRequest);
 

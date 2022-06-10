@@ -7,7 +7,7 @@ import {
     ApiCourseListResponse,
     ApiCourseRequest,
     ApiCourseResponse,
-    ApiUserCourseListResponse
+    ApiUserCourseListResponse,
 } from './course.interfaces';
 import { ApiChangeMaterialRequest, ApiMaterialRequest, ApiMaterialResponse } from './material.interfaces';
 
@@ -79,8 +79,8 @@ export class CourseRoute extends ApiRoute {
         });
     }
 
-    static async putCourse(req?: ApiChangeCourseRequest, jwt?: string): Promise<ApiCourseResponse> {
-        return this.putMethod({
+    static async patchCourse(req?: ApiChangeCourseRequest, jwt?: string): Promise<ApiCourseResponse> {
+        return this.patchMethod({
             path: v1Methods.course.courses,
             body: req?.body,
             options: {
@@ -141,12 +141,12 @@ export class CourseRoute extends ApiRoute {
         });
     }
 
-    static async putMaterial(
+    static async patchMaterial(
         courseId: number,
         req: ApiChangeMaterialRequest,
         jwt?: string
     ): Promise<ApiMaterialResponse> {
-        return this.putMethod({
+        return this.patchMethod({
             path: v1Methods.course.materials.replace(':courseId', courseId.toString()),
             body: req.body,
             options: {
@@ -173,9 +173,7 @@ export class CourseRoute extends ApiRoute {
 
     static async changeLike(courseId: number, like?: LikeValue | null, jwt?: string): Promise<ApiDefaultResponse> {
         return this.postMethod({
-            path: v1Methods.course.like
-                .replace(':courseId', courseId.toString())
-                .replace(':like', like as string),
+            path: v1Methods.course.like.replace(':courseId', courseId.toString()).replace(':like', like as string),
             options: {
                 headers: {
                     Authorization: jwt ?? '',

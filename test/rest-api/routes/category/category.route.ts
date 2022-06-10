@@ -43,8 +43,8 @@ export class CategoryRoute extends ApiRoute {
         });
     }
 
-    static async putCategory(req?: ApiChangeCategoryRequest, jwt?: string): Promise<ApiCategoryResponse> {
-        return this.putMethod({
+    static async patchCategory(req?: ApiChangeCategoryRequest, jwt?: string): Promise<ApiCategoryResponse> {
+        return this.patchMethod({
             path: v1Methods.category.categories,
             body: req?.body,
             options: {

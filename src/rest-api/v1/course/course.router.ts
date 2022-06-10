@@ -16,7 +16,7 @@ import {
     handleGetMineCourses,
     handleLeaveCourse,
     handlePostCourse,
-    handlePutCourse
+    handlePatchCourse,
 } from './course.controller';
 import { handleChangeLikeRequest } from './likes.controller';
 import {
@@ -24,7 +24,7 @@ import {
     handleGetMaterialById,
     handleGetMaterialsList,
     handlePostMaterial,
-    handlePutMaterial
+    handlePatchMaterial,
 } from './material.controller';
 const courseRouter = express.Router();
 
@@ -113,8 +113,8 @@ courseRouter.post(
             const course: any = await Course.findOne({
                 raw: true,
                 where: {
-                    id: courseId
-                }
+                    id: courseId,
+                },
             });
 
             if (isNil(course)) {
@@ -151,15 +151,13 @@ courseRouter.post(
     handleLeaveCourse
 );
 
-courseRouter.put(
+courseRouter.patch(
     '/' + v1Methods.course.courses,
     body(
         SchemasV1.ChangeCourseRequest.required,
         ApiMessages.common.requiredFields(SchemasV1.ChangeCourseRequest.required.toString())
     ).exists(),
-    body('id')
-        .isNumeric()
-        .withMessage(ApiMessages.common.numericParameter),
+    body('id').isNumeric().withMessage(ApiMessages.common.numericParameter),
     body('title')
         .optional()
         .isString()
@@ -184,10 +182,7 @@ courseRouter.put(
             max: SchemasV1.CourseRequest.properties.description.maxLength,
         })
         .withMessage(ApiMessages.course.wrongMaxCourseDescriptionLength),
-    body('visible')
-        .optional()
-        .isBoolean()
-        .withMessage(ApiMessages.common.booleanParameter),
+    body('visible').optional().isBoolean().withMessage(ApiMessages.common.booleanParameter),
     body('categoryId')
         .optional()
         .isNumeric()
@@ -202,7 +197,7 @@ courseRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCourse),
-    handlePutCourse
+    handlePatchCourse
 );
 
 courseRouter.delete(
@@ -311,7 +306,7 @@ courseRouter.post(
     handlePostMaterial
 );
 
-courseRouter.put(
+courseRouter.patch(
     '/' + v1Methods.course.materials,
     body(
         SchemasV1.ChangeMaterialRequest.required,
@@ -357,7 +352,7 @@ courseRouter.put(
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeMaterial),
-    handlePutMaterial
+    handlePatchMaterial
 );
 
 courseRouter.delete(
@@ -404,14 +399,13 @@ courseRouter.post(
             }
             return true;
         }),
-    param('like')
-        .custom(async (like: string) => {
-            if (!Object.values(LikeValue).includes(like as any)) {
-                throw new Error(ApiMessages.course.likeValues);
-            }
+    param('like').custom(async (like: string) => {
+        if (!Object.values(LikeValue).includes(like as any)) {
+            throw new Error(ApiMessages.course.likeValues);
+        }
 
-            return true;
-        }),
+        return true;
+    }),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeLike),

@@ -290,9 +290,9 @@ describe('REST API: category suite', function () {
         });
     });
 
-    describe('PUT, change category', function () {
+    describe('PATCH, change category', function () {
         it('should return 401 error if no token passed', async () => {
-            const result = await CategoryRoute.putCategory({
+            const result = await CategoryRoute.patchCategory({
                 body: {
                     id: 1,
                     title: 'test',
@@ -301,7 +301,7 @@ describe('REST API: category suite', function () {
             expect(result.status).toBe(401);
         });
         it('should return validation error if required parameters is not passed', async () => {
-            const result = await CategoryRoute.putCategory();
+            const result = await CategoryRoute.patchCategory();
             expect(result.status).toBe(400);
             const errors = result.body.errors.filter((el: any) => el.msg === 'Please send required fields: id,title');
             expect(errors.length).toBe(2);
@@ -309,7 +309,7 @@ describe('REST API: category suite', function () {
 
         it('should return validation error if id is not a number', async () => {
             const testData = 'test';
-            const result = await CategoryRoute.putCategory({
+            const result = await CategoryRoute.patchCategory({
                 body: {
                     id: testData as any,
                     title: testData,
@@ -326,7 +326,7 @@ describe('REST API: category suite', function () {
 
         it('should return validation error if title is not a string', async () => {
             const testData = 123;
-            const result = await CategoryRoute.putCategory({
+            const result = await CategoryRoute.patchCategory({
                 body: {
                     id: testData,
                     title: testData as any,
@@ -342,7 +342,7 @@ describe('REST API: category suite', function () {
         });
 
         it('should return error if category is not found', async () => {
-            const result = await CategoryRoute.putCategory(
+            const result = await CategoryRoute.patchCategory(
                 {
                     body: {
                         id: -1,
@@ -367,7 +367,7 @@ describe('REST API: category suite', function () {
             const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
                 categoryId,
             });
-            const changeResult = await CategoryRoute.putCategory(newCategory, studentToken);
+            const changeResult = await CategoryRoute.patchCategory(newCategory, studentToken);
             expect(changeResult.status).toBe(403);
             expect(changeResult.body.errors).toBe('This action is forbidden for role student');
         });
@@ -383,7 +383,7 @@ describe('REST API: category suite', function () {
             const newCategory: ApiChangeCategoryRequest = TestData.getCategory({
                 categoryId,
             });
-            const changeResult = await CategoryRoute.putCategory(newCategory, teacherToken);
+            const changeResult = await CategoryRoute.patchCategory(newCategory, teacherToken);
             expect(changeResult.status).toBe(403);
             expect(changeResult.body.errors).toBe('This action is forbidden for role teacher');
         });
@@ -401,7 +401,7 @@ describe('REST API: category suite', function () {
             });
             expect(category.body.title).not.toBe(newCategory.body.title);
 
-            const changeResult = await CategoryRoute.putCategory(newCategory, adminToken);
+            const changeResult = await CategoryRoute.patchCategory(newCategory, adminToken);
             expect(changeResult.status).toBe(200);
             SchemaValidator.check(changeResult.body, SchemasV1.CategoryResponse);
             expect(changeResult.body.id).toBe(newCategory.body.id);
@@ -438,14 +438,14 @@ describe('REST API: category suite', function () {
             const newAdmin = await ApiHelper.createUser({
                 role: UserRoles.Admin,
                 firstName: user.body.firstName,
-                lastName: user.body.lastName
+                lastName: user.body.lastName,
             });
             createdUserIds.push(newAdmin.userId);
 
             const newCategory = cloneDeep(category);
             newCategory.body.id = categoryId;
 
-            const changeResponse = await CategoryRoute.putCategory(newCategory, newAdmin.token);
+            const changeResponse = await CategoryRoute.patchCategory(newCategory, newAdmin.token);
             expect(changeResponse.status).toBe(200);
             const changedCategory: any = await Category.findOne({
                 raw: true,
