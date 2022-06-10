@@ -20,11 +20,11 @@ export const BannedUser: ModelDefined<BannedUserAttributes, BannedUserCreationAt
         },
         userId: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
         },
         reason: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
         createdBy: {
             type: DataTypes.STRING,

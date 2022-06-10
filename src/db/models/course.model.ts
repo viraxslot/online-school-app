@@ -33,11 +33,11 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     visible: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: true,
     },
     categoryId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     createdBy: {
         type: DataTypes.STRING,
@@ -46,7 +46,7 @@ export const Course: ModelDefined<CourseAttributes, CourseCreationAttributes> = 
     updatedBy: {
         type: DataTypes.STRING,
         allowNull: true,
-    }
+    },
 });
 
 Course.hasMany(Material, { onUpdate: 'CASCADE', onDelete: 'CASCADE' });

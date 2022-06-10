@@ -1,10 +1,10 @@
-import { Request } from "express";
-import { isNil } from "lodash";
-import { Like, LikeValue } from "../../../db/models";
-import { logger } from "../../../helpers/winston-logger";
-import { ApiMessages } from "../../shared/api-messages";
-import { DefaultResponse } from "../../shared/interfaces";
-import { Helper } from "../helper";
+import { Request } from 'express';
+import { isNil } from 'lodash';
+import { Like, LikeValue } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
+import { ApiMessages } from '../../shared/api-messages';
+import { DefaultResponse } from '../../shared/interfaces';
+import { Helper } from '../helper';
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ import { Helper } from "../helper";
  *           json:
  *             schema:
  *               $ref: '#/components/schemas/DefaultResponse'
- *         description: 
+ *         description:
  */
 export async function handleChangeLikeRequest(req: Request, res: DefaultResponse) {
     const { payload } = Helper.getJwtAndPayload(req);
@@ -45,24 +45,22 @@ export async function handleChangeLikeRequest(req: Request, res: DefaultResponse
         const likeRecord = await Like.findOne({
             where: {
                 userId,
-                courseId
-            }
+                courseId,
+            },
         });
 
         if (like === LikeValue.Yes || like === LikeValue.No) {
             if (!isNil(likeRecord)) {
                 await likeRecord.update({ like });
-            }
-            else {
+            } else {
                 await Like.create({
                     userId,
                     courseId,
-                    like
+                    like,
                 });
             }
-            const responseMessage = like === LikeValue.Yes
-                ? ApiMessages.likes.likedCourse
-                : ApiMessages.likes.dislikedCourse;
+            const responseMessage =
+                like === LikeValue.Yes ? ApiMessages.likes.likedCourse : ApiMessages.likes.dislikedCourse;
 
             return res.status(200).json({ result: responseMessage });
         }
@@ -74,8 +72,7 @@ export async function handleChangeLikeRequest(req: Request, res: DefaultResponse
 
             return res.status(200).json({ result: ApiMessages.likes.likeRemoved });
         }
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.likes.unableToChangeLike });
     }

@@ -5,7 +5,7 @@ import sequelize from '../sequelize';
 export enum LikeValue {
     Yes = 'yes',
     No = 'no',
-    Remove = 'remove'
+    Remove = 'remove',
 }
 
 interface LikeAttributes extends DbCommonAttributes {
@@ -24,14 +24,14 @@ export const Like: ModelDefined<LikeAttributes, LikeCreationAttributes> = sequel
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     courseId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     like: {
         type: DataTypes.STRING,
-        allowNull: false
-    }
+        allowNull: false,
+    },
 });

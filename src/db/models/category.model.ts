@@ -20,18 +20,18 @@ export const Category: ModelDefined<CategoryAttributes, CategoryCreationAttribut
     title: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
     },
     createdBy: {
         type: DataTypes.STRING,
         unique: false,
-        allowNull: false
+        allowNull: false,
     },
     updatedBy: {
         type: DataTypes.STRING,
         unique: false,
-        allowNull: true
-    }
+        allowNull: true,
+    },
 });
 
 Category.hasMany(Course, { onUpdate: 'CASCADE' });

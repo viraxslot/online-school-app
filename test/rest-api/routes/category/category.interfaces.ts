@@ -2,7 +2,7 @@ import { ErrorResponseData } from '../../../../src/rest-api/shared/interfaces';
 import {
     CategoryRequestData,
     CategoryResponseData,
-    ChangeCategoryRequestData
+    ChangeCategoryRequestData,
 } from '../../../../src/rest-api/v1/category/category.interfaces';
 import { ApiRequest, ApiResponse } from '../../request-interfaces';
 

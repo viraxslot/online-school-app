@@ -19,5 +19,5 @@ export interface DefaultResponseData extends ResponseData {
 }
 
 export type RequestBody<ReqQuery, ReqBody> = Request<ReqQuery, {}, ReqBody>;
-export type ResponseBody<T> = Response<((T & ResponseData) | ErrorResponseData), {}>;
+export type ResponseBody<T> = Response<(T & ResponseData) | ErrorResponseData, {}>;
 export type DefaultResponse = ResponseBody<DefaultResponseData>;

@@ -1,6 +1,6 @@
-import { v1Methods } from "../../../../src/rest-api/v1/endpoints";
-import { ApiRoute } from "../../api-route";
-import { ApiBannedUsersList, ApiBanUserResponse } from "./banned-users.interfaces";
+import { v1Methods } from '../../../../src/rest-api/v1/endpoints';
+import { ApiRoute } from '../../api-route';
+import { ApiBannedUsersList, ApiBanUserResponse } from './banned-users.interfaces';
 
 interface BanUserOptions {
     userId: number;
@@ -25,12 +25,12 @@ export class BanUserRoute extends ApiRoute {
         return this.postMethod({
             path: v1Methods.bannedUsers.banUser,
             body: {
-                reason: options?.reason
+                reason: options?.reason,
             },
             options: {
                 params: {
                     userId: options?.userId,
-                    ban: options?.ban
+                    ban: options?.ban,
                 },
                 headers: {
                     Authorization: options?.jwt ?? '',

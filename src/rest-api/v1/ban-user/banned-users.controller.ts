@@ -1,12 +1,12 @@
-import { Request } from "express";
-import { filter, isNil } from "lodash";
-import { BannedUser, JwtAuth } from "../../../db/models";
-import { logger } from "../../../helpers/winston-logger";
-import { ApiMessages } from "../../shared/api-messages";
-import { DbFieldsToOmit } from "../../shared/constants";
-import { DbHelper } from "../db-helper";
-import { Helper } from "../helper";
-import { BannedUsersListResponse, ChangeUserBanRequest, ChangeUserBanResponse } from "./banned-users.interfaces";
+import { Request } from 'express';
+import { filter, isNil } from 'lodash';
+import { BannedUser, JwtAuth } from '../../../db/models';
+import { logger } from '../../../helpers/winston-logger';
+import { ApiMessages } from '../../shared/api-messages';
+import { DbFieldsToOmit } from '../../shared/constants';
+import { DbHelper } from '../db-helper';
+import { Helper } from '../helper';
+import { BannedUsersListResponse, ChangeUserBanRequest, ChangeUserBanResponse } from './banned-users.interfaces';
 
 /**
  * @swagger
@@ -28,7 +28,7 @@ import { BannedUsersListResponse, ChangeUserBanRequest, ChangeUserBanResponse } 
  *           type: boolean
  *         required: true
  *         description: pass "true" to ban the user and "false" to unban him/her
-*     requestBody:
+ *     requestBody:
  *       content:
  *         json:
  *           schema:
@@ -39,14 +39,13 @@ import { BannedUsersListResponse, ChangeUserBanRequest, ChangeUserBanResponse } 
  *           json:
  *             schema:
  *               $ref: '#/components/schemas/ChangeUserBanResponse'
- *         description: 
+ *         description:
  */
 export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res: ChangeUserBanResponse) {
     let banUserId;
     try {
         banUserId = parseInt(req.query.userId as string);
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.common.unableParseId });
     }
@@ -56,8 +55,8 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
     const user: any = await BannedUser.findOne({
         raw: true,
         where: {
-            userId: banUserId
-        }
+            userId: banUserId,
+        },
     });
 
     const { payload } = Helper.getJwtAndPayload(req);
@@ -72,7 +71,7 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
         isBanned: false,
         userId: banUserId,
         reason: 'empty',
-        createdBy: ''
+        createdBy: '',
     };
 
     try {
@@ -86,37 +85,33 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
 
                 await JwtAuth.destroy({
                     where: {
-                        userId: banUserId
-                    }
+                        userId: banUserId,
+                    },
                 });
 
                 body.result = ApiMessages.bannedUsers.bannedSuccessfully;
                 body.isBanned = true;
                 body.reason = reason;
                 body.createdBy = adminName as any;
-            }
-            else {
+            } else {
                 body.result = ApiMessages.bannedUsers.wasNotBanned;
             }
-        }
-        else {
+        } else {
             if (ban) {
                 body.result = ApiMessages.bannedUsers.alreadyBanned;
                 body.reason = user.reason;
                 body.isBanned = true;
                 body.createdBy = user.bannedBy;
-            }
-            else {
+            } else {
                 await BannedUser.destroy({
                     where: {
-                        userId: banUserId
-                    }
+                        userId: banUserId,
+                    },
                 });
                 body.result = ApiMessages.bannedUsers.unBannedSuccessfully;
             }
         }
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.bannedUsers.unableChangeBanStatus });
     }
@@ -138,20 +133,19 @@ export async function handleChangeUserBanRequest(req: ChangeUserBanRequest, res:
  *           json:
  *             schema:
  *               $ref: '#/components/schemas/BannedUsersListResponse'
- *         description: 
+ *         description:
  */
 export async function handleGetBannedUsersListRequest(req: Request, res: BannedUsersListResponse) {
     try {
         const bannedUsers: any = await BannedUser.findAll({
             raw: true,
             attributes: {
-                exclude: filter(DbFieldsToOmit, el => el !== 'createdBy')
-            }
+                exclude: filter(DbFieldsToOmit, (el) => el !== 'createdBy'),
+            },
         });
 
         return res.status(200).json(bannedUsers);
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
         return res.status(500).json({ errors: ApiMessages.bannedUsers.unableToGetBannedUsers + err });
     }

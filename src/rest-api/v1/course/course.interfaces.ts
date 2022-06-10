@@ -31,7 +31,6 @@ export interface ChangeCourseRequestData {
     categoryId: number;
 }
 
-
 export type CourseRequest = RequestBody<{}, CourseRequestData>;
 export type ChangeCourseRequest = RequestBody<{}, ChangeCourseRequestData>;
 export type CourseResponse = ResponseBody<CourseResponseData>;

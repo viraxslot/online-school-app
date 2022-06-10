@@ -20,26 +20,24 @@ bannedUsersRouter.post(
             const user = await User.findOne({
                 raw: true,
                 where: {
-                    id: userId
-                }
+                    id: userId,
+                },
             });
 
             if (isNil(user)) {
                 throw new Error(ApiMessages.user.noUser);
             }
         }),
-    query('ban')
-        .isBoolean()
-        .withMessage(ApiMessages.common.booleanParameter),
+    query('ban').isBoolean().withMessage(ApiMessages.common.booleanParameter),
     body('reason')
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
-            min: SchemasV1.ChangeUserBanRequest.properties.reason.minLength
+            min: SchemasV1.ChangeUserBanRequest.properties.reason.minLength,
         })
         .withMessage(ApiMessages.bannedUsers.wrongMinReasonLength)
         .isLength({
-            max: SchemasV1.ChangeUserBanRequest.properties.reason.maxLength
+            max: SchemasV1.ChangeUserBanRequest.properties.reason.maxLength,
         })
         .withMessage(ApiMessages.bannedUsers.wrongMaxReasonLength),
     checkValidation,

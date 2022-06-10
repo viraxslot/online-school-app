@@ -1,13 +1,13 @@
-import { isNil } from "lodash";
-import { DbHelper } from "../../../src/rest-api/v1/db-helper";
-import { SchemasV1 } from "../../../src/rest-api/v1/schemas";
-import { BannedUser, JwtAuth, User, UserRoles } from "../../../src/db/models";
-import { BanUserRoute } from "../../rest-api/routes/banned-users/banned-users.route";
-import { LoginRoute } from "../../rest-api/routes/login/login.route";
-import { UserRoute } from "../../rest-api/routes/user/user.route";
-import { ApiHelper } from "../../helpers/api-helper";
-import { SchemaValidator } from "../../helpers/schema-validator";
-import { TestData } from "../../helpers/test-data";
+import { isNil } from 'lodash';
+import { DbHelper } from '../../../src/rest-api/v1/db-helper';
+import { SchemasV1 } from '../../../src/rest-api/v1/schemas';
+import { BannedUser, JwtAuth, User, UserRoles } from '../../../src/db/models';
+import { BanUserRoute } from '../../rest-api/routes/banned-users/banned-users.route';
+import { LoginRoute } from '../../rest-api/routes/login/login.route';
+import { UserRoute } from '../../rest-api/routes/user/user.route';
+import { ApiHelper } from '../../helpers/api-helper';
+import { SchemaValidator } from '../../helpers/schema-validator';
+import { TestData } from '../../helpers/test-data';
 
 describe('REST API: ban/unban users suite', () => {
     const createdUserIds: number[] = [];
@@ -27,12 +27,12 @@ describe('REST API: ban/unban users suite', () => {
     const negativeRoleTestCases = [
         {
             title: 'student role',
-            role: UserRoles.Student
+            role: UserRoles.Student,
         },
         {
             title: 'teacher role',
-            role: UserRoles.Teacher
-        }
+            role: UserRoles.Teacher,
+        },
     ];
 
     describe('GET: list of banned users', () => {
@@ -50,11 +50,11 @@ describe('REST API: ban/unban users suite', () => {
             expect(result.status).toBe(200);
             SchemaValidator.check(result.body, SchemasV1.BannedUsersListResponse);
 
-            const bannedUser = result.body.find(el => el.userId === userId);
+            const bannedUser = result.body.find((el) => el.userId === userId);
             expect(bannedUser).not.toBeNull();
         });
 
-        negativeRoleTestCases.forEach(test => {
+        negativeRoleTestCases.forEach((test) => {
             it(`should not be possible to get banned users list for ${test.title}`, async () => {
                 const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
@@ -139,16 +139,16 @@ describe('REST API: ban/unban users suite', () => {
             {
                 title: 'minimum length',
                 value: 'a'.repeat(SchemasV1.ChangeUserBanRequest.properties.reason.minLength - 1),
-                expectedMessage: 'Minimum reason length is: 5'
+                expectedMessage: 'Minimum reason length is: 5',
             },
             {
                 title: 'maximum length',
                 value: 'a'.repeat(SchemasV1.ChangeUserBanRequest.properties.reason.maxLength + 1),
-                expectedMessage: 'Maximum reason length is: 200'
-            }
+                expectedMessage: 'Maximum reason length is: 200',
+            },
         ];
 
-        reasonLengthValidation.forEach(test => {
+        reasonLengthValidation.forEach((test) => {
             it(`should validate reason field ${test.title}`, async () => {
                 const banUserData = TestData.getBanUserData({ userId, ban: true, reason: test.value });
                 const result = await BanUserRoute.changeUserBan(banUserData);
@@ -161,7 +161,7 @@ describe('REST API: ban/unban users suite', () => {
             });
         });
 
-        negativeRoleTestCases.forEach(test => {
+        negativeRoleTestCases.forEach((test) => {
             it(`should not be possible to ban user for ${test.role}`, async () => {
                 const { userId, token } = await ApiHelper.createUser({ role: test.role });
                 createdUserIds.push(userId);
@@ -204,7 +204,7 @@ describe('REST API: ban/unban users suite', () => {
             const result = await BanUserRoute.changeUserBan(banUserData);
 
             expect(result.status).toBe(400);
-            expect(result.body.errors).toBe('You can\'t ban yourself');
+            expect(result.body.errors).toBe("You can't ban yourself");
         });
 
         it('should be possible for admin to unban user', async () => {
@@ -290,8 +290,8 @@ describe('REST API: ban/unban users suite', () => {
             const userSessions = await JwtAuth.findAll({
                 raw: true,
                 where: {
-                    userId
-                }
+                    userId,
+                },
             });
             expect(userSessions.length).not.toBe(0);
 
@@ -302,8 +302,8 @@ describe('REST API: ban/unban users suite', () => {
             const userSessions2 = await JwtAuth.findAll({
                 raw: true,
                 where: {
-                    userId
-                }
+                    userId,
+                },
             });
             expect(userSessions2.length).toBe(0);
         });
@@ -313,14 +313,13 @@ describe('REST API: ban/unban users suite', () => {
         const bannedUser = await BannedUser.findOne({
             raw: true,
             where: {
-                userId
-            }
+                userId,
+            },
         });
         const bannedUserExist = !isNil(bannedUser);
         if (banned) {
             expect(bannedUserExist).toBe(true);
-        }
-        else {
+        } else {
             expect(bannedUserExist).toBe(false);
         }
     }

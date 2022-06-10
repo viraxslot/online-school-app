@@ -37,7 +37,7 @@ export class AuthRoute extends ApiRoute {
             path: v1Methods.auth.jwt,
             options: {
                 headers: {
-                    Authorization: jwtToken ? `Bearer ` + jwtToken : ''
+                    Authorization: jwtToken ? `Bearer ` + jwtToken : '',
                 },
             },
         });

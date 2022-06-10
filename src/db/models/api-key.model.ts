@@ -6,7 +6,7 @@ interface ApiKeyAttributes extends DbCommonAttributes {
     apiKey: string;
 }
 
-type ApiKeyAttributesCreationAttributes = Optional<ApiKeyAttributes, 'id'>
+type ApiKeyAttributesCreationAttributes = Optional<ApiKeyAttributes, 'id'>;
 
 export const ApiKey: ModelDefined<ApiKeyAttributes, ApiKeyAttributesCreationAttributes> = sequelize.define('apiKey', {
     id: {
@@ -16,6 +16,6 @@ export const ApiKey: ModelDefined<ApiKeyAttributes, ApiKeyAttributesCreationAttr
     },
     apiKey: {
         type: DataTypes.UUID,
-        allowNull: false
+        allowNull: false,
     },
 });

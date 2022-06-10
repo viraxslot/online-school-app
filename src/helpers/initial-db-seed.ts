@@ -21,8 +21,7 @@ export async function initialDbSeed() {
         logger.info('Creating admin user');
         await createAdminUser();
         logger.info('Initial data was successfully created');
-    }
-    catch (err) {
+    } catch (err) {
         logger.error('Unable to add the initial data: ' + JSON.stringify(err));
     }
 }
@@ -56,7 +55,7 @@ async function createPermissions() {
 async function removeOldPermissionsForRoles() {
     await RolePermission.destroy({
         where: {},
-        truncate: true
+        truncate: true,
     });
 }
 
@@ -93,7 +92,7 @@ async function createAdminUser() {
     const adminUser = await User.findOne({
         where: {
             username: appConfig.adminLogin,
-        }
+        },
     });
 
     if (isNil(adminUser)) {
@@ -102,10 +101,9 @@ async function createAdminUser() {
             username: appConfig.adminLogin,
             password: appConfig.adminPassword,
             email: 'admin@quantori.academy',
-            role: UserRoles.Admin
+            role: UserRoles.Admin,
         });
-    }
-    else {
+    } else {
         logger.info('Admin user exists, nothing to do');
     }
 }

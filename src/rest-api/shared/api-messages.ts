@@ -15,13 +15,14 @@ export const ApiMessages = {
         onlyAlphabetAndDigitsAllowed: 'Only RU/EN alphabet and digits allowed, please change your request',
         removeSuccess: 'Success: record was removed.',
         requiredFields: (fields: string) => `Please send required fields: ` + fields,
-        noSuchEndpoint: 'There is no such endpoint! Please check the requested URL or Method. API docs can be found at /api/v1/api-docs'
+        noSuchEndpoint:
+            'There is no such endpoint! Please check the requested URL or Method. API docs can be found at /api/v1/api-docs',
     },
     auth: {
         noAuthNeeded: 'No authentication needed',
         authPassed: 'Authentication passed!',
         expiredToken: 'Token is expired',
-        unableToFindAPIKey: 'Unable to find API key'
+        unableToFindAPIKey: 'Unable to find API key',
     },
     login: {
         wrongMinPasswordLength: 'Minimum password length is: ' + SchemasV1.UserRequest.properties.password.minLength,
@@ -30,7 +31,7 @@ export const ApiMessages = {
         userExist: 'User with such credentials already exist',
         unableCreateUser: 'Unable to create user: ',
         wrongCredentials: 'Unable to authenticate user, wrong credentials',
-        userBanned: 'User is banned, you can\'t get a new session'
+        userBanned: "User is banned, you can't get a new session",
     },
     user: {
         noUser: 'Unable to find user record',
@@ -64,14 +65,14 @@ export const ApiMessages = {
         unableCreateCourse: 'Unable to create course: ',
         unableChangeCourse: 'Unable to change course: ',
         unableRemoveCourse: 'Unable to remove course record: ',
-        unableEnrollCourse: "Error, unable to enroll the course: ",
-        unableEnrollHiddenCourse: "Unable to enroll the hidden course",
+        unableEnrollCourse: 'Error, unable to enroll the course: ',
+        unableEnrollHiddenCourse: 'Unable to enroll the hidden course',
         uniqueFields: 'title should be unique',
         notOwnerError: "You're not owner of this course, you can't change/remove it",
         alreadyEnrolled: "You've already enrolled to this course",
         successEnroll: "You've successfully enrolled the course",
         successLeave: "You've successfully left the course",
-        likeValues: "Wrong like parameter value, please use one of these: yes, no, remove"
+        likeValues: 'Wrong like parameter value, please use one of these: yes, no, remove',
     },
     material: {
         noMaterial: 'Unable to find material record(s)',
@@ -90,22 +91,20 @@ export const ApiMessages = {
     },
     bannedUsers: {
         unableToGetBannedUsers: 'Unable to get banned users: ',
-        unableToBanYourself: 'You can\'t ban yourself',
+        unableToBanYourself: "You can't ban yourself",
         alreadyBanned: 'User is already banned',
         wasNotBanned: 'User was not banned',
         bannedSuccessfully: 'User successfully banned',
         unBannedSuccessfully: 'User successfully unbanned',
         unableChangeBanStatus: 'Unable to ban/unban user: ',
-        wrongMinReasonLength:
-            'Minimum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.minLength,
-        wrongMaxReasonLength:
-            'Maximum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.maxLength,
+        wrongMinReasonLength: 'Minimum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.minLength,
+        wrongMaxReasonLength: 'Maximum reason length is: ' + SchemasV1.ChangeUserBanRequest.properties.reason.maxLength,
     },
     likes: {
         unableToChangeLike: 'Unable to change like for the course: ',
-        likedCourse: 'You\'ve liked the course',
-        dislikedCourse: 'You\'ve disliked the course',
-        likeRemoved: 'You\'ve removed your like/dislike from the course',
+        likedCourse: "You've liked the course",
+        dislikedCourse: "You've disliked the course",
+        likeRemoved: "You've removed your like/dislike from the course",
     },
     permission: {
         noPermission: (permission: string) => `Unable to find permission ${permission}`,

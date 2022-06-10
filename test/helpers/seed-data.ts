@@ -11,9 +11,9 @@ export class SeedData {
     static createTwoUsers = async (options?: {
         studentData?: ApiUserRequest;
         teacherData?: ApiUserRequest;
-    }): Promise<{ studentId: number; teacherId: number; }> => {
-        const student = options?.studentData ?? await TestData.getUserData({ role: UserRoles.Student });
-        const teacher = options?.teacherData ?? await TestData.getUserData({ role: UserRoles.Teacher });
+    }): Promise<{ studentId: number; teacherId: number }> => {
+        const student = options?.studentData ?? (await TestData.getUserData({ role: UserRoles.Student }));
+        const teacher = options?.teacherData ?? (await TestData.getUserData({ role: UserRoles.Teacher }));
 
         let createdStudent: any;
         let createdTeacher: any;

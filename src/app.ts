@@ -49,16 +49,14 @@ const port = process.env.PORT ?? 4000;
 
 (async () => {
     try {
-        if (appConfig)
-            await sequelize.sync();
+        if (appConfig) await sequelize.sync();
         await initialDbSeed();
 
         logger.info('Database is synchronized');
         app.listen(port, () => {
             logger.info(`Server running on port ${port}`);
         });
-    }
-    catch (err) {
+    } catch (err) {
         logger.error(JSON.stringify(err));
     }
 })();

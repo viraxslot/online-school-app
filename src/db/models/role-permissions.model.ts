@@ -11,23 +11,22 @@ interface RolePermissionAttributes extends DbCommonAttributes {
 
 type RPAttributesCreationAttributes = Optional<RolePermissionAttributes, 'id'>;
 
-export const RolePermission: ModelDefined<RolePermissionAttributes, RPAttributesCreationAttributes> =
-    sequelize.define(
-        'RolePermissions',
-        {
-            roleId: {
-                type: DataTypes.INTEGER,
-                primaryKey: true
-            },
-            permissionId: {
-                type: DataTypes.INTEGER,
-                primaryKey: true
-            },
+export const RolePermission: ModelDefined<RolePermissionAttributes, RPAttributesCreationAttributes> = sequelize.define(
+    'RolePermissions',
+    {
+        roleId: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
         },
-        {
-            freezeTableName: true,
-        }
-    );
+        permissionId: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+        },
+    },
+    {
+        freezeTableName: true,
+    }
+);
 
 RolePermission.belongsTo(Role, { foreignKey: 'roleId', as: 'fkRPRole' });
 RolePermission.belongsTo(Permission, { foreignKey: 'permissionId', as: 'fkRPPermission' });

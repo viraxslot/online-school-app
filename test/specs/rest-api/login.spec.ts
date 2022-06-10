@@ -140,7 +140,7 @@ describe('REST API: login route suite', function () {
             });
 
             expect(signInResponse.status).toBe(200);
-            expect(signInResponse.body.errors).toBe('User is banned, you can\'t get a new session');
+            expect(signInResponse.body.errors).toBe("User is banned, you can't get a new session");
         });
 
         it.todo('should remove expired token and return a new one');
