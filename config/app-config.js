@@ -13,13 +13,13 @@ dotenv.config({ path: envPath });
 
 const keepDbHost = env === 'development' && !isNil(process.env.LOCAL_RUN) ? false : true;
 
-let cookieExpiresIn = 60;
+let cookieExpiresIn = 30;
 try {
     if (process.env.COOKIE_EXPIRES_IN) {
         cookieExpiresIn = parseInt(process.env.COOKIE_EXPIRES_IN);
     }
 } catch (error) {
-    cookieExpiresIn = 60;
+    cookieExpiresIn = 30;
 }
 
 module.exports = {

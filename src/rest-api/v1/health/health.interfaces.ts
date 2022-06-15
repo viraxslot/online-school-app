@@ -4,6 +4,7 @@ interface HealthResponseData extends ResponseData {
     result: {
         status: string;
         currentDate: string;
+        version: string;
     };
 }
 

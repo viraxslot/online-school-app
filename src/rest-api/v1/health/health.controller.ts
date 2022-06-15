@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { HealthResponse } from './health.interfaces';
+import * as packageJson from '../../../../package.json';
 
 /**
  * @swagger
@@ -17,10 +18,12 @@ import { HealthResponse } from './health.interfaces';
  */
 export function handleGetHealth(req: Request, res: HealthResponse) {
     const now = new Date();
+
     return res.status(200).json({
         result: {
             status: 'OK',
             currentDate: now.toISOString(),
+            version: packageJson?.version ?? 'unknown',
         },
     });
 }

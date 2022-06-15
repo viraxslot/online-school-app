@@ -377,6 +377,9 @@ export const SchemasV1 = {
                     currentDate: {
                         type: 'string',
                     },
+                    version: {
+                        type: 'string',
+                    },
                 },
             },
         },
