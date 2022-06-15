@@ -11,7 +11,17 @@ if (process.env.NODE_ENV && process.env.NODE_ENV !== 'test') {
 const envPath = path.resolve(__dirname, '..', 'env', `.env.${env}`);
 dotenv.config({ path: envPath });
 
-const keepDbHost = (env === 'development' && !isNil(process.env.LOCAL_RUN)) ? false : true;
+const keepDbHost = env === 'development' && !isNil(process.env.LOCAL_RUN) ? false : true;
+
+let cookieExpiresIn = 30;
+try {
+    if (process.env.COOKIE_EXPIRES_IN) {
+        cookieExpiresIn = parseInt(process.env.COOKIE_EXPIRES_IN);
+    }
+} catch (error) {
+    cookieExpiresIn = 30;
+}
+
 module.exports = {
     env,
     host: keepDbHost ? process.env.POSTGRES_HOST : 'localhost',
@@ -26,12 +36,13 @@ module.exports = {
     basicAuth: process.env.BASIC_AUTH ?? [],
     jwtSecret: process.env.JWT_SECRET ?? '',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '2h',
+    cookieExpiresIn,
     adminLogin: process.env.ADMIN_LOGIN ?? '',
     adminPassword: process.env.ADMIN_PASSWORD ?? '',
     aws: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
         secretKeyId: process.env.AWS_SECRET_ACCESS_KEY ?? '',
         region: process.env.AWS_REGION ?? 'us-east-2',
-        cloudWatchLogGroup: process.env.AWS_CLOUD_WATCH_LOG_GROUP ?? '/docker-compose/online-school-app'
-    }
+        cloudWatchLogGroup: process.env.AWS_CLOUD_WATCH_LOG_GROUP ?? '/docker-compose/online-school-app',
+    },
 };
