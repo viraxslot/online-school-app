@@ -11,6 +11,7 @@ const appConfig: {
     basicAuth: string;
     jwtSecret: string;
     jwtExpiresIn: string;
+    cookieExpiresIn: number;
     adminLogin: string;
     adminPassword: string;
     aws: {

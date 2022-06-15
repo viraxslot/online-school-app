@@ -51,6 +51,28 @@ describe('REST API: auth route suite', function () {
         });
     });
 
+    describe('cookie:', function () {
+        it('should return 401 error if no credentials passed', async () => {
+            const cookieAuthResponse = await AuthRoute.getCookieAuth('token');
+            expect(cookieAuthResponse.status).toBe(401);
+        });
+
+        it('should return correct response if credentials passed', async () => {
+            const basicCredentials = JSON.parse(appConfig.basicAuth);
+            const signInResponse = await AuthRoute.signIn(basicCredentials[0].username, basicCredentials[0].password);
+
+            expect(signInResponse.status).toBe(200);
+            expect(signInResponse.body.result).toBe(ApiMessages.auth.authPassed);
+
+            const cookie = signInResponse.headers['set-cookie'] ?? [];
+            expect(cookie.length).not.toBe(0);
+            const parsedCookie = cookie[0].split(';')[0];
+
+            const cookieAuthResponse = await AuthRoute.getCookieAuth(parsedCookie);
+            expect(cookieAuthResponse.status).toBe(200);
+        });
+    });
+
     describe('jwt:', function () {
         const createdUserIds: number[] = [];
         it('should return 401 error if no jwt passed', async () => {

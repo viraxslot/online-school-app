@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import apiKeyRouter from './rest-api/v1/auth/api-key/api-key.router';
 import basicRouter from './rest-api/v1/auth/basic/basic-auth.router';
@@ -17,9 +18,12 @@ import './helpers/jobs';
 import { ApiMessages } from './rest-api/shared/api-messages';
 import bannedUsersRouter from './rest-api/v1/ban-user/banned-users.router';
 import appConfig from '../config/app-config';
+import cookieRouter from './rest-api/v1/auth/cookie/cookie-auth.router';
+import signInRouter from './rest-api/v1/auth/sign-in/sign-in.router';
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const supportedVersions = ['v1'];
 supportedVersions.forEach((version) => {
@@ -27,9 +31,11 @@ supportedVersions.forEach((version) => {
     // swagger
     app.use(versionPrefix + 'api-docs', swaggerRouter);
     // auth
+    app.use(versionPrefix, signInRouter);
     app.use(versionPrefix, noAuthRouter);
     app.use(versionPrefix, apiKeyRouter);
     app.use(versionPrefix, basicRouter);
+    app.use(versionPrefix, cookieRouter);
     app.use(versionPrefix, jwtRouter);
     // logic
     app.use(versionPrefix, healthRouter);

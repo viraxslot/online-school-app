@@ -42,4 +42,25 @@ export class AuthRoute extends ApiRoute {
             },
         });
     }
+
+    static async getCookieAuth(cookie: string): Promise<ApiDefaultResponse> {
+        return this.getMethod({
+            path: v1Methods.auth.cookie,
+            options: {
+                headers: {
+                    cookie: cookie,
+                },
+            },
+        });
+    }
+
+    static async signIn(username: string, password: string): Promise<ApiDefaultResponse> {
+        return this.postMethod({
+            path: v1Methods.auth.signIn,
+            body: {
+                username,
+                password,
+            },
+        });
+    }
 }

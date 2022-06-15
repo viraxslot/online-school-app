@@ -6,6 +6,8 @@ export const v1Methods = {
         noAuth: 'no-auth',
         apiKey: 'api-key',
         basic: 'basic',
+        signIn: 'sign-in',
+        cookie: 'cookie',
         jwt: 'jwt',
     },
     login: {
