@@ -1,4 +1,4 @@
-FROM node:16.13.2 as base
+FROM node:16.15.1 as base
 ENV NODE_ENV=development
 
 WORKDIR /app
