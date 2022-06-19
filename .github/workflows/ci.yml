@@ -1,7 +1,9 @@
 name: Build backend image and start the app
 on:
     push:
-        branches: [test]
+        branches:
+          - dev
+          - test
 
 jobs:
     build:
