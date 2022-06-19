@@ -72,7 +72,7 @@ Request body:
 
 ```JSON
 {
-    "login": "john-teacher",
+    "username": "john-teacher",
     "firstName": "John",
     "lastName": "Smith",
     "email": "jsmith@gmail.com",
@@ -86,7 +86,7 @@ Response body:
 ```JSON
 {
     "id": 971,
-    "login": "john-teacher",
+    "username": "john-teacher",
     "email": "jsmith@gmail.com",
     "firstName": "John",
     "lastName": "Smith",
