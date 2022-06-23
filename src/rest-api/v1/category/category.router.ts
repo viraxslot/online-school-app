@@ -36,12 +36,8 @@ categoryRouter.get(
     handleGetCategoriesList
 );
 
-categoryRouter.post(
-    '/' + v1Methods.category.categories,
-    body(SchemasV1.CategoryRequest.required)
-        .exists()
-        .withMessage(ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())),
-    body('title')
+function categoryTitleValidation() {
+    return body('title')
         .isString()
         .withMessage(ApiMessages.common.stringParameter)
         .isLength({
@@ -55,7 +51,19 @@ categoryRouter.post(
         .custom((value) => {
             return value.match(/^[A-Za-z0-9\u0410-\u044F ]+$/);
         })
-        .withMessage(ApiMessages.common.onlyAlphabetAndDigitsAllowed),
+        .withMessage(ApiMessages.common.onlyAlphabetAndDigitsAllowed)
+        .custom((value) => {
+            return !value.match(/^ *$/);
+        })
+        .withMessage(ApiMessages.common.onlySpacesNotAllowed);
+}
+
+categoryRouter.post(
+    '/' + v1Methods.category.categories,
+    body(SchemasV1.CategoryRequest.required)
+        .exists()
+        .withMessage(ApiMessages.common.requiredFields(SchemasV1.CategoryRequest.required.toString())),
+    categoryTitleValidation(),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.CreateCategory),
@@ -68,7 +76,7 @@ categoryRouter.patch(
         .exists()
         .withMessage(ApiMessages.common.requiredFields(SchemasV1.ChangeCategoryRequest.required.toString())),
     body('id').isNumeric().withMessage(ApiMessages.common.numericParameter),
-    body('title').isString().withMessage(ApiMessages.common.stringParameter),
+    categoryTitleValidation(),
     checkValidation,
     checkJwtAuth,
     checkPermission(Permissions.ChangeCategory),

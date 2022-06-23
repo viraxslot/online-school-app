@@ -434,6 +434,12 @@ describe('REST API: course suite', function () {
 
         const fieldLengthTestCases = [
             {
+                title: 'spaces only',
+                field: 'title',
+                data: ' '.repeat(10),
+                expectedMessage: 'You are not allowed to use spaces only',
+            },
+            {
                 title: 'minimum length',
                 field: 'title',
                 data: 'a'.repeat(SchemasV1.CourseRequest.properties.title.minLength - 1),

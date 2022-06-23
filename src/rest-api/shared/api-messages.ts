@@ -13,6 +13,7 @@ export const ApiMessages = {
         stringParameter: 'Parameter should be a string',
         booleanParameter: 'Parameter should be boolean',
         onlyAlphabetAndDigitsAllowed: 'Only RU/EN alphabet, space and digits allowed, please change your request',
+        onlySpacesNotAllowed: 'You are not allowed to use spaces only',
         removeSuccess: 'Success: record was removed.',
         requiredFields: (fields: string) => `Please send required fields: ` + fields,
         noSuchEndpoint:
