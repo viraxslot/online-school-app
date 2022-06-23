@@ -124,6 +124,12 @@ describe('REST API: material suite', function () {
     describe('POST: create material', function () {
         const validationTestCases = [
             {
+                title: 'spaces only',
+                field: 'title',
+                value: ' '.repeat(10),
+                expectedMessage: 'You are not allowed to use spaces only',
+            },
+            {
                 title: 'type of title field',
                 field: 'title',
                 value: 123,
@@ -273,6 +279,12 @@ describe('REST API: material suite', function () {
         });
 
         const negativateTestCases = [
+            {
+                title: 'spaces only',
+                field: 'title',
+                data: ' '.repeat(15),
+                expectedMessage: 'You are not allowed to use spaces only',
+            },
             {
                 title: 'minimum title length',
                 field: 'title',

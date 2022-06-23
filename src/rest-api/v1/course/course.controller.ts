@@ -68,6 +68,7 @@ export async function handleCourseById(req: Request, res: CourseResponse) {
             },
             where: {
                 id: courseId,
+                visible: true,
             },
         });
 
@@ -105,6 +106,9 @@ export async function handleGetCourseList(req: Request, res: CourseListResponse)
     try {
         const courses: any = await Course.findAll({
             raw: true,
+            where: {
+                visible: true,
+            },
             attributes: {
                 include: [
                     [

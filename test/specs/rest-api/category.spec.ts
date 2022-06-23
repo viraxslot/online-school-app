@@ -158,6 +158,16 @@ describe('REST API: category suite', function () {
             expect(error.location).toBe('body');
         });
 
+        it('should return validation error if title contains spaces only', async () => {
+            const result = await CategoryRoute.postCategory({ body: { title: ' '.repeat(4) } } as any);
+
+            expect(result.status).toBe(400);
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('You are not allowed to use spaces only');
+            expect(error.param).toBe('title');
+            expect(error.location).toBe('body');
+        });
+
         const allowedTitleTestCases = [{ title: 'special characters', data: 'test!@#$' }];
         allowedTitleTestCases.forEach((test) => {
             it(`should return validation error if title has ${test.title}`, async () => {
@@ -165,7 +175,7 @@ describe('REST API: category suite', function () {
 
                 expect(result.status).toBe(400);
                 const error = result.body.errors[0];
-                expect(error.msg).toBe('Only RU/EN alphabet and digits allowed, please change your request');
+                expect(error.msg).toBe('Only RU/EN alphabet, space and digits allowed, please change your request');
                 expect(error.param).toBe('title');
                 expect(error.location).toBe('body');
             });
@@ -337,6 +347,21 @@ describe('REST API: category suite', function () {
             const error = result.body.errors[0];
             expect(error.value).toBe(testData);
             expect(error.msg).toBe('Parameter should be a string');
+            expect(error.param).toBe('title');
+            expect(error.location).toBe('body');
+        });
+
+        it('should return validation error if title contains spaces only', async () => {
+            const result = await CategoryRoute.patchCategory({
+                body: {
+                    id: 1,
+                    title: ' '.repeat(4),
+                },
+            });
+            expect(result.status).toBe(400);
+
+            const error = result.body.errors[0];
+            expect(error.msg).toBe('You are not allowed to use spaces only');
             expect(error.param).toBe('title');
             expect(error.location).toBe('body');
         });

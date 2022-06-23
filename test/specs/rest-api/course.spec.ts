@@ -75,6 +75,30 @@ describe('REST API: course suite', function () {
             });
         });
 
+        it('should not return hidden course', async () => {
+            const hiddenCourse = TestData.getCourse({
+                categoryId,
+                visible: false,
+            });
+
+            const createdCourse = await CourseRoute.postCourse(hiddenCourse, teacherToken);
+            expect(createdCourse.status).toBe(200);
+
+            const courseId = createdCourse.body.id;
+            const course = await Course.findOne({
+                raw: true,
+                where: {
+                    id: courseId,
+                },
+            });
+
+            expect(course).not.toBeNull();
+
+            const result = await CourseRoute.getCourse(courseId, studentToken);
+            expect(result.status).toBe(404);
+            expect(result.body.errors).toBe('Unable to find course record(s)');
+        });
+
         it('should return amount of likes and dislikes for the course', async () => {
             const { courseId, categoryId } = await ApiHelper.createCourse(adminToken);
             createdCategoryIds.push(categoryId);
@@ -120,6 +144,32 @@ describe('REST API: course suite', function () {
                 const foundCourse = result.body.find((el) => el.id === courseId);
                 expect(foundCourse).not.toBeNull();
             });
+        });
+
+        it('should not return hidden courses', async () => {
+            const hiddenCourse = TestData.getCourse({
+                categoryId,
+                visible: false,
+            });
+
+            const createdCourse = await CourseRoute.postCourse(hiddenCourse, teacherToken);
+            expect(createdCourse.status).toBe(200);
+
+            const courseId = createdCourse.body.id;
+            const course = await Course.findOne({
+                raw: true,
+                where: {
+                    id: courseId,
+                },
+            });
+
+            expect(course).not.toBeNull();
+
+            const result = await CourseRoute.getCourseList(studentToken);
+            expect(result.status).toBe(200);
+
+            const hiddenCoursesList = result.body.filter((el) => !el.visible);
+            expect(hiddenCoursesList.length).toBe(0);
         });
 
         it('should return likes and dislikes for the course', async () => {
@@ -433,6 +483,12 @@ describe('REST API: course suite', function () {
         });
 
         const fieldLengthTestCases = [
+            {
+                title: 'spaces only',
+                field: 'title',
+                data: ' '.repeat(10),
+                expectedMessage: 'You are not allowed to use spaces only',
+            },
             {
                 title: 'minimum length',
                 field: 'title',
