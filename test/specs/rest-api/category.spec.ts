@@ -165,7 +165,7 @@ describe('REST API: category suite', function () {
 
                 expect(result.status).toBe(400);
                 const error = result.body.errors[0];
-                expect(error.msg).toBe('Only RU/EN alphabet and digits allowed, please change your request');
+                expect(error.msg).toBe('Only RU/EN alphabet, space and digits allowed, please change your request');
                 expect(error.param).toBe('title');
                 expect(error.location).toBe('body');
             });
