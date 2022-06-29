@@ -35,7 +35,7 @@ export class DbHelper {
     }
 
     static async getUserData(id: number): Promise<{
-        login: string;
+        username: string;
         email: string;
         firstName: string;
         lastName: string;
@@ -48,7 +48,7 @@ export class DbHelper {
         });
 
         return {
-            login: result.login,
+            username: result.username,
             email: result.email,
             firstName: result.firstName,
             lastName: result.lastName,
@@ -62,7 +62,7 @@ export class DbHelper {
     static async getUserIdentifier(id: number): Promise<string> {
         const user = await this.getUserData(id);
 
-        let username = user.login;
+        let username = user.username;
         if (!isNil(user.firstName) || !isNil(user.lastName)) {
             username = user.firstName + ' ' + user.lastName;
         }
