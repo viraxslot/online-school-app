@@ -260,7 +260,7 @@ describe('REST API: category suite', function () {
 
         const createCategoryTestCases = [
             { title: 'using en locale', data: 'Test Category Z' },
-            { title: 'using ru locale', data: 'ТестоваЯ КатегориЯ А' },
+            { title: 'using ru locale', data: 'ТестоваЯ КатегориЯ ёЁ' },
             { title: 'with minimum length', data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.minLength) },
             { title: 'with maximum length', data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.maxLength) },
         ];
