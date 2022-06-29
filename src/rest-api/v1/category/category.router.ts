@@ -14,6 +14,7 @@ import {
     handlePostCategory,
     handlePatchCategory,
 } from './category.controller';
+import { titleRegex } from '../../shared/constants';
 const categoryRouter = express.Router();
 
 categoryRouter.get(
@@ -49,7 +50,7 @@ function categoryTitleValidation() {
         })
         .withMessage(ApiMessages.category.wrongMaxCategoryLength)
         .custom((value) => {
-            return value.match(/^[A-Za-z0-9\u0410-\u044F ]+$/);
+            return value.match(titleRegex);
         })
         .withMessage(ApiMessages.common.onlyAlphabetAndDigitsAllowed)
         .custom((value) => {

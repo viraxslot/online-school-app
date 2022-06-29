@@ -24,8 +24,11 @@
 ### How to apply and undo migrations
 
 Dev environment only:
-Apply: `npm run db:migrate:dev`\
-Undo: `npm run db:undo:dev`
+Apply: `npm run db:migrate`\
+Undo: `npm run db:migrate:undo`
+
+To create a new migration please use:
+`npx sequelize-cli migration:create --name=<MIGRATION_NAME` 
 
 ### How to apply/undo seeds to the database
 

@@ -541,6 +541,33 @@ describe('REST API: course suite', function () {
             expect(error.location).toBe('body');
         });
 
+        const maxLengthPositiveCases = [
+            {
+                title: 'maximum length title',
+                field: 'title',
+                data: 'a'.repeat(SchemasV1.CourseRequest.properties.title.maxLength),
+            },
+            {
+                title: 'maximum length description',
+                field: 'description',
+                data: 'a'.repeat(SchemasV1.CourseRequest.properties.description.maxLength),
+            },
+        ];
+
+        maxLengthPositiveCases.forEach((test) => {
+            it(`should be possible to create a course with ${test.title}`, async () => {
+                const { categoryId } = await ApiHelper.createCategory(adminToken);
+                createdCategoryIds.push(categoryId);
+
+                const courseData = TestData.getCourse({ categoryId });
+                courseData.body[test.field] = test.data;
+
+                const result = await CourseRoute.postCourse(courseData, teacherToken);
+                expect(result.status).toBe(200);
+                SchemaValidator.check(result.body, SchemasV1.CourseResponse);
+            });
+        });
+
         teacherAdminTestCases.forEach((test) => {
             it(`should be possible to create course with ${test.role} role`, async () => {
                 const { token, userId } = await ApiHelper.createUser({ role: test.role });

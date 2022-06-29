@@ -240,9 +240,27 @@ describe('REST API: category suite', function () {
             expect(result2.body.errors).toBe('title should be unique');
         });
 
+        it('should be possible to create category if admin user has no first and last name', async () => {
+            const newAdmin = await ApiHelper.createAdmin();
+            const dbAdmin: any = await User.findByPk(newAdmin.userId);
+            expect(dbAdmin).not.toBeNull;
+
+            await dbAdmin.update({
+                firstName: null,
+                lastName: null,
+            });
+
+            createdUserIds.push(newAdmin.userId);
+
+            const category = TestData.getCategory();
+            const categoryResponse = await CategoryRoute.postCategory(category, newAdmin.token);
+            expect(categoryResponse.status).toBe(200);
+            SchemaValidator.check(categoryResponse.body, SchemasV1.CategoryResponse);
+        });
+
         const createCategoryTestCases = [
             { title: 'using en locale', data: 'Test Category Z' },
-            { title: 'using ru locale', data: 'ТестоваЯ КатегориЯ А' },
+            { title: 'using ru locale', data: 'ТестоваЯ КатегориЯ ёЁ' },
             { title: 'with minimum length', data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.minLength) },
             { title: 'with maximum length', data: 'a'.repeat(SchemasV1.CategoryRequest.properties.title.maxLength) },
         ];
