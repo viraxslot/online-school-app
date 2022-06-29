@@ -17,8 +17,8 @@
         "dc:dev": "docker-compose --env-file ./env/.env.development up",
         "dc:prod": "docker-compose -f docker-compose.prod.yml --env-file ./env/.env.production up",
         "dc:down": "docker-compose down",
-        "db:migrate:dev": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate",
-        "db:undo:dev": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate:undo",
+        "db:migrate": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate",
+        "db:migrate:undo": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:migrate:undo",
         "db:seed:all": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:seed:all",
         "db:seed:undo": "LOCAL_RUN=1 NODE_ENV=development npx sequelize-cli db:seed:undo:all"
     },
