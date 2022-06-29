@@ -224,6 +224,32 @@ describe('REST API: material suite', function () {
             });
         });
 
+        const maxLengthPositiveCases = [
+            {
+                title: 'maximum length title',
+                field: 'title',
+                data: 'a'.repeat(SchemasV1.MaterialRequest.properties.title.maxLength),
+            },
+            {
+                title: 'maximum length description',
+                field: 'data',
+                data: 'a'.repeat(SchemasV1.MaterialRequest.properties.data.maxLength),
+            },
+        ];
+
+        maxLengthPositiveCases.forEach((test) => {
+            it(`should be possible to create a material with ${test.title}`, async () => {
+                const course = await ApiHelper.createCourse(adminToken);
+                createdCategoryIds.push(course.categoryId);
+
+                const material = TestData.getMaterial();
+                material.body[test.field] = test.data;
+
+                const createdMaterial = await CourseRoute.postMaterial(course.courseId, material, adminToken);
+                expect(createdMaterial.status).toBe(200);
+            });
+        });
+
         it('should be possible to create material with teacher role', async () => {
             const { categoryId } = await ApiHelper.createCategory(adminToken);
             createdCategoryIds.push(categoryId);
