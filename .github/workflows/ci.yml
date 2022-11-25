@@ -1,5 +1,6 @@
 name: Build backend image and start the app
 on:
+    workflow_dispatch:
     push:
         branches:
           - test
