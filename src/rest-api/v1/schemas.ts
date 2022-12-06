@@ -10,10 +10,12 @@ const SharedFields = {
             type: 'number',
         },
         firstName: {
-            type: ['string', 'null'],
+            type: 'string',
+            nullable: true,
         },
         lastName: {
-            type: ['string', 'null'],
+            type: 'string',
+            nullable: true,
         },
     },
 };
@@ -259,7 +261,8 @@ const MaterialSchemas = {
                 maxLength: 1000,
             },
             order: {
-                type: ['number', 'null'],
+                type: 'number',
+                nullable: true,
             },
             courseId: {
                 type: 'number',
