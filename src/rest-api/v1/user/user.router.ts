@@ -21,6 +21,17 @@ userRouter.post(
     '/' + v1Methods.user.users,
     body(SchemasV1.UserRequest.required).exists(),
     body('email').isEmail(),
+    body('username')
+        .isString()
+        .withMessage(ApiMessages.common.stringParameter)
+        .isLength({
+            min: SchemasV1.UserRequest.properties.username.minLength,
+        })
+        .withMessage(ApiMessages.user.wrongMinUsernameLength)
+        .isLength({
+            max: SchemasV1.UserRequest.properties.username.maxLength,
+        })
+        .withMessage(ApiMessages.user.wrongMaxUsernameLength),
     body('password')
         .isLength({
             min: SchemasV1.UserRequest.properties.password.minLength,

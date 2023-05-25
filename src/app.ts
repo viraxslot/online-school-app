@@ -55,7 +55,9 @@ const port = process.env.PORT ?? 4000;
 
 (async () => {
     try {
-        if (appConfig) await sequelize.sync();
+        if (appConfig) {
+            await sequelize.sync();
+        }
         await initialDbSeed();
 
         logger.info('Database is synchronized');

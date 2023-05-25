@@ -19,13 +19,13 @@ import { SessionRequest, SessionResponse } from './login.interfaces';
  *       content:
  *         json:
  *           schema:
- *             $ref: '#/components/schemas/SignInRequest'
+ *             $ref: '#/components/schemas/SessionRequest'
  *     responses:
  *       200:
  *         content:
  *           json:
  *             schema:
- *               $ref: '#/components/schemas/SignInResponse'
+ *               $ref: '#/components/schemas/SessionResponse'
  *         description: return jwt token if credentials are correct
  */
 export async function handlePostSession(req: SessionRequest, res: SessionResponse) {
