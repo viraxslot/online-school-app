@@ -9,7 +9,7 @@
     },
     "scripts": {
         "lint:hook": "npx eslint --max-warnings 0",
-        "lint": "DEBUG=eslint:linter npx eslint --max-warnings 0 ./src/** ./test/**",
+        "lint": "npx eslint --max-warnings 0 src/**/*.ts test/**/*.ts",
         "build": "rimraf build && tsc -p .",
         "test": "LOCAL_RUN=1 jest --watch",
         "test:nowatch": "LOCAL_RUN=1 jest --silent --forceExit",

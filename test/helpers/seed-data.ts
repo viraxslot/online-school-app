@@ -12,8 +12,8 @@ export class SeedData {
         studentData?: ApiUserRequest;
         teacherData?: ApiUserRequest;
     }): Promise<{ studentId: number; teacherId: number }> => {
-        const student = options?.studentData ?? (await TestData.getUserData({ role: UserRoles.Student }));
-        const teacher = options?.teacherData ?? (await TestData.getUserData({ role: UserRoles.Teacher }));
+        const student = options?.studentData ?? TestData.getUserData({ role: UserRoles.Student });
+        const teacher = options?.teacherData ?? TestData.getUserData({ role: UserRoles.Teacher });
 
         let createdStudent: any;
         let createdTeacher: any;

@@ -59,6 +59,40 @@ describe('REST API: user route suite', function () {
     });
 
     describe('POST, create user', function () {
+        const usernameValidationTestCases = [
+            {
+                title: 'has non-string type',
+                username: 123,
+                expectedError: 'Parameter should be a string',
+            },
+            {
+                title: 'less than minimum length',
+                username: '1'.repeat(SchemasV1.UserRequest.properties.username.minLength - 1),
+                expectedError: 'Minimum username length is: 3',
+            },
+            {
+                title: 'greater than maximum length',
+                username: '1'.repeat(SchemasV1.UserRequest.properties.username.maxLength + 1),
+                expectedError: 'Maximum username length is: 255',
+            },
+        ];
+
+        usernameValidationTestCases.forEach((test) => {
+            it(`should return error if username ${test.title}`, async () => {
+                const user = TestData.getUserData();
+                user.body.username = test.username as string;
+
+                const result = await UserRoute.postUser(user);
+                expect(result.status).toBe(400);
+                expect(result.body.errors.length).toBe(1);
+
+                const error = result.body.errors[0];
+                expect(error.location).toBe('body');
+                expect(error.param).toBe('username');
+                expect(error.msg).toBe(test.expectedError);
+            });
+        });
+
         const passwordValidationTestCases = [
             {
                 title: 'less than minimum length',
@@ -74,7 +108,7 @@ describe('REST API: user route suite', function () {
 
         passwordValidationTestCases.forEach((test) => {
             it(`should return error if password ${test.title}`, async () => {
-                const user = await TestData.getUserData();
+                const user = TestData.getUserData();
                 user.body.password = test.password;
 
                 const result = await UserRoute.postUser(user);
@@ -89,7 +123,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should return validation error if role has wrong value', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             user.body.role = 'test' as any;
 
             const result = await UserRoute.postUser(user);
@@ -100,7 +134,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should return validation error if email has wrong format', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             user.body.email = 'test@';
 
             const result = await UserRoute.postUser(user);
@@ -112,7 +146,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should return validation error if user already exists', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const createdUser = await User.create({
                 username: user.body.username,
                 email: user.body.email,
@@ -135,7 +169,7 @@ describe('REST API: user route suite', function () {
 
         createTestCases.forEach((test) => {
             it(`should be possible to create user ${test.title}`, async () => {
-                const user = await TestData.getUserData({
+                const user = TestData.getUserData({
                     role: test.role,
                 });
 
@@ -161,7 +195,7 @@ describe('REST API: user route suite', function () {
             const student = await ApiHelper.createStudent();
             createdUserIds.push(student.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -174,7 +208,7 @@ describe('REST API: user route suite', function () {
             const teacher = await ApiHelper.createTeacher();
             createdUserIds.push(teacher.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -187,7 +221,7 @@ describe('REST API: user route suite', function () {
             const admin = await ApiHelper.createAdmin();
             createdUserIds.push(admin.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -224,7 +258,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should not be possible to change other teacher data', async () => {
-            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const user = TestData.getUserData({ role: UserRoles.Teacher });
             const createResponse = await UserRoute.postUser(user);
             expect(createResponse.status).toBe(200);
 
@@ -259,7 +293,7 @@ describe('REST API: user route suite', function () {
                 },
             });
 
-            const newUser = await TestData.getUserData({ role: UserRoles.Student });
+            const newUser = TestData.getUserData({ role: UserRoles.Student });
             // intentionally added "password" parameter
             const result = await UserRoute.patchTeacher(
                 {
@@ -290,7 +324,7 @@ describe('REST API: user route suite', function () {
                 },
             });
 
-            const newUser = await TestData.getUserData();
+            const newUser = TestData.getUserData();
             const result = await UserRoute.patchTeacher(
                 {
                     body: { id: teacherId, ...newUser.body } as any,
@@ -313,7 +347,7 @@ describe('REST API: user route suite', function () {
 
         uniqueFieldsTests.forEach((test) => {
             it(`should not be possible to change user data with existent ${test.field}`, async () => {
-                const studentData = await TestData.getUserData({ role: UserRoles.Student });
+                const studentData = TestData.getUserData({ role: UserRoles.Student });
                 const { studentId, teacherId } = await SeedData.createTwoUsers({ studentData: studentData });
                 createdUserIds.push(studentId, teacherId);
 
@@ -358,7 +392,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should not be possible to remove other teacher data', async () => {
-            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const user = TestData.getUserData({ role: UserRoles.Teacher });
             const createResponse = await UserRoute.postUser(user);
             expect(createResponse.status).toBe(200);
 

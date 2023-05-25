@@ -95,7 +95,7 @@ describe('REST API: auth route suite', function () {
         });
 
         it('should be possible to authenticate with a valid jwt', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
             createdUserIds.push(signUpResponse.body.id);

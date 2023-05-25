@@ -2,6 +2,8 @@ const SharedFields = {
     User: {
         username: {
             type: 'string',
+            minLength: 3,
+            maxLength: 255,
         },
         email: {
             type: 'string',

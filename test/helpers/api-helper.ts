@@ -28,7 +28,7 @@ export class ApiHelper {
      * @returns
      */
     static async createCategory(adminToken: string): Promise<CreatedCategory> {
-        const categoryData = await TestData.getCategory();
+        const categoryData = TestData.getCategory();
         const categoryResponse = await CategoryRoute.postCategory(categoryData, adminToken);
         expect(categoryResponse.status).toBe(200);
         const categoryId = categoryResponse.body.id;
