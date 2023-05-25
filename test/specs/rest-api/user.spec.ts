@@ -169,7 +169,7 @@ describe('REST API: user route suite', function () {
 
         createTestCases.forEach((test) => {
             it(`should be possible to create user ${test.title}`, async () => {
-                const user = await TestData.getUserData({
+                const user = TestData.getUserData({
                     role: test.role,
                 });
 
@@ -195,7 +195,7 @@ describe('REST API: user route suite', function () {
             const student = await ApiHelper.createStudent();
             createdUserIds.push(student.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -208,7 +208,7 @@ describe('REST API: user route suite', function () {
             const teacher = await ApiHelper.createTeacher();
             createdUserIds.push(teacher.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -221,7 +221,7 @@ describe('REST API: user route suite', function () {
             const admin = await ApiHelper.createAdmin();
             createdUserIds.push(admin.userId);
 
-            const user = await TestData.getUserData({
+            const user = TestData.getUserData({
                 role: UserRoles.Admin,
             });
 
@@ -258,7 +258,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should not be possible to change other teacher data', async () => {
-            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const user = TestData.getUserData({ role: UserRoles.Teacher });
             const createResponse = await UserRoute.postUser(user);
             expect(createResponse.status).toBe(200);
 
@@ -293,7 +293,7 @@ describe('REST API: user route suite', function () {
                 },
             });
 
-            const newUser = await TestData.getUserData({ role: UserRoles.Student });
+            const newUser = TestData.getUserData({ role: UserRoles.Student });
             // intentionally added "password" parameter
             const result = await UserRoute.patchTeacher(
                 {
@@ -347,7 +347,7 @@ describe('REST API: user route suite', function () {
 
         uniqueFieldsTests.forEach((test) => {
             it(`should not be possible to change user data with existent ${test.field}`, async () => {
-                const studentData = await TestData.getUserData({ role: UserRoles.Student });
+                const studentData = TestData.getUserData({ role: UserRoles.Student });
                 const { studentId, teacherId } = await SeedData.createTwoUsers({ studentData: studentData });
                 createdUserIds.push(studentId, teacherId);
 
@@ -392,7 +392,7 @@ describe('REST API: user route suite', function () {
         });
 
         it('should not be possible to remove other teacher data', async () => {
-            const user = await TestData.getUserData({ role: UserRoles.Teacher });
+            const user = TestData.getUserData({ role: UserRoles.Teacher });
             const createResponse = await UserRoute.postUser(user);
             expect(createResponse.status).toBe(200);
 
