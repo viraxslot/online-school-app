@@ -274,7 +274,7 @@ describe('REST API: ban/unban users suite', () => {
         });
 
         it('should remove all user session after the ban', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
             const userId = signUpResponse.body.id;

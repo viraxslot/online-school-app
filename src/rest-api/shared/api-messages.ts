@@ -35,6 +35,8 @@ export const ApiMessages = {
         userBanned: "User is banned, you can't get a new session",
     },
     user: {
+        wrongMinUsernameLength: 'Minimum username length is: ' + SchemasV1.UserRequest.properties.username.minLength,
+        wrongMaxUsernameLength: 'Maximum username length is: ' + SchemasV1.UserRequest.properties.username.maxLength,
         noUser: 'Unable to find user record',
         noTeacher: 'Unable to find teacher record',
         noTeacherRole: 'Unable to find teacher role',

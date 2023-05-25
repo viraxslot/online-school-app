@@ -44,7 +44,7 @@ describe('REST API: login route suite', function () {
         });
 
         it('should return validation error if user not found', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signInResponse = await LoginRoute.postSession({
                 body: {
                     username: user.body.username,
@@ -57,7 +57,7 @@ describe('REST API: login route suite', function () {
         });
 
         it('should return validation error if wrong credentials passed', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
             createdUserIds.push(signUpResponse.body.id);
@@ -73,7 +73,7 @@ describe('REST API: login route suite', function () {
         });
 
         it('should return created earlier token if it exists', async () => {
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
             createdUserIds.push(signUpResponse.body.id);
@@ -102,7 +102,7 @@ describe('REST API: login route suite', function () {
         const positiveTestCases = [{ title: 'username' }, { title: 'email' }];
         positiveTestCases.forEach((test) => {
             it(`should return jwt token if credentials are correct (${test.title})`, async () => {
-                const user = await TestData.getUserData();
+                const user = TestData.getUserData();
                 const signUpResponse = await UserRoute.postUser(user);
                 expect(signUpResponse.status).toBe(200);
                 createdUserIds.push(signUpResponse.body.id);
@@ -121,7 +121,7 @@ describe('REST API: login route suite', function () {
 
         it('should not be possible to get new session if user is banned', async () => {
             const admin = await ApiHelper.createAdmin();
-            const user = await TestData.getUserData();
+            const user = TestData.getUserData();
             const signUpResponse = await UserRoute.postUser(user);
             expect(signUpResponse.status).toBe(200);
 
