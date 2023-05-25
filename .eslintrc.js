@@ -9,22 +9,22 @@ module.exports = {
         ecmaVersion: 'latest',
         sourceType: 'module',
     },
+    ignorePatterns: ['src/db/migrations/**', 'src/db/seeders/**'],
     plugins: ['@typescript-eslint'],
-    rules: {},
-    overrides: [
-        {
-            files: ['**/*.js?(x)'],
-            rules: {
-                '@typescript-eslint/no-var-requires': 'off',
-                'no-undef': 'off',
+    rules: {
+        "no-console": "error",
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/ban-types': 'off',
+        '@typescript-eslint/promise-function-async': 'error',
+        '@typescript-eslint/no-floating-promises': 'error',
+        '@typescript-eslint/no-misused-promises': [
+            'error',
+            {
+                checksVoidReturn: false,
             },
-        },
-        {
-            files: ['**/*.ts?(x)'],
-            rules: {
-                '@typescript-eslint/no-explicit-any': 'off',
-                '@typescript-eslint/ban-types': 'off',
-            },
-        },
-    ],
+        ],
+    },
+    parserOptions: {
+        project: ['tsconfig.json'],
+    },
 };
