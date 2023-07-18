@@ -7,6 +7,12 @@ services:
         depends_on:
             - backend
             - database
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 2
+            window: 120s
     backend:
         image: 390613096869.dkr.ecr.us-east-2.amazonaws.com/online-school-backend:latest
         env_file:
@@ -14,7 +20,12 @@ services:
         depends_on:
             - database
         command: node /app/build/src/app.js
-
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 2
+            window: 120s
     database:
         image: postgres:14.1-alpine
         env_file:
@@ -23,5 +34,11 @@ services:
             - pg-data-prod:/var/lib/postgresql/data
         ports:
             - '5432:5432'
+        deploy:
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 2
+            window: 120s
 volumes:
     pg-data-prod:
